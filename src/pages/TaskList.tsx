@@ -52,8 +52,8 @@ const TaskList = () => {
     <>
       <DefaultLayout>
         <div className="flex items-center justify-between">
-          <h2 className="text-title-md2 font-semibold text-primary dark:text-white">
-            Task List
+          <h2 className="text-title-md2 font-semibold text-black dark:text-white">
+            Shift List
           </h2>
 
           <button
@@ -76,22 +76,22 @@ const TaskList = () => {
                 d="M12 4v16m8-8H4"
               ></path>
             </svg>
-            Add New Task
+            Add New Shift
           </button>
         </div>
 
         <div className="overflow-x-auto mt-10">
           <table className="min-w-full bg-white rounded-lg shadow overflow-hidden">
-            <thead className="bg-gradient-to-r from-[#7a2828] to-[#a73737]">
+          <thead className="bg-gradient-to-r from-[#4c4b4b] to-[#454545]">
               <tr>
                 <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
-                  Title
+                  Location
                 </th>
                 <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
-                  Description
+                  Duties 
                 </th>
                 <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
-                  Createdat
+                  Staff Name
                 </th>
                 <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
                   Frequency

@@ -93,7 +93,7 @@ const StaffList = () => {
       <DefaultLayout>
 
         <div className="flex items-center justify-between">
-          <h2 className="text-title-md2 font-semibold text-primary dark:text-white">
+          <h2 className="text-title-md2 font-semibold text-black dark:text-white">
             Staff List
           </h2>
 
@@ -120,7 +120,7 @@ const StaffList = () => {
 
         <div className="overflow-x-auto mt-10">
           <table className="min-w-full bg-white rounded-lg shadow overflow-hidden">
-          <thead className="bg-gradient-to-r from-[#7a2828] to-[#a73737]">
+          <thead className="bg-gradient-to-r from-[#4c4b4b] to-[#454545]">
               <tr>
                 <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
 First Name                </th>

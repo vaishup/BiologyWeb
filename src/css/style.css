@@ -217,7 +217,7 @@ span.flatpickr-weekday,
   font-family: 'Santoshi', sans-serif;
 }
 .btn-grad {
-  background-image: linear-gradient(to right, #a73737 0%, #7a2828 51%, #a73737 100%);
+  background-image: linear-gradient(to right, #4c4b4b 0%, #2a2a2b 51%, #454545 100%);
   padding: 10px;
   margin-right: 80px;
   text-align: center;
