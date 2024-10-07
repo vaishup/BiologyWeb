@@ -7,6 +7,7 @@ import './css/satoshi.css';
 import 'jsvectormap/dist/css/jsvectormap.css';
 import 'flatpickr/dist/flatpickr.min.css';
 import { Amplify } from 'aws-amplify';
+
 import config from './amplifyconfiguration.json';
 
 Amplify.configure(config);
