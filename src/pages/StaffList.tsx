@@ -90,7 +90,6 @@ const StaffList = () => {
   const navigation = useNavigate();
   return (
     <>
-      <DefaultLayout>
 
         <div className="flex items-center justify-between">
           <h2 className="text-title-md2 font-semibold text-black dark:text-white">
@@ -175,7 +174,6 @@ First Name                </th>
             </tbody>
           </table>
         </div>
-      </DefaultLayout>
     </>
   );
 };

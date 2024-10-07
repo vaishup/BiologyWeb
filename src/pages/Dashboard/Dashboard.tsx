@@ -1,11 +1,24 @@
-import React from 'react';
 import CardDataStats from '../../components/CardDataStats';
+import React, { useState, useEffect, useRef } from "react";
 
 import DefaultLayout from '../../layout/DefaultLayout';
 
 const ECommerce: React.FC = () => {
+  useEffect(() => {
+   // handleLogout();
+  }, []);
+  const handleLogout = async () => {
+    try {
+      const response = await signOut();
+      console.log("signout response ", response);
+      localStorage.removeItem("loginTimestamp");
+    } catch (error) {
+      console.log("error signing out: ", error);
+    }
+  };
   return (
-    <DefaultLayout>
+    <>
+
       <div className="mb-4">
         <p className='text-xl font-bold text-[#000000]'>Welcome to Biology </p>
       </div>
@@ -80,7 +93,7 @@ const ECommerce: React.FC = () => {
         </div>
         <ChatCard />
       </div> */}
-    </DefaultLayout>
+       </>
   );
 };
 

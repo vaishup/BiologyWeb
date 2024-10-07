@@ -2,6 +2,15 @@ import { PencilIcon, Trash2 } from 'lucide-react';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../layout/DefaultLayout';
 import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { generateClient } from 'aws-amplify/api';
+
+import {
+  listTheShifts,
+  getTheStaff,
+  deleteTheShifts
+} from '../graphql/queries';
+import * as mutation from '../graphql/mutations.js';
 
 const TaskList = () => {
   const tasks = [
@@ -46,11 +55,92 @@ const TaskList = () => {
       createdDate: '2024-01-10',
     },
   ];
+  const client = generateClient();
+  const [stafflist, setStaffList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  useEffect(() => {
+    listStaff();
+  }, []);
+  const listStaff = async () => {
+    const client = generateClient();
+    try {
+      const staffdata = await client.graphql({
+        query: listTheShifts,
+        variables: {},
+      });
+      
+      const shiftsList = staffdata.data.listTheShifts.items;
+      console.log("shiftsList...", shiftsList);
+      
+      // Sort the tasks by createdAt date
+      const sortedTasks = shiftsList.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+      );
+  
+      // Loop through each shift and fetch the staff name using staffId
+      const shiftsWithStaffNames = await Promise.all(
+        sortedTasks.map(async (shift) => {
+          if (shift.staffId) {
+            try {
+              const staffData = await client.graphql({
+                query: getTheStaff, // Replace with your actual query to get staff by ID
+                variables: { id: shift.staffId }, // Fetch staff by staffId
+              });
+  
+              // Add staff name to the shift object
+              const staffName = staffData.data.getTheStaff.name;
+              console.log("staffName...",staffName);
+              
+              return { ...shift, staffName }; // Append staff name to the shift object
+            } catch (error) {
+              console.error(`Error fetching staff name for staffId ${shift.staffId}:`, error);
+              return { ...shift, staffName: "Unknown" }; // In case of error, default to "Unknown"
+            }
+          }
+          return shift; // Return the shift object if no staffId is present
+        })
+      );
+  
+      // Update the state with the shifts that now include staff names
+      setStaffList(shiftsWithStaffNames);
+      console.log("Updated staff list with names:", shiftsWithStaffNames);
+  
+    } catch (error) {
+      console.error("Error fetching shifts or staff details:", error);
+    }
+  };
+  // const filteredStaffs = stafflist.filter(
+  //   (client) =>
+  //     client.name.toLowerCase().includes(searchQuery.toLowerCase()) 
+   
+  // );
+  const handleDelete = async (id) => {
+    try {
+      // Confirm deletion with the user (optional)
+      // const confirmed = window.confirm(
+      //   'Are you sure you want to delete this item?',
+      // );
+      // if (!confirmed) return;
 
+      // Perform the delete mutation
+      await client.graphql({
+        query: mutation.deleteTheShifts, // Replace with your actual mutation
+        variables: { input: { id } },
+      });
+
+      listStaff();
+      console.log(`Item with ID ${id} has been deleted`);
+
+      // Optionally, you can update the state to remove the deleted item from the list
+      // For example, if you have a state called `orders`:
+      // setOrders(orders.filter(order => order.id !== id));
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
+  };
   const navigation = useNavigate();
   return (
     <>
-      <DefaultLayout>
         <div className="flex items-center justify-between">
           <h2 className="text-title-md2 font-semibold text-black dark:text-white">
             Shift List
@@ -59,7 +149,8 @@ const TaskList = () => {
           <button
             className="btn-grad w-[180px] pr-20"
             onClick={() => {
-              navigation('/addTask');
+              const addString = 'add';
+              navigation(`/addTask/${addString}`);
             }}
           >
             <svg
@@ -102,30 +193,31 @@ const TaskList = () => {
               </tr>
             </thead>
             <tbody>
-              {tasks.map((order) => (
+              {stafflist.map((order) => (
                 <tr key={order.id}>
                  
                   <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-                    {order.title}
+                    {order.Location}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-                    {order.description}
+                    {order.duties}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-                    {order.createdDate}
+                    {order.staffName}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-                    {order.frequency}
+                    {order.time}
                   </td>
                   <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm flex-row">
                     <div className='flex flex-row'>
                     <PencilIcon onClick={() =>{
-                      console.log(order.id);
+                      //console.log(order.id);
                       
-                    }}   className="mr-5 inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
+                       navigation(`/addTask/edit/${order.id}`);
+                   }}   className="mr-5 inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
                     color='black' size={20}/>
                     <Trash2 onClick={() =>{
-                      console.log(order.id);
+                      handleDelete(order.id);
                       
                     }}     className="inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
                     color='black' size={20}/>
@@ -137,7 +229,6 @@ const TaskList = () => {
             </tbody>
           </table>
         </div>
-      </DefaultLayout>
     </>
   );
 };
