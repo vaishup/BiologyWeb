@@ -9,6 +9,11 @@ export const getTheShifts = /* GraphQL */ `
       duties
       staffId
       time
+      startTime
+      endTime
+      startDate
+      endDate
+      shiftstatus
       createdAt
       updatedAt
       __typename
@@ -28,6 +33,11 @@ export const listTheShifts = /* GraphQL */ `
         duties
         staffId
         time
+        startTime
+        endTime
+        startDate
+        endDate
+        shiftstatus
         createdAt
         updatedAt
         __typename
@@ -47,6 +57,10 @@ export const getTheStaff = /* GraphQL */ `
       DOB
       photourl
       isBiomatritcs
+      profileStatus
+      Location
+      IsActive
+      shiftIds
       createdAt
       updatedAt
       __typename
@@ -68,6 +82,10 @@ export const listTheStaffs = /* GraphQL */ `
         DOB
         photourl
         isBiomatritcs
+        profileStatus
+        Location
+        IsActive
+        shiftIds
         createdAt
         updatedAt
         __typename

@@ -122,6 +122,10 @@ const AddTask = () => {
 const endDateTime1 = dayjs(`${formattedDate} ${endTime}`).format('YYYY-MM-DDTHH:mm:ss');   // Local time
 console.log(startDateTime1);
 console.log(endDateTime1);
+console.log(startDateTime);
+console.log(endDateTime);
+
+//n ISO format for GraphQL
 
       // Step 2: Create the input object for staff creation or update
       const staffInput = {
@@ -147,7 +151,7 @@ console.log(endDateTime1);
           variables: { input: { id, ...staffInput } },
         });
       } else {
-       // Create a new staff member
+      // Create a new staff member
         staffResponse = await API.graphql({
           query: mutation.createTheShifts,
           variables: { input: staffInput },

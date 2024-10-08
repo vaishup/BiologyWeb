@@ -12,6 +12,11 @@ export const createTheShifts = /* GraphQL */ `
       duties
       staffId
       time
+      startTime
+      endTime
+      startDate
+      endDate
+      shiftstatus
       createdAt
       updatedAt
       __typename
@@ -29,6 +34,11 @@ export const updateTheShifts = /* GraphQL */ `
       duties
       staffId
       time
+      startTime
+      endTime
+      startDate
+      endDate
+      shiftstatus
       createdAt
       updatedAt
       __typename
@@ -46,6 +56,11 @@ export const deleteTheShifts = /* GraphQL */ `
       duties
       staffId
       time
+      startTime
+      endTime
+      startDate
+      endDate
+      shiftstatus
       createdAt
       updatedAt
       __typename
@@ -65,6 +80,10 @@ export const createTheStaff = /* GraphQL */ `
       DOB
       photourl
       isBiomatritcs
+      profileStatus
+      Location
+      IsActive
+      shiftIds
       createdAt
       updatedAt
       __typename
@@ -84,6 +103,10 @@ export const updateTheStaff = /* GraphQL */ `
       DOB
       photourl
       isBiomatritcs
+      profileStatus
+      Location
+      IsActive
+      shiftIds
       createdAt
       updatedAt
       __typename
@@ -103,6 +126,10 @@ export const deleteTheStaff = /* GraphQL */ `
       DOB
       photourl
       isBiomatritcs
+      profileStatus
+      Location
+      IsActive
+      shiftIds
       createdAt
       updatedAt
       __typename

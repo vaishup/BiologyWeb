@@ -193,40 +193,55 @@ const TaskList = () => {
               </tr>
             </thead>
             <tbody>
-              {stafflist.map((order) => (
-                <tr key={order.id}>
-                 
-                  <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-                    {order.Location}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-                    {order.duties}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-                    {order.staffName}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-                    {order.time}
-                  </td>
-                  <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm flex-row">
-                    <div className='flex flex-row'>
-                    <PencilIcon onClick={() =>{
-                      //console.log(order.id);
-                      
-                       navigation(`/addTask/edit/${order.id}`);
-                   }}   className="mr-5 inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
-                    color='black' size={20}/>
-                    <Trash2 onClick={() =>{
-                      handleDelete(order.id);
-                      
-                    }}     className="inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
-                    color='black' size={20}/>
-                    </div>
-             
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+  {stafflist.length === 0 ? (
+    <tr>
+      <td
+        colSpan={5} // Adjust based on the number of columns in your table
+        className="px-6 py-4 border-b border-gray-200 bg-white text-sm text-center"
+      >
+        No Data Found
+      </td>
+    </tr>
+  ) : (
+    stafflist.map((order) => (
+      <tr key={order.id}>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {order.Location}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {order.duties}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {order.staffName}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+          {order.time}
+        </td>
+        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm flex-row">
+          <div className="flex flex-row">
+            <PencilIcon
+              onClick={() => {
+                navigation(`/addTask/edit/${order.id}`);
+              }}
+              className="mr-5 inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
+              color="black"
+              size={20}
+            />
+            <Trash2
+              onClick={() => {
+                handleDelete(order.id);
+              }}
+              className="inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
+              color="black"
+              size={20}
+            />
+          </div>
+        </td>
+      </tr>
+    ))
+  )}
+</tbody>
+
           </table>
         </div>
     </>

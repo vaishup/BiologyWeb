@@ -1,6 +1,6 @@
 projects:
-  supremesecurity:
-    schemaPath: amplify/backend/api/supremesecurity/build/schema.graphql
+  bilogic:
+    schemaPath: amplify/backend/api/bilogic/build/schema.graphql
     includes:
       - src/graphql/**/*.js
     excludes:
@@ -13,6 +13,3 @@ projects:
         region: us-east-2
         apiId: null
         maxDepth: 2
-extensions:
-  amplify:
-    version: 3
