@@ -7,6 +7,13 @@ import {
   getTableID,
   getUserInfo,
 } from "../../hooks/authServices";
+import {
+  signIn,
+  confirmSignUp,
+  signOut,
+  getCurrentUser,
+  updateUserAttribute,
+} from "aws-amplify/auth";
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -70,7 +77,7 @@ const DropdownUser = () => {
           <span className="block text-sm font-medium text-black dark:text-white">
             {"Admin"}
           </span>
-          <span className="block text-xs">Staff</span>
+          <span className="block text-xs"></span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
