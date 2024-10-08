@@ -24,6 +24,7 @@ const AddClient = () => {
    
     email: '',
     phoneNumber: '',
+    status:''
 
   });
   const handleChange = (e) => {
@@ -55,6 +56,7 @@ const AddClient = () => {
         name: formData.name,
         phoneNumber: formData.phoneNumber,
         email: formData.email,
+        profileStatus:formData.status
         // Add other fields as needed
       };
       let staffResponse;
@@ -100,7 +102,7 @@ const AddClient = () => {
             name: staff.name,
             email: staff.email,
             phoneNumber: staff.phoneNumber,
-         
+            status:staff.profileStatus
           });
           
         } catch (error) {
@@ -232,6 +234,27 @@ const AddClient = () => {
                     placeholder="Enter your Phone Number"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
+                </div>
+
+                <div className="w-full">
+                  <label className="mb-2.5 mt-3 block text-black dark:text-white">
+                   Profile Status
+                  </label>
+                  <select
+                    name="residentType" // Ensure this matches the formData key
+                    value={formData.status} // Bind the value to formData.residentType
+                    onChange={handleChange} // Handle change to update formData
+                    className={`w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary ${errors.frequency ? 'border-red-500' : ''} dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
+                  >
+                    <option value="">Select Resident</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                  {/* {errors.status && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.status}
+                    </p>
+                  )} */}
                 </div>
                 {/* Submit Button */}
                 <button className="w-full mt-10 btn-grad pr-20">Submit</button>

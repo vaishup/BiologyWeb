@@ -193,7 +193,9 @@ const ClientList = () => {
               <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
                 EMAIL
               </th>
-            
+              <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
+                Profile Status
+              </th>
               <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
                 Action
               </th>
@@ -211,7 +213,9 @@ const ClientList = () => {
                 <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
                   {order.email}
                 </td>
-          
+                <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+                  {order.profileStatus}
+                </td>
                 <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm flex-row">
                   <div className="flex flex-row">
                     <PencilIcon

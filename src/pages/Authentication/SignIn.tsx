@@ -17,6 +17,8 @@ import {
   getCurrentUser,
   updateUserAttribute,
 } from "aws-amplify/auth";
+import { Eye, EyeOff } from "lucide-react";
+
 interface SignInProps {
   onLoginSuccess: () => void;
 }
@@ -119,7 +121,11 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
     }
   };
 
-  
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   useEffect(() => {
     handleLogout();
   }, []);
@@ -176,18 +182,25 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
                   </div>
                 </div>
 
+            
                 <div className="mb-6">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Re-type Password
                   </label>
                   <div className="relative">
-                    <input
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      type="password"
-                      placeholder="6+ Characters, 1 Capital letter"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
+                  <input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type={showPassword ? 'text' : 'password'}  // Toggle between 'text' and 'password'
+          placeholder="Enter your Password"
+          className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+        />
+                    <div
+          onClick={togglePasswordVisibility}
+          className="absolute right-3 top-4 cursor-pointer"
+        >
+          {showPassword ? <Eye /> : <EyeOff />}
+        </div>
                   </div>
                 </div>
 

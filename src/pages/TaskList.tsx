@@ -4,6 +4,7 @@ import DefaultLayout from '../layout/DefaultLayout';
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
 import { generateClient } from 'aws-amplify/api';
+import dayjs from 'dayjs'; // Import dayjs if not already imported
 
 import {
   listTheShifts,
@@ -185,7 +186,7 @@ const TaskList = () => {
                   Staff Name
                 </th>
                 <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
-                  Frequency
+                  Shift Time
                 </th>
                 <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
                   ACTION
@@ -215,8 +216,8 @@ const TaskList = () => {
           {order.staffName}
         </td>
         <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-          {order.time}
-        </td>
+  {dayjs(order.startTime).format('YYYY-MM-DD h:mm A')} - {dayjs(order.endTime).format('h:mm A')}
+</td>
         <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm flex-row">
           <div className="flex flex-row">
             <PencilIcon

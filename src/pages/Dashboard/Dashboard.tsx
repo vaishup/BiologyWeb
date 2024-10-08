@@ -7,15 +7,15 @@ const ECommerce: React.FC = () => {
   useEffect(() => {
    // handleLogout();
   }, []);
-  const handleLogout = async () => {
-    try {
-      const response = await signOut();
-      console.log("signout response ", response);
-      localStorage.removeItem("loginTimestamp");
-    } catch (error) {
-      console.log("error signing out: ", error);
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     const response = await signOut();
+  //     console.log("signout response ", response);
+  //     localStorage.removeItem("loginTimestamp");
+  //   } catch (error) {
+  //     console.log("error signing out: ", error);
+  //   }
+  // };
   return (
     <>
 
@@ -23,7 +23,7 @@ const ECommerce: React.FC = () => {
         <p className='text-xl font-bold text-[#000000]'>Welcome to Biology </p>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Total Clients" total="0" >
+        <CardDataStats title="Total Staff" total="0" >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -42,7 +42,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Tasks" total="0">
+        <CardDataStats title="Total Shift" total="0">
         <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -61,7 +61,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Employees" total="0" >
+        <CardDataStats title="Total Client" total="0" >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
