@@ -11,6 +11,7 @@ const StaffList = lazy(() => import('../pages/StaffList'));
 const TaskList = lazy(() => import('../pages/TaskList'));
 const ClientList = lazy(() => import('../pages/ClientList'));
 const IncidenetsList = lazy(() => import('../pages/IncidenetsList'));
+const Profile = lazy(() => import('../pages/Profile'));
 
 
 
@@ -57,7 +58,11 @@ const coreRoutes = [
     title: 'IncidenetsList',
     component: IncidenetsList,
   },
-
+  {
+    path: '/profile/:id?',
+    title: 'Profile',
+    component: Profile,
+  },
 ];
 
 const routes = [...coreRoutes];

@@ -59,8 +59,8 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
 
     try {
       const { isSignUpComplete, userId, nextStep } = await signUp({
-        username: "Biologic123",
-        password: "Abc@123456",
+        username: "Royaladmin",
+        password: "KIdo3015%#$",
 
         options: {
           userAttributes: {
@@ -78,13 +78,13 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
     event.preventDefault(); // Prevents page reload
     try {
       const { isSignUpComplete, nextStep } = await confirmSignUp({
-        username: "Biologic123",
-        confirmationCode: "151370",
+        username: "Royaladmin",
+        confirmationCode: "617724",
       });
 
       const newUser = {
         //  id: generateUniqueId(), // Generate unique ID here
-        name: "Biologic123",
+        name: "Royaladmin",
         email: "vaishalipanchal6899@gmail.com",
 
         phoneNo: "+16476419995",

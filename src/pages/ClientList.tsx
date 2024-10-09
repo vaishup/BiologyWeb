@@ -1,4 +1,4 @@
-import { Pencil, PencilIcon, Trash2 } from "lucide-react";
+import { Eye, Pencil, PencilIcon, Trash2 } from "lucide-react";
 import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "../layout/DefaultLayout";
 import { useNavigate } from "react-router-dom";
@@ -214,10 +214,18 @@ const ClientList = () => {
                   {order.email}
                 </td>
                 <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-                  {order.profileStatus}
-                </td>
+  {order.profileStatus === "Incomplete" ? "Pending" : order.profileStatus}
+</td>
                 <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm flex-row">
                   <div className="flex flex-row">
+                     <Eye
+                      onClick={() => {
+                        navigation(`/Profile/${order.id}`);
+                      }}
+                      className="mr-5 inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
+                      color="black"
+                      size={20}
+                    />
                     <PencilIcon
                       onClick={() => {
                         navigation(`/addclient/${order.id}`);
