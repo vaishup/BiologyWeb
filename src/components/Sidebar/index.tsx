@@ -176,7 +176,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           }}
         >
           <UsersRound width={18} height={18} />
-          Staff Setup
+          Employee Setup
           <svg
             className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
               open && 'rotate-180'
@@ -235,7 +235,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 width={18}
                                 height={18}
                               /> */}
-                             Add Staff
+                             Add Employee
                             </NavLink>
                           </li>
                           </ul>
@@ -310,7 +310,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   }}
                 >
                   <SquareUser width={18} height={18} />
-                 Current Staff
+                 Current Employee
                 </NavLink>
               </li>
               

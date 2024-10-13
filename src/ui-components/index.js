@@ -4,6 +4,8 @@
  * Any changes to this file will be overwritten when running amplify pull. *
  **************************************************************************/
 
+export { default as TheAdminStaffUserCreateForm } from "./TheAdminStaffUserCreateForm";
+export { default as TheAdminStaffUserUpdateForm } from "./TheAdminStaffUserUpdateForm";
 export { default as TheShiftsCreateForm } from "./TheShiftsCreateForm";
 export { default as TheShiftsUpdateForm } from "./TheShiftsUpdateForm";
 export { default as TheStaffCreateForm } from "./TheStaffCreateForm";

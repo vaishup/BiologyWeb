@@ -40,6 +40,7 @@ const AddStaff = () => {
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     // Step 1: Perform validation
     const validationErrors = validate(); // Assume validate() is a function that returns an object of errors
     if (Object.keys(validationErrors).length > 0) {
@@ -96,7 +97,7 @@ const AddStaff = () => {
   };
   return (
     <>
-        <Breadcrumb pageName="Add Staff" />
+        <Breadcrumb pageName="Add Employee" />
         <Modal
         open={isOpen}
         onCancel={handleCancle}

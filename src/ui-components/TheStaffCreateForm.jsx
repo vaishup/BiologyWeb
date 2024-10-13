@@ -199,6 +199,7 @@ export default function TheStaffCreateForm(props) {
     Location: "",
     IsActive: "",
     shiftIds: [],
+    userId: "",
   };
   const [name, setName] = React.useState(initialValues.name);
   const [phoneNumber, setPhoneNumber] = React.useState(
@@ -216,6 +217,7 @@ export default function TheStaffCreateForm(props) {
   const [Location, setLocation] = React.useState(initialValues.Location);
   const [IsActive, setIsActive] = React.useState(initialValues.IsActive);
   const [shiftIds, setShiftIds] = React.useState(initialValues.shiftIds);
+  const [userId, setUserId] = React.useState(initialValues.userId);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setName(initialValues.name);
@@ -229,6 +231,7 @@ export default function TheStaffCreateForm(props) {
     setIsActive(initialValues.IsActive);
     setShiftIds(initialValues.shiftIds);
     setCurrentShiftIdsValue("");
+    setUserId(initialValues.userId);
     setErrors({});
   };
   const [currentShiftIdsValue, setCurrentShiftIdsValue] = React.useState("");
@@ -244,6 +247,7 @@ export default function TheStaffCreateForm(props) {
     Location: [],
     IsActive: [],
     shiftIds: [],
+    userId: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -281,6 +285,7 @@ export default function TheStaffCreateForm(props) {
           Location,
           IsActive,
           shiftIds,
+          userId,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -353,6 +358,7 @@ export default function TheStaffCreateForm(props) {
               Location,
               IsActive,
               shiftIds,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -386,6 +392,7 @@ export default function TheStaffCreateForm(props) {
               Location,
               IsActive,
               shiftIds,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.phoneNumber ?? value;
@@ -419,6 +426,7 @@ export default function TheStaffCreateForm(props) {
               Location,
               IsActive,
               shiftIds,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.email ?? value;
@@ -452,6 +460,7 @@ export default function TheStaffCreateForm(props) {
               Location,
               IsActive,
               shiftIds,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.DOB ?? value;
@@ -485,6 +494,7 @@ export default function TheStaffCreateForm(props) {
               Location,
               IsActive,
               shiftIds,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.photourl ?? value;
@@ -518,6 +528,7 @@ export default function TheStaffCreateForm(props) {
               Location,
               IsActive,
               shiftIds,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.isBiomatritcs ?? value;
@@ -551,6 +562,7 @@ export default function TheStaffCreateForm(props) {
               Location,
               IsActive,
               shiftIds,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.profileStatus ?? value;
@@ -584,6 +596,7 @@ export default function TheStaffCreateForm(props) {
               Location: value,
               IsActive,
               shiftIds,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.Location ?? value;
@@ -617,6 +630,7 @@ export default function TheStaffCreateForm(props) {
               Location,
               IsActive: value,
               shiftIds,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.IsActive ?? value;
@@ -646,6 +660,7 @@ export default function TheStaffCreateForm(props) {
               Location,
               IsActive,
               shiftIds: values,
+              userId,
             };
             const result = onChange(modelFields);
             values = result?.shiftIds ?? values;
@@ -685,6 +700,40 @@ export default function TheStaffCreateForm(props) {
           {...getOverrideProps(overrides, "shiftIds")}
         ></TextField>
       </ArrayField>
+      <TextField
+        label="User id"
+        isRequired={false}
+        isReadOnly={false}
+        value={userId}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              name,
+              phoneNumber,
+              email,
+              DOB,
+              photourl,
+              isBiomatritcs,
+              profileStatus,
+              Location,
+              IsActive,
+              shiftIds,
+              userId: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.userId ?? value;
+          }
+          if (errors.userId?.hasError) {
+            runValidationTasks("userId", value);
+          }
+          setUserId(value);
+        }}
+        onBlur={() => runValidationTasks("userId", userId)}
+        errorMessage={errors.userId?.errorMessage}
+        hasError={errors.userId?.hasError}
+        {...getOverrideProps(overrides, "userId")}
+      ></TextField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

@@ -32,6 +32,7 @@ export default function TheShiftsCreateForm(props) {
     startDate: "",
     endDate: "",
     shiftstatus: "",
+    userId: "",
   };
   const [Location, setLocation] = React.useState(initialValues.Location);
   const [duties, setDuties] = React.useState(initialValues.duties);
@@ -44,6 +45,7 @@ export default function TheShiftsCreateForm(props) {
   const [shiftstatus, setShiftstatus] = React.useState(
     initialValues.shiftstatus
   );
+  const [userId, setUserId] = React.useState(initialValues.userId);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setLocation(initialValues.Location);
@@ -55,6 +57,7 @@ export default function TheShiftsCreateForm(props) {
     setStartDate(initialValues.startDate);
     setEndDate(initialValues.endDate);
     setShiftstatus(initialValues.shiftstatus);
+    setUserId(initialValues.userId);
     setErrors({});
   };
   const validations = {
@@ -67,6 +70,7 @@ export default function TheShiftsCreateForm(props) {
     startDate: [],
     endDate: [],
     shiftstatus: [],
+    userId: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -120,6 +124,7 @@ export default function TheShiftsCreateForm(props) {
           startDate,
           endDate,
           shiftstatus,
+          userId,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -191,6 +196,7 @@ export default function TheShiftsCreateForm(props) {
               startDate,
               endDate,
               shiftstatus,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.Location ?? value;
@@ -223,6 +229,7 @@ export default function TheShiftsCreateForm(props) {
               startDate,
               endDate,
               shiftstatus,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.duties ?? value;
@@ -255,6 +262,7 @@ export default function TheShiftsCreateForm(props) {
               startDate,
               endDate,
               shiftstatus,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.staffId ?? value;
@@ -287,6 +295,7 @@ export default function TheShiftsCreateForm(props) {
               startDate,
               endDate,
               shiftstatus,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.time ?? value;
@@ -321,6 +330,7 @@ export default function TheShiftsCreateForm(props) {
               startDate,
               endDate,
               shiftstatus,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.startTime ?? value;
@@ -355,6 +365,7 @@ export default function TheShiftsCreateForm(props) {
               startDate,
               endDate,
               shiftstatus,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.endTime ?? value;
@@ -387,6 +398,7 @@ export default function TheShiftsCreateForm(props) {
               startDate: value,
               endDate,
               shiftstatus,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.startDate ?? value;
@@ -419,6 +431,7 @@ export default function TheShiftsCreateForm(props) {
               startDate,
               endDate: value,
               shiftstatus,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.endDate ?? value;
@@ -451,6 +464,7 @@ export default function TheShiftsCreateForm(props) {
               startDate,
               endDate,
               shiftstatus: value,
+              userId,
             };
             const result = onChange(modelFields);
             value = result?.shiftstatus ?? value;
@@ -464,6 +478,39 @@ export default function TheShiftsCreateForm(props) {
         errorMessage={errors.shiftstatus?.errorMessage}
         hasError={errors.shiftstatus?.hasError}
         {...getOverrideProps(overrides, "shiftstatus")}
+      ></TextField>
+      <TextField
+        label="User id"
+        isRequired={false}
+        isReadOnly={false}
+        value={userId}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              Location,
+              duties,
+              staffId,
+              time,
+              startTime,
+              endTime,
+              startDate,
+              endDate,
+              shiftstatus,
+              userId: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.userId ?? value;
+          }
+          if (errors.userId?.hasError) {
+            runValidationTasks("userId", value);
+          }
+          setUserId(value);
+        }}
+        onBlur={() => runValidationTasks("userId", userId)}
+        errorMessage={errors.userId?.errorMessage}
+        hasError={errors.userId?.hasError}
+        {...getOverrideProps(overrides, "userId")}
       ></TextField>
       <Flex
         justifyContent="space-between"

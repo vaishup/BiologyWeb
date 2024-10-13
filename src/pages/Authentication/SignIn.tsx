@@ -17,12 +17,13 @@ import {
   getCurrentUser,
   updateUserAttribute,
 } from "aws-amplify/auth";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Rss } from "lucide-react";
 
 interface SignInProps {
   onLoginSuccess: () => void;
 }
 const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
+
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -55,11 +56,10 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
   };
   const handleClickSignup = async (event) => {
     event.preventDefault(); // Prevents page reload
-    console.log("test");
-
+ 
     try {
       const { isSignUpComplete, userId, nextStep } = await signUp({
-        username: "Royaladmin",
+        username: "Lindaf",
         password: "KIdo3015%#$",
 
         options: {
@@ -68,6 +68,8 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
             phone_number: "+6476419995", // E.164 number convention
           },
         },
+
+
       });
     } catch (error) {
       console.log("Error signing up:", error);
@@ -78,24 +80,25 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
     event.preventDefault(); // Prevents page reload
     try {
       const { isSignUpComplete, nextStep } = await confirmSignUp({
-        username: "Royaladmin",
-        confirmationCode: "617724",
+        username: "Lindaf",
+        confirmationCode: "613909",
       });
 
       const newUser = {
         //  id: generateUniqueId(), // Generate unique ID here
-        name: "Royaladmin",
+        name: "Linda F. Deluca",
         email: "vaishalipanchal6899@gmail.com",
-
-        phoneNo: "+16476419995",
-        userType: "admin",
+        phoneNumber: "+16476419995",
+        userType: "staff",
+        
       };
 
       // Call the createPharmacy mutation
       const res = await API.graphql({
-        query: mutation.createUser,
+        query: mutation.createTheAdminStaffUser,
         variables: { input: newUser },
       });
+    
       console.log("res", res);
     } catch (error) {
       console.log("Error signing up:", error);
@@ -122,10 +125,10 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
   };
 
   const [showPassword, setShowPassword] = useState(false);
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  
   useEffect(() => {
     handleLogout();
   }, []);
@@ -138,6 +141,9 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
             <div className="py-40 px-40 text-center">
               <Link className="mb-5.5 inline-block" to="/">
                 <img src={LogoDark} alt="Logo" />
+                <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 uppercase">
+               by Royal Employment
+              </h2>
               </Link>
             </div>
           </div>
@@ -214,14 +220,7 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
                 {errorMsg && (
                 <p className="text-red-500 text-sm mt-1">{errorMsg}</p>
               )}
-                <div className="mt-6 text-center">
-                  <p>
-                    Don’t have any account?{" "}
-                    <Link to="/auth/signup" className="text-black">
-                      Sign Up
-                    </Link>
-                  </p>
-                </div>
+             
               </form>
             </div>
           </div>

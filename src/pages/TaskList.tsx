@@ -2,250 +2,275 @@ import { PencilIcon, Trash2 } from 'lucide-react';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../layout/DefaultLayout';
 import { useNavigate } from 'react-router-dom';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { generateClient } from 'aws-amplify/api';
 import dayjs from 'dayjs'; // Import dayjs if not already imported
 
 import {
   listTheShifts,
   getTheStaff,
-  deleteTheShifts
+  getTheAdminStaffUser,
 } from '../graphql/queries';
 import * as mutation from '../graphql/mutations.js';
 
 const TaskList = () => {
-  const tasks = [
-    {
-      id: '001',
-      title: 'Daily Backup',
-      description:
-        'Perform daily backup of all databases and critical systems.',
-      frequency: 'Daily',
-      createdDate: '2024-08-14',
-    },
-    {
-      id: '002',
-      title: 'Weekly Security Audit',
-      description:
-        'Conduct a weekly audit of all security protocols and update any necessary patches.',
-      frequency: 'Weekly',
-      createdDate: '2024-08-07',
-    },
-    {
-      id: '003',
-      title: 'Monthly Report Generation',
-      description:
-        'Generate and submit monthly performance and financial reports to the management team.',
-      frequency: 'Monthly',
-      createdDate: '2024-08-01',
-    },
-    {
-      id: '004',
-      title: 'Quarterly System Maintenance',
-      description:
-        'Carry out quarterly maintenance of all physical and virtual servers.',
-      frequency: 'Quarterly',
-      createdDate: '2024-07-15',
-    },
-    {
-      id: '005',
-      title: 'Annual Disaster Recovery Test',
-      description:
-        'Perform an annual test of the disaster recovery plan to ensure readiness in case of an emergency.',
-      frequency: 'Annually',
-      createdDate: '2024-01-10',
-    },
-  ];
-  const client = generateClient();
   const [stafflist, setStaffList] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredShifts, setFilteredShifts] = useState([]);
+  const [filter, setFilter] = useState('all'); // State to manage current filter
+
+  const client = generateClient();
+  const navigation = useNavigate();
+
   useEffect(() => {
-    listStaff();
+    listShifts();
   }, []);
-  const listStaff = async () => {
-    const client = generateClient();
+
+  useEffect(() => {
+    applyFilter(); // Apply the filter whenever stafflist or filter changes
+  }, [stafflist, filter]);
+
+  const listShifts = async () => {
     try {
       const staffdata = await client.graphql({
         query: listTheShifts,
         variables: {},
       });
-      
+
       const shiftsList = staffdata.data.listTheShifts.items;
-      console.log("shiftsList...", shiftsList);
-      
-      // Sort the tasks by createdAt date
+      console.log('Fetched Shifts:', shiftsList);
+
       const sortedTasks = shiftsList.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
       );
-  
-      // Loop through each shift and fetch the staff name using staffId
-      const shiftsWithStaffNames = await Promise.all(
+
+      const shiftsWithDetails = await Promise.all(
         sortedTasks.map(async (shift) => {
+          let staffName = 'Unknown';
+          let adminName = '';
+
+          // Fetch staff name if `staffId` exists
           if (shift.staffId) {
             try {
               const staffData = await client.graphql({
-                query: getTheStaff, // Replace with your actual query to get staff by ID
-                variables: { id: shift.staffId }, // Fetch staff by staffId
+                query: getTheStaff,
+                variables: { id: shift.staffId },
               });
-  
-              // Add staff name to the shift object
-              const staffName = staffData.data.getTheStaff.name;
-              console.log("staffName...",staffName);
-              
-              return { ...shift, staffName }; // Append staff name to the shift object
+
+              staffName = staffData.data.getTheStaff.name;
             } catch (error) {
-              console.error(`Error fetching staff name for staffId ${shift.staffId}:`, error);
-              return { ...shift, staffName: "Unknown" }; // In case of error, default to "Unknown"
+              console.error(
+                `Error fetching staff name for ${shift.staffId}:`,
+                error,
+              );
             }
           }
-          return shift; // Return the shift object if no staffId is present
-        })
+
+          // Fetch admin name if `userId` exists
+          if (shift.userId) {
+            try {
+              const adminData = await client.graphql({
+                query: getTheAdminStaffUser,
+                variables: { id: shift.userId },
+              });
+
+              adminName = adminData.data.getTheAdminStaffUser.name || 'Admin';
+            } catch (error) {
+              console.error(
+                `Error fetching admin name for ${shift.userId}:`,
+                error,
+              );
+            }
+          }
+
+          // Combine shift with staffName and adminName
+          return { ...shift, staffName, adminName };
+        }),
       );
-  
-      // Update the state with the shifts that now include staff names
-      setStaffList(shiftsWithStaffNames);
-      console.log("Updated staff list with names:", shiftsWithStaffNames);
-  
+
+      setStaffList(shiftsWithDetails); // Set the processed shift data in state
     } catch (error) {
-      console.error("Error fetching shifts or staff details:", error);
+      console.error('Error fetching shifts:', error);
     }
   };
-  // const filteredStaffs = stafflist.filter(
-  //   (client) =>
-  //     client.name.toLowerCase().includes(searchQuery.toLowerCase()) 
-   
-  // );
+
+  const applyFilter = () => {
+    const now = dayjs();
+    let filtered;
+
+    switch (filter) {
+      case 'upcoming':
+        filtered = stafflist.filter((shift) =>
+          dayjs(shift.startDate).isAfter(now),
+        );
+        break;
+      case 'previous':
+        filtered = stafflist.filter((shift) =>
+          dayjs(shift.endDate).isBefore(now),
+        );
+        break;
+      default:
+        filtered = stafflist;
+        break;
+    }
+
+    setFilteredShifts(filtered);
+  };
+
   const handleDelete = async (id) => {
     try {
-      // Confirm deletion with the user (optional)
-      // const confirmed = window.confirm(
-      //   'Are you sure you want to delete this item?',
-      // );
-      // if (!confirmed) return;
-
-      // Perform the delete mutation
       await client.graphql({
-        query: mutation.deleteTheShifts, // Replace with your actual mutation
+        query: mutation.deleteTheShifts,
         variables: { input: { id } },
       });
 
-      listStaff();
-      console.log(`Item with ID ${id} has been deleted`);
-
-      // Optionally, you can update the state to remove the deleted item from the list
-      // For example, if you have a state called `orders`:
-      // setOrders(orders.filter(order => order.id !== id));
+      listShifts(); // Refresh the list after deletion
     } catch (error) {
       console.error('Error deleting item:', error);
     }
   };
-  const navigation = useNavigate();
+
   return (
     <>
-        <div className="flex items-center justify-between">
-          <h2 className="text-title-md2 font-semibold text-black dark:text-white">
-            Shift List
-          </h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-title-md2 font-semibold text-black dark:text-white">
+          Shift List
+        </h2>
+
+        <button
+          className="btn-grad w-[180px] pr-20"
+          onClick={() => navigation(`/addTask/add`)}
+        >
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 4v16m8-8H4"
+            ></path>
+          </svg>
+          Add New Shift
+        </button>
+      </div>
+      <div className="p-4 mb-6 ">
+        <nav className="flex space-x-4" aria-label="Tabs">
+          <button
+            className={`px-6 py-2 text-sm font-medium rounded-md transition-all ${
+              filter === 'all'
+                ? 'bg-[#8c8c8c] text-white shadow-md'
+                : 'bg-white shadow-lg text-gray-600 hover:bg-gray-100 hover:text-indigo-600'
+            }`}
+            onClick={() => setFilter('all')}
+          >
+            All Shifts
+          </button>
 
           <button
-            className="btn-grad w-[180px] pr-20"
-            onClick={() => {
-              const addString = 'add';
-              navigation(`/addTask/${addString}`);
-            }}
+            className={`px-6 py-2 text-sm font-medium rounded-md transition-all ${
+              filter === 'upcoming'
+                ? 'bg-[#8c8c8c] text-white shadow-md'
+                : 'bg-white text-gray-600  shadow-lg  border-gray-300 hover:bg-gray-100 hover:text-indigo-600'
+            }`}
+            onClick={() => setFilter('upcoming')}
           >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 4v16m8-8H4"
-              ></path>
-            </svg>
-            Add New Shift
+            Upcoming Shifts
           </button>
-        </div>
 
-        <div className="overflow-x-auto mt-10">
-          <table className="min-w-full bg-white rounded-lg shadow overflow-hidden">
-          <thead className="bg-gradient-to-r from-[#4c4b4b] to-[#454545]">
-              <tr>
-                <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
-                  Location
-                </th>
-                <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
-                  Duties 
-                </th>
-                <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
-                  Staff Name
-                </th>
-                <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
-                  Shift Time
-                </th>
-                <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
-                  ACTION
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-  {stafflist.length === 0 ? (
-    <tr>
-      <td
-        colSpan={5} // Adjust based on the number of columns in your table
-        className="px-6 py-4 border-b border-gray-200 bg-white text-sm text-center"
-      >
-        No Data Found
-      </td>
-    </tr>
-  ) : (
-    stafflist.map((order) => (
-      <tr key={order.id}>
-        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-          {order.Location}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-          {order.duties}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-          {order.staffName}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-  {dayjs(order.startTime).format('YYYY-MM-DD h:mm A')} - {dayjs(order.endTime).format('h:mm A')}
-</td>
-        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm flex-row">
-          <div className="flex flex-row">
-            <PencilIcon
-              onClick={() => {
-                navigation(`/addTask/edit/${order.id}`);
-              }}
-              className="mr-5 inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
-              color="black"
-              size={20}
-            />
-            <Trash2
-              onClick={() => {
-                handleDelete(order.id);
-              }}
-              className="inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
-              color="black"
-              size={20}
-            />
-          </div>
-        </td>
+          <button
+            className={`px-6 py-2 text-sm font-medium rounded-md transition-all ${
+              filter === 'previous'
+                ? 'bg-[#8c8c8c] text-white shadow-md'
+                : 'bg-white text-gray-600 shadow-lg  border-gray-300 hover:bg-gray-100 hover:text-indigo-600'
+            }`}
+            onClick={() => setFilter('previous')}
+          >
+            Previous Shifts
+          </button>
+        </nav>
+      </div>
+
+      <div className="overflow-x-auto mt-10">
+  <table className="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
+    <thead className="bg-gradient-to-r from-[#4c4b4b] to-[#454545]">
+      <tr>
+        <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+          Location
+        </th>
+        <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+          Duties
+        </th>
+        <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+          Employee Name
+        </th>
+        <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+          Shift Time
+        </th>
+        <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+          Created By (Admin/Staff)
+        </th>
+        <th className="px-4 py-3 text-center text-white text-sm uppercase font-bold">
+          Action
+        </th>
       </tr>
-    ))
-  )}
-</tbody>
+    </thead>
+    <tbody>
+      {filteredShifts.length === 0 ? (
+        <tr>
+          <td colSpan={6} className="px-6 py-4 text-center">
+            No Data Found
+          </td>
+        </tr>
+      ) : (
+        filteredShifts.map((shift) => (
+          <tr
+            key={shift.id}
+            className="hover:bg-gray-50 transition-all duration-200"
+          >
+            <td className="px-4 py-4 border-b align-middle">
+              {shift.Location}
+            </td>
+            <td className="px-4 py-4 border-b align-middle">{shift.duties}</td>
+            <td className="px-4 py-4 border-b align-middle">
+              {shift.staffName ?? 'Unknown'}
+            </td>
+            <td className="px-4 py-4 border-b align-middle">
+              {dayjs(shift.startTime).format('YYYY-MM-DD h:mm A')} -{' '}
+              {dayjs(shift.endTime).format('h:mm A')}
+            </td>
+            <td className="px-4 py-4 border-b align-middle">
+              {shift.adminName && shift.adminName.trim() !== ''
+                ? shift.adminName
+                : 'Admin'}
+            </td>
+            <td className="px-4 py-4 border-b align-middle text-center">
+              <div className="flex justify-center space-x-4">
+                <PencilIcon
+                  onClick={() => navigation(`/addTask/edit/${shift.id}`)}
+                  className="cursor-pointer hover:text-indigo-600 transform hover:scale-110 transition-all"
+                  size={20}
+                />
+                <Trash2
+                  onClick={() => handleDelete(shift.id)}
+                  className="cursor-pointer hover:text-red-600 transform hover:scale-110 transition-all"
+                  size={20}
+                />
+              </div>
+            </td>
+          </tr>
+        ))
+      )}
+    </tbody>
+  </table>
+</div>
 
-          </table>
-        </div>
+
     </>
   );
 };
+
 export default TaskList;

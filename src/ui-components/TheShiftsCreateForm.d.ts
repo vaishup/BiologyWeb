@@ -31,6 +31,7 @@ export declare type TheShiftsCreateFormInputValues = {
     startDate?: string;
     endDate?: string;
     shiftstatus?: string;
+    userId?: string;
 };
 export declare type TheShiftsCreateFormValidationValues = {
     Location?: ValidationFunction<string>;
@@ -42,6 +43,7 @@ export declare type TheShiftsCreateFormValidationValues = {
     startDate?: ValidationFunction<string>;
     endDate?: ValidationFunction<string>;
     shiftstatus?: ValidationFunction<string>;
+    userId?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type TheShiftsCreateFormOverridesProps = {
@@ -55,6 +57,7 @@ export declare type TheShiftsCreateFormOverridesProps = {
     startDate?: PrimitiveOverrideProps<TextFieldProps>;
     endDate?: PrimitiveOverrideProps<TextFieldProps>;
     shiftstatus?: PrimitiveOverrideProps<TextFieldProps>;
+    userId?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type TheShiftsCreateFormProps = React.PropsWithChildren<{
     overrides?: TheShiftsCreateFormOverridesProps | undefined | null;

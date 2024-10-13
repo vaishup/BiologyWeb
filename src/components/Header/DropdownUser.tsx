@@ -16,10 +16,10 @@ import {
 } from "aws-amplify/auth";
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const [userType, setUserType] = useState(false);
+  const [name, setName] = useState(false);
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
-
   // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {
@@ -35,7 +35,6 @@ const DropdownUser = () => {
     document.addEventListener('click', clickHandler);
     return () => document.removeEventListener('click', clickHandler);
   });
-
   // close if the esc key is pressed
   useEffect(() => {
     const keyHandler = ({ keyCode }: KeyboardEvent) => {
@@ -47,14 +46,20 @@ const DropdownUser = () => {
   });
   const fetchBatch = async () => {
     const userId = await getTableID();
+    console.log('userDetail', userId);
+
+    const userData = await getUserInfo(userId); // Fetch the user info
+    console.log("userData",userData);
     
+    setUserType(userData.userType)
+    setName(userData.name)
+   // setUserType(user.usertype)
   };
 
   useEffect(() => {
     fetchBatch();
   }, []);
   const navigate = useNavigate();
-
   const handleLogout = async () => {
     try {
       const response = await signOut();
@@ -75,9 +80,10 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {"Admin"}
+        
+            {name ? name : 'Biologic'}
           </span>
-          <span className="block text-xs"></span>
+          <span className="block text-xs"> {userType ? userType : 'Admin'}</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">

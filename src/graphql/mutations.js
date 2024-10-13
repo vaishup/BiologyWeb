@@ -17,6 +17,7 @@ export const createTheShifts = /* GraphQL */ `
       startDate
       endDate
       shiftstatus
+      userId
       createdAt
       updatedAt
       __typename
@@ -39,6 +40,7 @@ export const updateTheShifts = /* GraphQL */ `
       startDate
       endDate
       shiftstatus
+      userId
       createdAt
       updatedAt
       __typename
@@ -61,6 +63,7 @@ export const deleteTheShifts = /* GraphQL */ `
       startDate
       endDate
       shiftstatus
+      userId
       createdAt
       updatedAt
       __typename
@@ -84,6 +87,7 @@ export const createTheStaff = /* GraphQL */ `
       Location
       IsActive
       shiftIds
+      userId
       createdAt
       updatedAt
       __typename
@@ -107,6 +111,7 @@ export const updateTheStaff = /* GraphQL */ `
       Location
       IsActive
       shiftIds
+      userId
       createdAt
       updatedAt
       __typename
@@ -130,6 +135,58 @@ export const deleteTheStaff = /* GraphQL */ `
       Location
       IsActive
       shiftIds
+      userId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createTheAdminStaffUser = /* GraphQL */ `
+  mutation CreateTheAdminStaffUser(
+    $input: CreateTheAdminStaffUserInput!
+    $condition: ModelTheAdminStaffUserConditionInput
+  ) {
+    createTheAdminStaffUser(input: $input, condition: $condition) {
+      id
+      name
+      phoneNumber
+      email
+      userType
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateTheAdminStaffUser = /* GraphQL */ `
+  mutation UpdateTheAdminStaffUser(
+    $input: UpdateTheAdminStaffUserInput!
+    $condition: ModelTheAdminStaffUserConditionInput
+  ) {
+    updateTheAdminStaffUser(input: $input, condition: $condition) {
+      id
+      name
+      phoneNumber
+      email
+      userType
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteTheAdminStaffUser = /* GraphQL */ `
+  mutation DeleteTheAdminStaffUser(
+    $input: DeleteTheAdminStaffUserInput!
+    $condition: ModelTheAdminStaffUserConditionInput
+  ) {
+    deleteTheAdminStaffUser(input: $input, condition: $condition) {
+      id
+      name
+      phoneNumber
+      email
+      userType
       createdAt
       updatedAt
       __typename

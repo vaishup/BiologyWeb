@@ -26,7 +26,7 @@ async function sendEmail(email, username, password) {
   
     const mailOptions = {
       from: "vaishalipanchal6899@gmail.com", // Verified SES email
-      to: "vsp681999@gmail.com",
+      to:{email},
       subject: "Your Account Credentials",
       text: `Hello,
   
@@ -69,6 +69,7 @@ exports.handler = async (event) => {
 
     const name = newImage.name ? newImage.name.S : null;
     const email = newImage.email ? newImage.email.S : null;
+    console.log(email);
     const tableID = newImage.id ? newImage.id.S : null;
 
     if (!name  || !email || !tableID) {
@@ -119,7 +120,7 @@ exports.handler = async (event) => {
 
       console.log("Setting password with params:", setPasswordParams);
       await cognito.adminSetUserPassword(setPasswordParams).promise();
-
+console.log("email",email);
       // Send email with credentials
       await sendEmail(email, username, randomPassword);
 

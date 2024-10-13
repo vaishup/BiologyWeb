@@ -1,6 +1,6 @@
-import Breadcrumb from "../components/Breadcrumbs/Breadcrumb";
-import DefaultLayout from "../layout/DefaultLayout";
-import { ArrowUpFromLine } from "lucide-react";
+import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
+import DefaultLayout from '../layout/DefaultLayout';
+import { ArrowUpFromLine } from 'lucide-react';
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom'; // Import hooks from react-router-dom
 import { generateClient } from 'aws-amplify/api';
@@ -8,6 +8,7 @@ import { Modal } from 'antd';
 import { Check } from 'lucide-react';
 import * as mutation from '../graphql/mutations.js';
 import { getTheStaff, listTheStaffs } from '../graphql/queries';
+import { getTableID,getUserInfo,getCustomAttributes } from '../hooks/authServices.js';
 
 const AddClient = () => {
   const [name, setName] = useState();
@@ -21,11 +22,10 @@ const AddClient = () => {
   // State to manage form inputs
   const [formData, setFormData] = useState({
     name: '',
-   
+
     email: '',
     phoneNumber: '',
-    status:''
-
+    status: '',
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,8 +42,35 @@ const AddClient = () => {
     if (!formData.phoneNumber) errors.phoneNumber = 'Phone number is required';
     return errors;
   };
+  const [staffType, setStaffType] = useState('');
+  const fetchUserData = async () => {
+    try {
+      const { tableID } = await getCustomAttributes();
+      const userId = await getTableID();
+      console.log('userDetail', userId);
+
+      const userData = await getUserInfo(userId); // Fetch the user info
+      setStaffType(userData.userType)
+     // setUser(userData); // Store the user data in state
+    } catch (err) {
+      console.error('Error fetching user data:', err);
+     // Store the error in state
+    } finally {
+     // setLoading(false); // Stop loading when operation is complete
+    }
+  };
+
+  // useEffect to call the fetch function when the component mounts
+  useEffect(() => {
+    fetchUserData(); // Call the async function inside useEffect
+  }, []); 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const userId = await getTableID();
+console.log(userId);
+const user = getUserInfo(userId)
+console.log(user);
+
     // Step 1: Perform validation
     const validationErrors = validate(); // Assume validate() is a function that returns an object of errors
     if (Object.keys(validationErrors).length > 0) {
@@ -56,7 +83,9 @@ const AddClient = () => {
         name: formData.name,
         phoneNumber: formData.phoneNumber,
         email: formData.email,
-        profileStatus: id ? formData.status : "Incomplete", // Set 'Incomplete' if creating new staff
+        profileStatus: id ? formData.status : 'Incomplete', // Set 'Incomplete' if creating new staff
+        userId: staffType === 'staff' ? userId : '', // Conditional assignment
+
         // Add other fields as needed
       };
       let staffResponse;
@@ -74,12 +103,13 @@ const AddClient = () => {
         });
       }
       // Step 3: Handle the response and navigation
-      const createdItem = staffResponse.data.createTheStaff || staffResponse.data.updateTheStaff;
+      const createdItem =
+        staffResponse.data.createTheStaff || staffResponse.data.updateTheStaff;
       console.log(createdItem.id, 'successfully created/updated');
       setId(createdItem.id); // Set the ID if it's a new creation
       // Step 4: Show success message and optionally navigate
       setIsOpen(true);
-      navigation("/clientlist"); // Uncomment this if you want to navigate to the staff list page after submission
+      navigation('/clientlist'); // Uncomment this if you want to navigate to the staff list page after submission
     } catch (error) {
       console.error('Error creating or updating staff:', error);
       // Handle the error (display message, etc.)
@@ -97,14 +127,14 @@ const AddClient = () => {
 
           const staff = staffData.data.getTheStaff;
           console.log('staff...s', staff);
+          const status = staff.profileStatus === 'Incomplete' ? 'Pending' : staff.profileStatus;
 
           setFormData({
             name: staff.name,
             email: staff.email,
             phoneNumber: staff.phoneNumber,
-            status:staff.profileStatus
+            status: status,
           });
-          
         } catch (error) {
           console.error('Error fetching staff data:', error);
         }
@@ -115,17 +145,19 @@ const AddClient = () => {
   }, [id]);
   const [isOpen, setIsOpen] = useState(false);
   const [show, setIsShow] = useState(false);
+
   const handleDialogue = () => {
     setIsShow(true);
     setIsOpen(false);
   };
   const handleCancle = () => {
     setIsOpen(false);
-    navigation('/stafflist');
+    navigation('/taskList');
   };
+  console.log('status..', formData.status);
   return (
     <>
-      <Breadcrumb pageName="Add Staff" />
+      <Breadcrumb pageName="Add Employee" />
       <Modal
         open={isOpen}
         onCancel={handleCancle}
@@ -172,7 +204,6 @@ const AddClient = () => {
           <p className="text-xl font-semibold text-center mb-2">
             Staff added Successfully
           </p>
-         
         </div>
       </Modal>
       <div className="flex mt-10  w-[full] justify-center items-center">
@@ -181,38 +212,37 @@ const AddClient = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                Staff's information
+                Employee's information
               </h3>
             </div>
             <form onSubmit={handleSubmit} className="w-full">
-                            {" "}
+              {' '}
               {/* Increase form width to full width */}
               <div className="w-[430px] justify-center items-center p-5">
-                {" "}
+                {' '}
                 {/* Increase this container's width */}
                 {/* Name Field */}
                 <div className="w-full">
-  <label className="mb-2.5 block text-black dark:text-white">
-    Name <span className="text-meta-1">*</span>
-  </label>
-  <input
-    name="name"  // Add this line
-    value={formData.name}
-    onChange={handleChange}
-    type="text"
-    placeholder="Enter your first Name"
-    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-  />
-</div>
-
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    Name <span className="text-meta-1">*</span>
+                  </label>
+                  <input
+                    name="name" // Add this line
+                    value={formData.name}
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="Enter your first Name"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+              
                 {/* Email Field */}
                 <div className="w-full">
                   <label className="mb-2.5  mt-2 block text-black dark:text-white">
                     Email <span className="text-meta-1">*</span>
                   </label>
                   <input
-                      name="email"  // Add this line
-
+                    name="email" // Add this line
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
@@ -226,33 +256,31 @@ const AddClient = () => {
                     Phone Number <span className="text-meta-1">*</span>
                   </label>
                   <input
-                      name="phoneNumber"  // Add this line
-
-                     value={formData.phoneNumber}
-                     onChange={handleChange}
+                    name="phoneNumber" // Add this line
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
                     type="text"
                     placeholder="Enter your Phone Number"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                 </div>
-                { id && (
-  <div className="w-full">
-    <label className="mb-2.5 mt-3 block text-black dark:text-white">
-      Profile Status
-    </label>
-    <select
-      name="residentType" // Ensure this matches the formData key
-      value={formData.status} // Bind the value to formData.status
-      onChange={handleChange} // Handle change to update formData
-      className={`w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary ${errors.frequency ? 'border-red-500' : ''} dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
-    >
-      <option value="">Select Profile Status</option>
-      <option value="Pending">Pending</option>
-      <option value="Completed">Completed</option>
-    </select>
-  </div>
-)}
-
+                {id && (
+                  <div className="w-full">
+                    <label className="mb-2.5 mt-3 block text-black dark:text-white">
+                      Profile Status
+                    </label>
+                    <select
+                      name="status" // Ensure this matches the formData key
+                      value={formData.status} // Bind the value to formData.status
+                      onChange={handleChange} // Handle change to update formData
+                      className={`w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary ${errors.frequency ? 'border-red-500' : ''} dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
+                    >
+                      <option value="">Select Profile Status</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Completed">Completed</option>
+                    </select>
+                  </div>
+                )}
                 {/* Submit Button */}
                 <button className="w-full mt-10 btn-grad pr-20">Submit</button>
               </div>

@@ -1,0 +1,4 @@
+{
+  "id": "76a9009c-1c01-45b6-b1c3-97acba8e7f43",  // Replace this with the actual shift ID you're passing
+  "selectedStaffIds": ["e39d4064-5e2e-4a62-8649-95fe34cc6f3d", "5a3511a3-0424-47c2-ba1f-9abc72e02e3f", "f5669378-f6bf-4878-b2af-43c8a919aa27"]  // Replace these with the actual staff IDs
+}

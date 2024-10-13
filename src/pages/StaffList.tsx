@@ -13,88 +13,7 @@ import {
   listTheStaffs,
 } from '../graphql/queries';
 const StaffList = () => {
-  const employees = [
-    {
-      id: '001',
-      firstName: 'Alice',
-      lastName: 'Smith',
-      email: 'alice.smith@example.com',
-      phone: '123-456-7890',
-      joiningDate: '2024-01-15',
-    },
-    {
-      id: '002',
-      firstName: 'Bob',
-      lastName: 'Johnson',
-      email: 'bob.johnson@example.com',
-      phone: '234-567-8901',
-      joiningDate: '2024-02-10',
-    },
-    {
-      id: '003',
-      firstName: 'Charlie',
-      lastName: 'Brown',
-      email: 'charlie.brown@example.com',
-      phone: '345-678-9012',
-      joiningDate: '2024-03-05',
-    },
-    {
-      id: '004',
-      firstName: 'Diana',
-      lastName: 'Prince',
-      email: 'diana.prince@example.com',
-      phone: '456-789-0123',
-      joiningDate: '2024-04-20',
-    },
-    {
-      id: '005',
-      firstName: 'Eve',
-      lastName: 'Adams',
-      email: 'eve.adams@example.com',
-      phone: '567-890-1234',
-      joiningDate: '2024-05-15',
-    },
-    {
-      id: '006',
-      firstName: 'Frank',
-      lastName: 'Wright',
-      email: 'frank.wright@example.com',
-      phone: '678-901-2345',
-      joiningDate: '2024-06-10',
-    },
-    {
-      id: '007',
-      firstName: 'Grace',
-      lastName: 'Hopper',
-      email: 'grace.hopper@example.com',
-      phone: '789-012-3456',
-      joiningDate: '2024-07-05',
-    },
-    {
-      id: '008',
-      firstName: 'Hank',
-      lastName: 'Green',
-      email: 'hank.green@example.com',
-      phone: '890-123-4567',
-      joiningDate: '2024-08-01',
-    },
-    {
-      id: '009',
-      firstName: 'Ivy',
-      lastName: 'Clarkson',
-      email: 'ivy.clarkson@example.com',
-      phone: '901-234-5678',
-      joiningDate: '2024-08-25',
-    },
-    {
-      id: '010',
-      firstName: 'Jack',
-      lastName: 'Daniels',
-      email: 'jack.daniels@example.com',
-      phone: '012-345-6789',
-      joiningDate: '2024-09-15',
-    },
-  ];
+ 
   const [stafflist, setStaffList] = useState([]);
 
   useEffect(() => {
@@ -128,12 +47,11 @@ const StaffList = () => {
       console.error('Error fetching shifts or staff details:', error);
     }
   };
-  const navigation = useNavigate();
   return (
     <>
       <div className="flex items-center justify-between">
         <h2 className="text-title-md2 font-semibold text-black dark:text-white">
-          Online Staff List
+          Online Employee List
         </h2>
 
         {/* <button

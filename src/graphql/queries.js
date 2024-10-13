@@ -14,6 +14,7 @@ export const getTheShifts = /* GraphQL */ `
       startDate
       endDate
       shiftstatus
+      userId
       createdAt
       updatedAt
       __typename
@@ -38,6 +39,7 @@ export const listTheShifts = /* GraphQL */ `
         startDate
         endDate
         shiftstatus
+        userId
         createdAt
         updatedAt
         __typename
@@ -61,6 +63,7 @@ export const getTheStaff = /* GraphQL */ `
       Location
       IsActive
       shiftIds
+      userId
       createdAt
       updatedAt
       __typename
@@ -86,6 +89,47 @@ export const listTheStaffs = /* GraphQL */ `
         Location
         IsActive
         shiftIds
+        userId
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getTheAdminStaffUser = /* GraphQL */ `
+  query GetTheAdminStaffUser($id: ID!) {
+    getTheAdminStaffUser(id: $id) {
+      id
+      name
+      phoneNumber
+      email
+      userType
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listTheAdminStaffUsers = /* GraphQL */ `
+  query ListTheAdminStaffUsers(
+    $filter: ModelTheAdminStaffUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listTheAdminStaffUsers(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        phoneNumber
+        email
+        userType
         createdAt
         updatedAt
         __typename

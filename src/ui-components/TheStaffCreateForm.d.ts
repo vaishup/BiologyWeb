@@ -32,6 +32,7 @@ export declare type TheStaffCreateFormInputValues = {
     Location?: string;
     IsActive?: string;
     shiftIds?: string[];
+    userId?: string;
 };
 export declare type TheStaffCreateFormValidationValues = {
     name?: ValidationFunction<string>;
@@ -44,6 +45,7 @@ export declare type TheStaffCreateFormValidationValues = {
     Location?: ValidationFunction<string>;
     IsActive?: ValidationFunction<string>;
     shiftIds?: ValidationFunction<string>;
+    userId?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type TheStaffCreateFormOverridesProps = {
@@ -58,6 +60,7 @@ export declare type TheStaffCreateFormOverridesProps = {
     Location?: PrimitiveOverrideProps<TextFieldProps>;
     IsActive?: PrimitiveOverrideProps<TextFieldProps>;
     shiftIds?: PrimitiveOverrideProps<TextFieldProps>;
+    userId?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type TheStaffCreateFormProps = React.PropsWithChildren<{
     overrides?: TheStaffCreateFormOverridesProps | undefined | null;

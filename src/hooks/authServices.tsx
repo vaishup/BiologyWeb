@@ -35,17 +35,28 @@ export async function signUpUser({ username, password, email, phone_number }) {
 
 export async function getTableID() {
   try {
-    const user = await fetchUserAttributes();
-    return user["custom:TableID"];
-  } catch (err) {
-    console.log(err);
+    const user = await fetchUserAttributes(); // Fetch the user attributes
+    console.log('Fetched User Attributes:', user); // Debug the user attributes
+
+    const tableID = user?.['custom:tableId']; // Access custom attribute safely
+    console.log('Table ID:', tableID); // Log the table ID
+
+    if (!tableID) {
+      throw new Error('Table ID is missing in custom attributes.');
+    }
+    return tableID;
+  } catch (error) {
+    console.error('Error in getTableID:', error);
+    throw error; // Rethrow the error for further handling
   }
 }
+
+
 
 export async function getCustomAttributes() {
   try {
     const user = await fetchUserAttributes();
-    const tableID = user["custom:TableID"];
+    const tableID = user["custom:tableId"];
 
     return {
       tableID,
@@ -57,33 +68,54 @@ export async function getCustomAttributes() {
   }
 }
 
-export async function getUserInfo() {
+export async function getUserInfo(tableID: string) {
   try {
-    const user = await fetchUserAttributes();
-    const tableID = user["custom:TableID"];
+    console.log("Fetching user info for tableID:", tableID); // Debug the tableID
 
-    const userInfo = `
-    query MyQuery($id:ID!){
-      getUsers(id: $id) {
-        email
-        full_name
-        id
-        phone
-        driverType
-        dOB
+    // Define the GraphQL query
+    const userInfoQuery = `
+      query GetTheAdminStaffUser($id: ID!) {
+        getTheAdminStaffUser(id: $id) {
+          id
+          name
+          phoneNumber
+          email
+          userType
+          createdAt
+          updatedAt
+          __typename
+        }
       }
-    }
     `;
-    const { data } = await client.graphql({
-      query: userInfo,
-      variables: { id: tableID },
+
+    // Execute the GraphQL query
+    const { data, errors } = await client.graphql({
+      query: userInfoQuery,
+      variables: { id: tableID }, // Pass the correct tableID
     });
-    const { getUsers } = data;
-    return getUsers;
+
+    // Handle errors from GraphQL response
+    if (errors) {
+      console.error("GraphQL Errors:", errors);
+      return null;
+    }
+
+    console.log("GraphQL Response:", data); // Debug the raw response
+
+    // Extract the user information correctly
+    const userInfo = data?.getTheAdminStaffUser;
+    if (!userInfo) {
+      console.warn("No user found with the provided tableID:", tableID);
+      return null;
+    }
+
+    return userInfo; // Return the user info
   } catch (err) {
-    console.log("err in getUserInfo...", err);
+    console.error("Error in getUserInfo:", err);
+    throw err; // Re-throw the error to handle it higher up
   }
 }
+
 
 export async function getOtherUserInfo(userId: string) {
   try {

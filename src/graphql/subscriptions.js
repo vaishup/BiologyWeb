@@ -16,6 +16,7 @@ export const onCreateTheShifts = /* GraphQL */ `
       startDate
       endDate
       shiftstatus
+      userId
       createdAt
       updatedAt
       __typename
@@ -37,6 +38,7 @@ export const onUpdateTheShifts = /* GraphQL */ `
       startDate
       endDate
       shiftstatus
+      userId
       createdAt
       updatedAt
       __typename
@@ -58,6 +60,7 @@ export const onDeleteTheShifts = /* GraphQL */ `
       startDate
       endDate
       shiftstatus
+      userId
       createdAt
       updatedAt
       __typename
@@ -78,6 +81,7 @@ export const onCreateTheStaff = /* GraphQL */ `
       Location
       IsActive
       shiftIds
+      userId
       createdAt
       updatedAt
       __typename
@@ -98,6 +102,7 @@ export const onUpdateTheStaff = /* GraphQL */ `
       Location
       IsActive
       shiftIds
+      userId
       createdAt
       updatedAt
       __typename
@@ -118,6 +123,55 @@ export const onDeleteTheStaff = /* GraphQL */ `
       Location
       IsActive
       shiftIds
+      userId
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateTheAdminStaffUser = /* GraphQL */ `
+  subscription OnCreateTheAdminStaffUser(
+    $filter: ModelSubscriptionTheAdminStaffUserFilterInput
+  ) {
+    onCreateTheAdminStaffUser(filter: $filter) {
+      id
+      name
+      phoneNumber
+      email
+      userType
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateTheAdminStaffUser = /* GraphQL */ `
+  subscription OnUpdateTheAdminStaffUser(
+    $filter: ModelSubscriptionTheAdminStaffUserFilterInput
+  ) {
+    onUpdateTheAdminStaffUser(filter: $filter) {
+      id
+      name
+      phoneNumber
+      email
+      userType
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteTheAdminStaffUser = /* GraphQL */ `
+  subscription OnDeleteTheAdminStaffUser(
+    $filter: ModelSubscriptionTheAdminStaffUserFilterInput
+  ) {
+    onDeleteTheAdminStaffUser(filter: $filter) {
+      id
+      name
+      phoneNumber
+      email
+      userType
       createdAt
       updatedAt
       __typename

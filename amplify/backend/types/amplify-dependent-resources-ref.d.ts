@@ -18,11 +18,24 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "function": {
+    "CreateShiftForEmployee": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
     "CreateStaff": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
       "Name": "string",
+      "Region": "string"
+    }
+  },
+  "storage": {
+    "s38a04c9da": {
+      "BucketName": "string",
       "Region": "string"
     }
   }
