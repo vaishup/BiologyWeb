@@ -33,24 +33,22 @@ export async function signUpUser({ username, password, email, phone_number }) {
   }
 }
 
+
+
 export async function getTableID() {
   try {
-    const user = await fetchUserAttributes(); // Fetch the user attributes
-    console.log('Fetched User Attributes:', user); // Debug the user attributes
+    const user = await fetchUserAttributes(); // Fetch user attributes
+    console.log('Fetched User Attributes:', user); // Debug
 
     const tableID = user?.['custom:tableId']; // Access custom attribute safely
     console.log('Table ID:', tableID); // Log the table ID
 
-    if (!tableID) {
-      throw new Error('Table ID is missing in custom attributes.');
-    }
-    return tableID;
+    return tableID || null; // Return null if tableID is not found
   } catch (error) {
     console.error('Error in getTableID:', error);
-    throw error; // Rethrow the error for further handling
+    return null; // Return null if there's an error
   }
 }
-
 
 
 export async function getCustomAttributes() {

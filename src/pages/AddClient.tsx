@@ -67,10 +67,14 @@ const AddClient = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const userId = await getTableID();
-console.log(userId);
-const user = getUserInfo(userId)
-console.log(user);
-
+    console.log('Fetched User ID:', userId);
+  
+    // Fetch user info if userId is present
+    let user = null;
+    if (userId) {
+      user = await getUserInfo(userId);
+      console.log('User Info:', user);
+    }
     // Step 1: Perform validation
     const validationErrors = validate(); // Assume validate() is a function that returns an object of errors
     if (Object.keys(validationErrors).length > 0) {
@@ -84,7 +88,7 @@ console.log(user);
         phoneNumber: formData.phoneNumber,
         email: formData.email,
         profileStatus: id ? formData.status : 'Incomplete', // Set 'Incomplete' if creating new staff
-        userId: staffType === 'staff' ? userId : '', // Conditional assignment
+        userId: staffType === 'staff' && userId ? userId : '', // Conditional userId
 
         // Add other fields as needed
       };
