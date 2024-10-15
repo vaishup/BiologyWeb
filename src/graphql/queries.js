@@ -64,6 +64,8 @@ export const getTheStaff = /* GraphQL */ `
       IsActive
       shiftIds
       userId
+      latitude
+      longitude
       createdAt
       updatedAt
       __typename
@@ -90,6 +92,8 @@ export const listTheStaffs = /* GraphQL */ `
         IsActive
         shiftIds
         userId
+        latitude
+        longitude
         createdAt
         updatedAt
         __typename

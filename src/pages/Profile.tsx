@@ -11,7 +11,7 @@ import { Modal } from 'antd';
 import { Check } from 'lucide-react';
 import * as mutation from '../graphql/mutations.js';
 import { getTheStaff, listTheStaffs } from '../graphql/queries';
-import {uploadData, getUrl, list, remove} from 'aws-amplify/storage';
+import { uploadData, getUrl, list, remove } from 'aws-amplify/storage';
 
 const Profile = () => {
   const { id } = useParams(); // Get the staff ID from the URL, if it exists
@@ -56,7 +56,7 @@ const Profile = () => {
   const [fileUri, setFileUri] = useState<string | null>(null);
   const [prevFileUri, setPrevFileUri] = useState<string | null>(null);
 
-   const downloadFromS3 = async ({
+  const downloadFromS3 = async ({
     folder,
     subFolder,
     fullPath,
@@ -68,16 +68,15 @@ const Profile = () => {
     setFileUrl: (url: string) => void;
   }) => {
     try {
-  
       if (fullPath) {
-        const url = (await getUrl({path: fullPath})).url;
+        const url = (await getUrl({ path: fullPath })).url;
         setFileUrl(`${url}`);
       } else {
         const folderPath = `public/User/${folder}/${id}/${
           subFolder ? `${subFolder}/` : ''
         }`;
-        const filePath = (await list({path: folderPath})).items[0]?.path;
-        const url = (await getUrl({path: filePath})).url;
+        const filePath = (await list({ path: folderPath })).items[0]?.path;
+        const url = (await getUrl({ path: filePath })).url;
         setFileUrl(`${url}`);
       }
     } catch (Error) {
@@ -87,11 +86,12 @@ const Profile = () => {
   useEffect(() => {
     const downloadFile = async () => {
       await downloadFromS3({
-        folder: 'userprofile', subFolder:'selfie',
-        setFileUrl: url => {
+        folder: 'userprofile',
+        subFolder: 'selfie',
+        setFileUrl: (url) => {
           setFileUri(url);
-          setPrevFileUri(url);console.log("url",url);
-          
+          setPrevFileUri(url);
+          console.log('url', url);
         },
       });
       setIsLoading(false);
@@ -105,14 +105,18 @@ const Profile = () => {
       <div className="mt-4 overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex">
           <div className="p-10">
-      
-            <img src={fileUri} alt="profile" width={130}style={{
-    width: 130,
-    height: 130,
-    borderRadius: 65,  // Half of the width and height to make it a circle
-  }} />
+            <img
+              src={fileUri}
+              alt="profile"
+              width={130}
+              style={{
+                width: 130,
+                height: 130,
+                borderRadius: 65, // Half of the width and height to make it a circle
+              }}
+            />
             <h3 className="mb-1.5 text-2xl mt-3 font-semibold text-black dark:text-white">
-             {formData.name}
+              {formData.name}
             </h3>
           </div>
           <div className="pt-10">

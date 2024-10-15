@@ -12,6 +12,7 @@ const TaskList = lazy(() => import('../pages/TaskList'));
 const ClientList = lazy(() => import('../pages/ClientList'));
 const IncidenetsList = lazy(() => import('../pages/IncidenetsList'));
 const Profile = lazy(() => import('../pages/Profile'));
+const MapScreen = lazy(() => import('../pages/MapScreen'));
 
 
 
@@ -63,6 +64,11 @@ const coreRoutes = [
     title: 'Profile',
     component: Profile,
   },
+  {
+    path: '/MapScreen',
+    title: 'MapScreen',
+    component: MapScreen,
+  }
 ];
 
 const routes = [...coreRoutes];

@@ -202,6 +202,8 @@ export default function TheStaffUpdateForm(props) {
     IsActive: "",
     shiftIds: [],
     userId: "",
+    latitude: "",
+    longitude: "",
   };
   const [name, setName] = React.useState(initialValues.name);
   const [phoneNumber, setPhoneNumber] = React.useState(
@@ -220,6 +222,8 @@ export default function TheStaffUpdateForm(props) {
   const [IsActive, setIsActive] = React.useState(initialValues.IsActive);
   const [shiftIds, setShiftIds] = React.useState(initialValues.shiftIds);
   const [userId, setUserId] = React.useState(initialValues.userId);
+  const [latitude, setLatitude] = React.useState(initialValues.latitude);
+  const [longitude, setLongitude] = React.useState(initialValues.longitude);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = theStaffRecord
@@ -237,6 +241,8 @@ export default function TheStaffUpdateForm(props) {
     setShiftIds(cleanValues.shiftIds ?? []);
     setCurrentShiftIdsValue("");
     setUserId(cleanValues.userId);
+    setLatitude(cleanValues.latitude);
+    setLongitude(cleanValues.longitude);
     setErrors({});
   };
   const [theStaffRecord, setTheStaffRecord] = React.useState(theStaffModelProp);
@@ -269,6 +275,8 @@ export default function TheStaffUpdateForm(props) {
     IsActive: [],
     shiftIds: [],
     userId: [],
+    latitude: [],
+    longitude: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -307,6 +315,8 @@ export default function TheStaffUpdateForm(props) {
           IsActive: IsActive ?? null,
           shiftIds: shiftIds ?? null,
           userId: userId ?? null,
+          latitude: latitude ?? null,
+          longitude: longitude ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -378,6 +388,8 @@ export default function TheStaffUpdateForm(props) {
               IsActive,
               shiftIds,
               userId,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -412,6 +424,8 @@ export default function TheStaffUpdateForm(props) {
               IsActive,
               shiftIds,
               userId,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.phoneNumber ?? value;
@@ -446,6 +460,8 @@ export default function TheStaffUpdateForm(props) {
               IsActive,
               shiftIds,
               userId,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.email ?? value;
@@ -480,6 +496,8 @@ export default function TheStaffUpdateForm(props) {
               IsActive,
               shiftIds,
               userId,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.DOB ?? value;
@@ -514,6 +532,8 @@ export default function TheStaffUpdateForm(props) {
               IsActive,
               shiftIds,
               userId,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.photourl ?? value;
@@ -548,6 +568,8 @@ export default function TheStaffUpdateForm(props) {
               IsActive,
               shiftIds,
               userId,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.isBiomatritcs ?? value;
@@ -582,6 +604,8 @@ export default function TheStaffUpdateForm(props) {
               IsActive,
               shiftIds,
               userId,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.profileStatus ?? value;
@@ -616,6 +640,8 @@ export default function TheStaffUpdateForm(props) {
               IsActive,
               shiftIds,
               userId,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.Location ?? value;
@@ -650,6 +676,8 @@ export default function TheStaffUpdateForm(props) {
               IsActive: value,
               shiftIds,
               userId,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.IsActive ?? value;
@@ -680,6 +708,8 @@ export default function TheStaffUpdateForm(props) {
               IsActive,
               shiftIds: values,
               userId,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             values = result?.shiftIds ?? values;
@@ -739,6 +769,8 @@ export default function TheStaffUpdateForm(props) {
               IsActive,
               shiftIds,
               userId: value,
+              latitude,
+              longitude,
             };
             const result = onChange(modelFields);
             value = result?.userId ?? value;
@@ -752,6 +784,78 @@ export default function TheStaffUpdateForm(props) {
         errorMessage={errors.userId?.errorMessage}
         hasError={errors.userId?.hasError}
         {...getOverrideProps(overrides, "userId")}
+      ></TextField>
+      <TextField
+        label="Latitude"
+        isRequired={false}
+        isReadOnly={false}
+        value={latitude}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              name,
+              phoneNumber,
+              email,
+              DOB,
+              photourl,
+              isBiomatritcs,
+              profileStatus,
+              Location,
+              IsActive,
+              shiftIds,
+              userId,
+              latitude: value,
+              longitude,
+            };
+            const result = onChange(modelFields);
+            value = result?.latitude ?? value;
+          }
+          if (errors.latitude?.hasError) {
+            runValidationTasks("latitude", value);
+          }
+          setLatitude(value);
+        }}
+        onBlur={() => runValidationTasks("latitude", latitude)}
+        errorMessage={errors.latitude?.errorMessage}
+        hasError={errors.latitude?.hasError}
+        {...getOverrideProps(overrides, "latitude")}
+      ></TextField>
+      <TextField
+        label="Longitude"
+        isRequired={false}
+        isReadOnly={false}
+        value={longitude}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              name,
+              phoneNumber,
+              email,
+              DOB,
+              photourl,
+              isBiomatritcs,
+              profileStatus,
+              Location,
+              IsActive,
+              shiftIds,
+              userId,
+              latitude,
+              longitude: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.longitude ?? value;
+          }
+          if (errors.longitude?.hasError) {
+            runValidationTasks("longitude", value);
+          }
+          setLongitude(value);
+        }}
+        onBlur={() => runValidationTasks("longitude", longitude)}
+        errorMessage={errors.longitude?.errorMessage}
+        hasError={errors.longitude?.hasError}
+        {...getOverrideProps(overrides, "longitude")}
       ></TextField>
       <Flex
         justifyContent="space-between"

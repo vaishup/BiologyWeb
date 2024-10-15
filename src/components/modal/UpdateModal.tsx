@@ -148,13 +148,13 @@ const UpdateModal = ({ id, setIsShow }) => {
         <>
           <div>
             <div className="flex flex-col items-center justify-center h-full">
-              <p className="text-bold font-medium text-lg">Select Clients</p>
+              <p className="text-bold font-medium text-lg">Select Employees</p>
 
               <div className="relative w-[300px] mt-5">
                 <input
                   style={{ background: '#f2f2f2' }}
                   type="text"
-                  placeholder="Search for Client..."
+                  placeholder="Search for Employees..."
                   className="w-full pl-10 pr-2 py-1 rounded-full bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={searchValue}
                   onChange={handleSearchChange}

@@ -88,6 +88,8 @@ export const createTheStaff = /* GraphQL */ `
       IsActive
       shiftIds
       userId
+      latitude
+      longitude
       createdAt
       updatedAt
       __typename
@@ -112,6 +114,8 @@ export const updateTheStaff = /* GraphQL */ `
       IsActive
       shiftIds
       userId
+      latitude
+      longitude
       createdAt
       updatedAt
       __typename
@@ -136,6 +140,8 @@ export const deleteTheStaff = /* GraphQL */ `
       IsActive
       shiftIds
       userId
+      latitude
+      longitude
       createdAt
       updatedAt
       __typename

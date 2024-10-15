@@ -18,11 +18,11 @@
       "function": {
         "CreateStaff": {
           "deploymentBucketName": "amplify-bilogic-staging-8e024-deployment",
-          "s3Key": "amplify-builds/CreateStaff-48324a5946692b302b42-build.zip"
+          "s3Key": "amplify-builds/CreateStaff-397a75594e666e727355-build.zip"
         },
         "CreateShiftForEmployee": {
           "deploymentBucketName": "amplify-bilogic-staging-8e024-deployment",
-          "s3Key": "amplify-builds/CreateShiftForEmployee-6f7635593542785a2b6a-build.zip"
+          "s3Key": "amplify-builds/CreateShiftForEmployee-2b32532b6f71376d6966-build.zip"
         }
       },
       "api": {

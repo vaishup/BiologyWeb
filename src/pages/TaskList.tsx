@@ -38,7 +38,6 @@ const TaskList = () => {
 
       const shiftsList = staffdata.data.listTheShifts.items;
       console.log('Fetched Shifts:', shiftsList);
-
       const sortedTasks = shiftsList.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
       );

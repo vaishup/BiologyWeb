@@ -1,13 +1,11 @@
 const AWS = require("aws-sdk");
-const docClient = new AWS.DynamoDB.DocumentClient(); // Assuming you're using DynamoDB for storage
+const docClient = new AWS.DynamoDB.DocumentClient();
 
 // Function to fetch a shift by ID
 async function fetchShiftById(shiftId) {
   const params = {
-    TableName: "TheShifts-qfmdhqquffcdzhgu6efvoqwpru-staging", // Replace with your DynamoDB table name
-    Key: {
-      id: shiftId,
-    },
+    TableName: "TheShifts-qfmdhqquffcdzhgu6efvoqwpru-staging",
+    Key: { id: shiftId },
   };
 
   try {
@@ -21,16 +19,14 @@ async function fetchShiftById(shiftId) {
 
 // Function to create a new shift
 async function createShift(shiftDetails, staffId) {
-    console.log("shiftDetails",shiftDetails);
   const newShift = {
     ...shiftDetails,
-    id: AWS.util.uuid.v4(), // Generate a new unique ID for the shift
-    staffId: staffId, // Assign the new staff ID
+    id: AWS.util.uuid.v4(), // Generate a new unique ID
+    staffId, // Assign the new staff ID
   };
-  console.log("newShift",newShift);
 
   const params = {
-    TableName: "TheShifts-qfmdhqquffcdzhgu6efvoqwpru-staging", // Replace with your DynamoDB table name
+    TableName: "TheShifts-qfmdhqquffcdzhgu6efvoqwpru-staging",
     Item: newShift,
   };
 
@@ -43,28 +39,56 @@ async function createShift(shiftDetails, staffId) {
   }
 }
 
-// Main function to replicate shift for each staff ID
+// Function to update an existing shift
+async function updateShift(shiftId, staffId) {
+  const params = {
+    TableName: "TheShifts-qfmdhqquffcdzhgu6efvoqwpru-staging",
+    Key: { id: shiftId },
+    UpdateExpression: "SET staffId = :staffId",
+    ExpressionAttributeValues: {
+      ":staffId": staffId,
+    },
+    ReturnValues: "UPDATED_NEW",
+  };
+
+  try {
+    await docClient.update(params).promise();
+    console.log("Shift updated successfully with staffId:", staffId);
+  } catch (error) {
+    console.error("Error updating shift:", error);
+    throw new Error("Could not update shift");
+  }
+}
+
+// Main function to replicate or update shifts
 async function replicateShiftForStaff(shiftId, selectedStaffIds) {
   try {
-    // Fetch the shift details
-    console.log("shiftId",shiftId);
-    console.log("selectedStaffIds",selectedStaffIds);
-    const shiftDetails = await fetchShiftById(shiftId);
-    console.log("Fetched shift details:", shiftDetails);
+    console.log("Shift ID:", shiftId);
+    console.log("Selected Staff IDs:", selectedStaffIds);
 
-    // Replicate the shift for each selected staff ID
-    for (const staffId of selectedStaffIds) 
-    {
-      await createShift(shiftDetails, staffId);
+    // Fetch the shift details
+    const shiftDetails = await fetchShiftById(shiftId);
+
+    if (selectedStaffIds.length === 1) {
+      // Update the shift with the only staff ID
+      await updateShift(shiftId, selectedStaffIds[0]);
+    } else {
+      // Update the original shift with the first staff ID
+      await updateShift(shiftId, selectedStaffIds[0]);
+
+      // Create new shifts for the remaining staff IDs
+      for (let i = 1; i < selectedStaffIds.length; i++) {
+        await createShift(shiftDetails, selectedStaffIds[i]);
+      }
     }
 
-    console.log("Shifts replicated successfully for all staff IDs");
+    console.log("Shifts processed successfully");
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: "Shifts replicated successfully" }),
+      body: JSON.stringify({ message: "Shifts processed successfully" }),
     };
   } catch (error) {
-    console.error("Error replicating shifts:", error);
+    console.error("Error processing shifts:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ message: error.message }),
@@ -72,28 +96,29 @@ async function replicateShiftForStaff(shiftId, selectedStaffIds) {
   }
 }
 
-// Example usage
+// Lambda handler function
 exports.handler = async (event) => {
-    console.log("Raw event:", JSON.stringify(event, null, 2)); // Log the full event to debug
+  console.log("Raw event:", JSON.stringify(event, null, 2));
 
-    // Check if payload is coming in a different structure (like inside event.body)
-    let parsedEvent;
-    try {
-        parsedEvent = typeof event.body === 'string' ? JSON.parse(event.body) : event;
-    } catch (error) {
-        console.error("Error parsing event body:", error);
-    }
+  let parsedEvent;
+  try {
+    parsedEvent = typeof event.body === "string" ? JSON.parse(event.body) : event;
+  } catch (error) {
+    console.error("Error parsing event body:", error);
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: "Invalid event body" }),
+    };
+  }
 
-    const { id, selectedStaffIds } = parsedEvent || {}; // Extract id and selectedStaffIds
-    console.log("Shift ID:", id);
-    console.log("Selected staff IDs:", selectedStaffIds);
+  const { id, selectedStaffIds } = parsedEvent;
 
-    if (!id || !selectedStaffIds) {
-        return {
-            statusCode: 400,
-            body: JSON.stringify({ message: "Shift ID or selectedStaffIds missing" }),
-        };
-    }
+  if (!id || !selectedStaffIds || !Array.isArray(selectedStaffIds) || selectedStaffIds.length === 0) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ message: "Shift ID or selectedStaffIds missing or invalid" }),
+    };
+  }
 
-    return await replicateShiftForStaff(id, selectedStaffIds);
+  return await replicateShiftForStaff(id, selectedStaffIds);
 };

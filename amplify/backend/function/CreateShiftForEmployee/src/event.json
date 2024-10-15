@@ -1,4 +1,4 @@
 {
-  "id": "76a9009c-1c01-45b6-b1c3-97acba8e7f43",  // Replace this with the actual shift ID you're passing
-  "selectedStaffIds": ["e39d4064-5e2e-4a62-8649-95fe34cc6f3d", "5a3511a3-0424-47c2-ba1f-9abc72e02e3f", "f5669378-f6bf-4878-b2af-43c8a919aa27"]  // Replace these with the actual staff IDs
+  "id": "19a9ad77-fb9f-4977-a272-ab17b14ab62b",  // Replace this with the actual shift ID you're passing
+  "selectedStaffIds": ["23478c86-bf9c-432f-aff2-d39b334c9ab0","e0fc2aa5-b71c-4825-9524-2eeacdf6fa5a"]  // Replace these with the actual staff IDs
 }

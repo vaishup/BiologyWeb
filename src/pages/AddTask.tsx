@@ -10,7 +10,11 @@ import { useParams, useNavigate } from 'react-router-dom'; // Import hooks from 
 import utc from 'dayjs/plugin/utc';
 import { Modal } from 'antd';
 import UpdateModal from '../components/modal/UpdateModal.js';
-import { getTableID,getUserInfo,getCustomAttributes } from '../hooks/authServices.js';
+import {
+  getTableID,
+  getUserInfo,
+  getCustomAttributes,
+} from '../hooks/authServices.js';
 
 import { listTheStaffs, getTheShifts } from '../graphql/queries';
 const AddTask = () => {
@@ -33,6 +37,7 @@ const AddTask = () => {
   const [selectedDay, setSelectedDay] = useState(''); // State to store the selected day of the week
   const [errors, setErrors] = useState({});
   const [ids, setId] = useState();
+  const [status, setStatus] = useState();
   const updateDateTime = (date, times) => {
     if (date && times && times.length === 2) {
       const formattedDate = dayjs(date).format('YYYY-MM-DD'); // Format the selected date
@@ -65,7 +70,7 @@ const AddTask = () => {
           });
           const staff = staffData.data.getTheShifts;
           console.log('staff.dateTime', staff.time);
-
+          setStatus(staff.shiftstatus);
           if (staff?.time) {
             console.log('Raw staff.time:', `'${staff.time}'`); // Debug the raw string
 
@@ -134,13 +139,13 @@ const AddTask = () => {
       console.log('userDetail', userId);
 
       const userData = await getUserInfo(userId); // Fetch the user info
-      setStaffType(userData.userType)
-     // setUser(userData); // Store the user data in state
+      setStaffType(userData.userType);
+      // setUser(userData); // Store the user data in state
     } catch (err) {
       console.error('Error fetching user data:', err);
-     // Store the error in state
+      // Store the error in state
     } finally {
-     // setLoading(false); // Stop loading when operation is complete
+      // setLoading(false); // Stop loading when operation is complete
     }
   };
 
@@ -152,7 +157,6 @@ const AddTask = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-   
     // Step 1: Perform validation
     const validationErrors = validate(); // Assume validate() is a function that returns an object of errors
     if (Object.keys(validationErrors).length > 0) {
@@ -203,6 +207,7 @@ const AddTask = () => {
         endDate: endDateTime1, // Same date for start and end (assuming same-day shift)
         startTime: startDateTime, // Add formatted start time in AWS DateTime format
         endTime: endDateTime,
+        shiftstatus: status ? status : 'Pending',
         userId: staffType === 'staff' ? userId : '', // Conditional assignment
         // Add other fields as needed
       };
@@ -218,8 +223,8 @@ const AddTask = () => {
           variables: { input: { id, ...staffInput } },
         });
         console.log(staffInput);
-        
-        navigation("/taskList");
+
+        navigation('/taskList');
       } else {
         // Create a new staff member
         staffResponse = await API.graphql({
@@ -228,7 +233,7 @@ const AddTask = () => {
         });
         setIsShow(true);
       }
-   
+
       // Debug the API response
       console.log('Staff Response:', staffResponse);
 
@@ -243,10 +248,10 @@ const AddTask = () => {
       console.log(createdItem.id, 'successfully created/updated');
       setId(createdItem.id); // Set the ID if it's a new creation
       if (tag == 'edit') {
-        navigation("/taskList");
+        navigation('/taskList');
       }
       // Step 4: Show success message and optionally navigate
-     // Uncomment this if you want to navigate to the staff list page after submission
+      // Uncomment this if you want to navigate to the staff list page after submission
     } catch (error) {
       console.error('Error creating or updating staff:', error);
       // Handle the error (display message, etc.)
@@ -379,7 +384,7 @@ const AddTask = () => {
             Shift's Details
           </h3>
           <div className="border-b mt-3  mb-6"></div>
-            {/* <div className="mb-4">
+          {/* <div className="mb-4">
               <label className="mb-2.5 block text-black dark:text-white">
                 Location
               </label>
@@ -392,50 +397,46 @@ const AddTask = () => {
                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               />
             </div> */}
-            <div className="w-full">
-              <label className="mb-2.5 mt-3 block text-black dark:text-white">
-                Location
-              </label>
-              <select
-                name="location" // Ensure this matches the formData key
-                value={formData.location} // Bind the value to formData.status
-                onChange={handleChange} // Handle change to update formData
-                className={`w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary ${errors.frequency ? 'border-red-500' : ''} dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
-              >
-                <option value="">Select Location</option>
-                <option value="Airport">
-                  {' '}
-                  Airport - 2710 Britannia Rd E, Mississauga, ON L4W 1S9
-                </option>
-                <option value="Office">
-                  Office - 2552 Finch Ave. West. Unit 105. Toronto M9M 2G3
-                </option>
-              </select>
-            </div>
-            {errors.location && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.location}
-                    </p>
-                  )}
-            <div className="mb-4">
-              <label className="mb-2.5 block text-black dark:text-white">
-                Duties
-              </label>
-              <textarea
-                rows={3}
-                name="duties"
-                value={formData.duties}
-                onChange={handleChange}
-                placeholder="Enter Description"
-                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              ></textarea>
-            </div>
-            {errors.duties && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.duties}
-                    </p>
-                  )}
-            {/* <div className="mb-6">
+          <div className="w-full">
+            <label className="mb-2.5 mt-3 block text-black dark:text-white">
+              Location
+            </label>
+            <select
+              name="location" // Ensure this matches the formData key
+              value={formData.location} // Bind the value to formData.status
+              onChange={handleChange} // Handle change to update formData
+              className={`w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary ${errors.frequency ? 'border-red-500' : ''} dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
+            >
+              <option value="">Select Location</option>
+              <option value="Airport">
+                {' '}
+                Airport - 2710 Britannia Rd E, Mississauga, ON L4W 1S9
+              </option>
+              <option value="Office">
+                Office - 2552 Finch Ave. West. Unit 105. Toronto M9M 2G3
+              </option>
+            </select>
+          </div>
+          {errors.location && (
+            <p className="text-red-500 text-sm mt-1">{errors.location}</p>
+          )}
+          <div className="mb-4">
+            <label className="mb-2.5 block text-black dark:text-white">
+              Duties
+            </label>
+            <textarea
+              rows={3}
+              name="duties"
+              value={formData.duties}
+              onChange={handleChange}
+              placeholder="Enter Description"
+              className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+            ></textarea>
+          </div>
+          {errors.duties && (
+            <p className="text-red-500 text-sm mt-1">{errors.duties}</p>
+          )}
+          {/* <div className="mb-6">
                 <label className="mb-2.5 block text-black dark:text-white">
                   Time
                 </label>
@@ -445,7 +446,7 @@ const AddTask = () => {
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div> */}
-               {id ? (
+          {id ? (
             <div className="flex flex-row ">
               <div className="mb-6 mr-10">
                 <label className="w-50% mb-2.5 block text-black dark:text-white">
@@ -472,15 +473,13 @@ const AddTask = () => {
                 />
               </div>
             </div>
-               ):(
-
+          ) : (
             <div className="flex flex-row ">
               <div className="mb-6 mr-10">
                 <label className="w-50% mb-2.5 block text-black dark:text-white">
                   Date
                 </label>
                 <DatePicker
-                 
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   onChange={handleDateChange} // Handle date selection
                   // Display the formatted date and day
@@ -492,7 +491,6 @@ const AddTask = () => {
                   From - To Time
                 </label>
                 <RangePicker
-                 
                   className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   onChange={handleTimeRangeChange} // Handle time range selection
                   placeholder={['Start Time', 'End Time']}
@@ -500,13 +498,11 @@ const AddTask = () => {
                 />
               </div>
             </div>
-               )}
-                {errors.selectedDate && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.selectedDate}
-                    </p>
-                  )}
-            {/* <div className="w-full xl:w-1/2 mb-3">
+          )}
+          {errors.selectedDate && (
+            <p className="text-red-500 text-sm mt-1">{errors.selectedDate}</p>
+          )}
+          {/* <div className="w-full xl:w-1/2 mb-3">
               <label className="mb-2.5 block text-black dark:text-white">
                 Select Staff
               </label>
@@ -525,10 +521,9 @@ const AddTask = () => {
               </select>
             </div> */}
 
-            <button className="btn-grad w-full py-3" onClick={handleSubmit}>
-              Submit
-            </button>
-        
+          <button className="btn-grad w-full py-3" onClick={handleSubmit}>
+            Submit
+          </button>
         </div>
       </div>
     </>

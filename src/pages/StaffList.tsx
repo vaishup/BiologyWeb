@@ -13,8 +13,8 @@ import {
   listTheStaffs,
 } from '../graphql/queries';
 const StaffList = () => {
- 
   const [stafflist, setStaffList] = useState([]);
+  const navigation = useNavigate();
 
   useEffect(() => {
     listStaff();
@@ -46,6 +46,19 @@ const StaffList = () => {
     } catch (error) {
       console.error('Error fetching shifts or staff details:', error);
     }
+  };
+  const handleOpenMap = () => {
+    const location = {
+      latitude: 37.7749, // Example: Replace with your actual location coordinates
+      longitude: -122.4194,
+    };
+    navigation('/MapScreen', { state: { location } });
+    //navigation(`/MapScreen/${location.latitude}/${location.longitude}`);
+  };
+  const handleLocationClick = (latitude,longitude,location) => {
+    //navigation('/MapScreen', { state: { latitude: latitude, longitude:longitude } });
+    navigation('/MapScreen', { state: { latitude, longitude, location } }); // Navigate with state
+
   };
   return (
     <>
@@ -92,55 +105,62 @@ const StaffList = () => {
                 Phone Number
               </th>
               <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
-              Location
+                Location
               </th>
               <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
-            Status
+                Status
               </th>
             </tr>
           </thead>
           <tbody>
-  {stafflist.length === 0 ? (
-    <tr>
-      <td
-        colSpan={5} // Adjust the number based on the number of columns in your table
-        className="px-6 py-4 border-b border-gray-200 bg-white text-sm text-center"
-      >
-        No Data Found
-      </td>
-    </tr>
-  ) : (
-    stafflist.map((order) => (
-      <tr key={order.id}>
-        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-          {order.name}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-          {order.email}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-          {order.phoneNumber}
-        </td>
-        <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
-          {order.Location}
-        </td>
-        <td className="border-b border-gray-200 bg-white text-sm flex-row">
-          <div className="flex flex-row">
-            <img
-              src={UserTwo}
-              className="w-[14px] h-[13px] mt-1"
-              alt="User"
-            />
-            <p className="ml-1 text-title-md1 font-bold text-green-700 dark:text-white">
-              Online
-            </p>
-          </div>
-        </td>
-      </tr>
-    ))
-  )}
-</tbody>
+            {stafflist.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5} // Adjust the number based on the number of columns in your table
+                  className="px-6 py-4 border-b border-gray-200 bg-white text-sm text-center"
+                >
+                  No Data Found
+                </td>
+              </tr>
+            ) : (
+              stafflist.map((order) => (
+                <tr key={order.id}>
+                  <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+                    {order.name}
+                  </td>
+                  <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+                    {order.email}
+                  </td>
+                  <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+                    {order.phoneNumber}
+                  </td>
+                  <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm" onClick={() =>handleLocationClick(order.latitude,order.longitude,order.Location)}>
+                    {/* <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.Location)}`}
+                      target="_blank" // Open in a new tab
+                      rel="noopener noreferrer" // Security enhancement
+                      className="text-blue-500 underline hover:text-blue-700"
+                    > */}
+                      {order.Location}
+                    {/* </a> */}
+                  </td>
 
+                  <td className="border-b border-gray-200 bg-white text-sm flex-row">
+                    <div className="flex flex-row">
+                      <img
+                        src={UserTwo}
+                        className="w-[14px] h-[13px] mt-1"
+                        alt="User"
+                      />
+                      <p className="ml-1 text-title-md1 font-bold text-green-700 dark:text-white">
+                        Online
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
         </table>
       </div>
     </>
