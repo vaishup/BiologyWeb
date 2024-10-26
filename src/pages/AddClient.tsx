@@ -26,6 +26,7 @@ const AddClient = () => {
     email: '',
     phoneNumber: '',
     status: '',
+    employeeId:''
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,12 +41,12 @@ const AddClient = () => {
     if (!formData.name) errors.name = 'Name is required';
     if (!formData.email) errors.email = 'Email is required';
     if (!formData.phoneNumber) errors.phoneNumber = 'Phone number is required';
+    if (!formData.employeeId) errors.employeeId = 'Employee ID is required';
     return errors;
   };
   const [staffType, setStaffType] = useState('');
   const fetchUserData = async () => {
     try {
-      const { tableID } = await getCustomAttributes();
       const userId = await getTableID();
       console.log('userDetail', userId);
 
@@ -87,6 +88,7 @@ const AddClient = () => {
         name: formData.name,
         phoneNumber: formData.phoneNumber,
         email: formData.email,
+        employeeId:formData.employeeId,
         profileStatus: id ? formData.status : 'Incomplete', // Set 'Incomplete' if creating new staff
         userId: staffType === 'staff' && userId ? userId : '', // Conditional userId
 
@@ -128,16 +130,14 @@ const AddClient = () => {
             query: getTheStaff, // Replace with your actual query to get staff by ID
             variables: { id },
           });
-
           const staff = staffData.data.getTheStaff;
-          console.log('staff...s', staff);
           const status = staff.profileStatus === 'Incomplete' ? 'Pending' : staff.profileStatus;
-
           setFormData({
             name: staff.name,
             email: staff.email,
             phoneNumber: staff.phoneNumber,
             status: status,
+            employeeId:staff.employeeId
           });
         } catch (error) {
           console.error('Error fetching staff data:', error);
@@ -158,7 +158,6 @@ const AddClient = () => {
     setIsOpen(false);
     navigation('/taskList');
   };
-  console.log('status..', formData.status);
   return (
     <>
       <Breadcrumb pageName="Add Employee" />
@@ -265,6 +264,19 @@ const AddClient = () => {
                     onChange={handleChange}
                     type="text"
                     placeholder="Enter your Phone Number"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+                <div className="w-full">
+                  <label className="mb-2.5 mt-2 block text-black dark:text-white">
+                   Employee ID <span className="text-meta-1">*</span>
+                  </label>
+                  <input
+                    name="employeeId" // Add this line
+                    value={formData.employeeId}
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="Enter your Employee Id"
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                 </div>

@@ -204,6 +204,7 @@ export default function TheStaffUpdateForm(props) {
     userId: "",
     latitude: "",
     longitude: "",
+    employeeId: "",
   };
   const [name, setName] = React.useState(initialValues.name);
   const [phoneNumber, setPhoneNumber] = React.useState(
@@ -224,6 +225,7 @@ export default function TheStaffUpdateForm(props) {
   const [userId, setUserId] = React.useState(initialValues.userId);
   const [latitude, setLatitude] = React.useState(initialValues.latitude);
   const [longitude, setLongitude] = React.useState(initialValues.longitude);
+  const [employeeId, setEmployeeId] = React.useState(initialValues.employeeId);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = theStaffRecord
@@ -243,6 +245,7 @@ export default function TheStaffUpdateForm(props) {
     setUserId(cleanValues.userId);
     setLatitude(cleanValues.latitude);
     setLongitude(cleanValues.longitude);
+    setEmployeeId(cleanValues.employeeId);
     setErrors({});
   };
   const [theStaffRecord, setTheStaffRecord] = React.useState(theStaffModelProp);
@@ -277,6 +280,7 @@ export default function TheStaffUpdateForm(props) {
     userId: [],
     latitude: [],
     longitude: [],
+    employeeId: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -317,6 +321,7 @@ export default function TheStaffUpdateForm(props) {
           userId: userId ?? null,
           latitude: latitude ?? null,
           longitude: longitude ?? null,
+          employeeId: employeeId ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -390,6 +395,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -426,6 +432,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.phoneNumber ?? value;
@@ -462,6 +469,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.email ?? value;
@@ -498,6 +506,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.DOB ?? value;
@@ -534,6 +543,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.photourl ?? value;
@@ -570,6 +580,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.isBiomatritcs ?? value;
@@ -606,6 +617,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.profileStatus ?? value;
@@ -642,6 +654,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.Location ?? value;
@@ -678,6 +691,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.IsActive ?? value;
@@ -710,6 +724,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             values = result?.shiftIds ?? values;
@@ -771,6 +786,7 @@ export default function TheStaffUpdateForm(props) {
               userId: value,
               latitude,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.userId ?? value;
@@ -807,6 +823,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude: value,
               longitude,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.latitude ?? value;
@@ -843,6 +860,7 @@ export default function TheStaffUpdateForm(props) {
               userId,
               latitude,
               longitude: value,
+              employeeId,
             };
             const result = onChange(modelFields);
             value = result?.longitude ?? value;
@@ -856,6 +874,43 @@ export default function TheStaffUpdateForm(props) {
         errorMessage={errors.longitude?.errorMessage}
         hasError={errors.longitude?.hasError}
         {...getOverrideProps(overrides, "longitude")}
+      ></TextField>
+      <TextField
+        label="Employee id"
+        isRequired={false}
+        isReadOnly={false}
+        value={employeeId}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              name,
+              phoneNumber,
+              email,
+              DOB,
+              photourl,
+              isBiomatritcs,
+              profileStatus,
+              Location,
+              IsActive,
+              shiftIds,
+              userId,
+              latitude,
+              longitude,
+              employeeId: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.employeeId ?? value;
+          }
+          if (errors.employeeId?.hasError) {
+            runValidationTasks("employeeId", value);
+          }
+          setEmployeeId(value);
+        }}
+        onBlur={() => runValidationTasks("employeeId", employeeId)}
+        errorMessage={errors.employeeId?.errorMessage}
+        hasError={errors.employeeId?.hasError}
+        {...getOverrideProps(overrides, "employeeId")}
       ></TextField>
       <Flex
         justifyContent="space-between"

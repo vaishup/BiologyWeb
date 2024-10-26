@@ -84,6 +84,7 @@ export const onCreateTheStaff = /* GraphQL */ `
       userId
       latitude
       longitude
+      employeeId
       createdAt
       updatedAt
       __typename
@@ -107,6 +108,7 @@ export const onUpdateTheStaff = /* GraphQL */ `
       userId
       latitude
       longitude
+      employeeId
       createdAt
       updatedAt
       __typename
@@ -130,6 +132,7 @@ export const onDeleteTheStaff = /* GraphQL */ `
       userId
       latitude
       longitude
+      employeeId
       createdAt
       updatedAt
       __typename

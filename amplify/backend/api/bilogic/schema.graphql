@@ -28,6 +28,8 @@ type TheStaff @model @auth(rules: [{allow: public}]) {
   userId:String
   latitude: String 
   longitude: String
+  employeeId:String
+
 
 }
 

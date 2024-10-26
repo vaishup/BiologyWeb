@@ -12,6 +12,7 @@ import { Check } from 'lucide-react';
 import * as mutation from '../graphql/mutations.js';
 import { getTheStaff, listTheStaffs } from '../graphql/queries';
 import { uploadData, getUrl, list, remove } from 'aws-amplify/storage';
+import UserOne from '../images/user.png';
 
 const Profile = () => {
   const { id } = useParams(); // Get the staff ID from the URL, if it exists
@@ -24,6 +25,7 @@ const Profile = () => {
     phoneNumber: '',
     status: '',
     dob: '',
+    employeeId:''
   });
   useEffect(() => {
     if (id) {
@@ -44,6 +46,7 @@ const Profile = () => {
             phoneNumber: staff.phoneNumber,
             status: staff.profileStatus,
             dob: staff.DOB,
+            employeeId:staff.employeeId
           });
         } catch (error) {
           console.error('Error fetching staff data:', error);
@@ -105,21 +108,28 @@ const Profile = () => {
       <div className="mt-4 overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex">
           <div className="p-10">
-            <img
-              src={fileUri}
-              alt="profile"
-              width={130}
-              style={{
-                width: 130,
-                height: 130,
-                borderRadius: 65, // Half of the width and height to make it a circle
-              }}
-            />
+          <img
+  src={fileUri || UserOne} // Use placeholder if fileUri is not available
+  alt="profile"
+  width={130}
+  style={{
+    width: 130,
+    height: 130,
+    borderRadius: 65, // Circular image
+    objectFit: 'cover', // Ensure the image covers the entire area
+  }}
+/>
             <h3 className="mb-1.5 text-2xl mt-3 font-semibold text-black dark:text-white">
               {formData.name}
             </h3>
           </div>
           <div className="pt-10">
+          <div className="flex p-3">
+              <h4 className="font-semibold text-black dark:text-white">
+                Employee Id
+              </h4>
+              <span className="text-sm ml-4">{formData.employeeId}</span>
+            </div>
             <div className="flex p-3 ">
               <h4 className="font-semibold text-black dark:text-white">
                 Email

@@ -35,6 +35,7 @@ export declare type TheStaffCreateFormInputValues = {
     userId?: string;
     latitude?: string;
     longitude?: string;
+    employeeId?: string;
 };
 export declare type TheStaffCreateFormValidationValues = {
     name?: ValidationFunction<string>;
@@ -50,6 +51,7 @@ export declare type TheStaffCreateFormValidationValues = {
     userId?: ValidationFunction<string>;
     latitude?: ValidationFunction<string>;
     longitude?: ValidationFunction<string>;
+    employeeId?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type TheStaffCreateFormOverridesProps = {
@@ -67,6 +69,7 @@ export declare type TheStaffCreateFormOverridesProps = {
     userId?: PrimitiveOverrideProps<TextFieldProps>;
     latitude?: PrimitiveOverrideProps<TextFieldProps>;
     longitude?: PrimitiveOverrideProps<TextFieldProps>;
+    employeeId?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type TheStaffCreateFormProps = React.PropsWithChildren<{
     overrides?: TheStaffCreateFormOverridesProps | undefined | null;

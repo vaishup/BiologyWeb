@@ -93,28 +93,36 @@ const TaskList = () => {
   };
 
   const applyFilter = () => {
-    const now = dayjs();
+    const now = dayjs(); // Current date and time
+  
     let filtered;
-
+  
     switch (filter) {
       case 'upcoming':
+        // Shifts with a start time after the current time
         filtered = stafflist.filter((shift) =>
-          dayjs(shift.startDate).isAfter(now),
+          dayjs(shift.startDate).isAfter(now)
         );
         break;
+  
       case 'previous':
+        // Shifts with an end time before the current time
         filtered = stafflist.filter((shift) =>
-          dayjs(shift.endDate).isBefore(now),
+          dayjs(shift.endDate).isBefore(now)
         );
         break;
+  
       default:
+        // Show all shifts if no filter is applied
         filtered = stafflist;
         break;
     }
-
-    setFilteredShifts(filtered);
+  
+    console.log("Filtered Shifts:", filtered); // Debug to verify the filtering
+    setFilteredShifts(filtered); // Update state with the filtered shifts
   };
-
+  
+  
   const handleDelete = async (id) => {
     try {
       await client.graphql({
@@ -260,6 +268,7 @@ const TaskList = () => {
                 />
               </div>
             </td>
+            
           </tr>
         ))
       )}

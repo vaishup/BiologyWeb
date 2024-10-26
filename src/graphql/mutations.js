@@ -90,6 +90,7 @@ export const createTheStaff = /* GraphQL */ `
       userId
       latitude
       longitude
+      employeeId
       createdAt
       updatedAt
       __typename
@@ -116,6 +117,7 @@ export const updateTheStaff = /* GraphQL */ `
       userId
       latitude
       longitude
+      employeeId
       createdAt
       updatedAt
       __typename
@@ -142,6 +144,7 @@ export const deleteTheStaff = /* GraphQL */ `
       userId
       latitude
       longitude
+      employeeId
       createdAt
       updatedAt
       __typename

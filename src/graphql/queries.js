@@ -66,6 +66,7 @@ export const getTheStaff = /* GraphQL */ `
       userId
       latitude
       longitude
+      employeeId
       createdAt
       updatedAt
       __typename
@@ -94,6 +95,7 @@ export const listTheStaffs = /* GraphQL */ `
         userId
         latitude
         longitude
+        employeeId
         createdAt
         updatedAt
         __typename
