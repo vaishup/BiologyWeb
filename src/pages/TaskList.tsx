@@ -1,4 +1,4 @@
-import { PencilIcon, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, PencilIcon, Trash2 } from 'lucide-react';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../layout/DefaultLayout';
 import { useNavigate } from 'react-router-dom';
@@ -94,35 +94,34 @@ const TaskList = () => {
 
   const applyFilter = () => {
     const now = dayjs(); // Current date and time
-  
+
     let filtered;
-  
+
     switch (filter) {
       case 'upcoming':
         // Shifts with a start time after the current time
         filtered = stafflist.filter((shift) =>
-          dayjs(shift.startDate).isAfter(now)
+          dayjs(shift.startDate).isAfter(now),
         );
         break;
-  
+
       case 'previous':
         // Shifts with an end time before the current time
         filtered = stafflist.filter((shift) =>
-          dayjs(shift.endDate).isBefore(now)
+          dayjs(shift.endDate).isBefore(now),
         );
         break;
-  
+
       default:
         // Show all shifts if no filter is applied
         filtered = stafflist;
         break;
     }
-  
-    console.log("Filtered Shifts:", filtered); // Debug to verify the filtering
+
+    console.log('Filtered Shifts:', filtered); // Debug to verify the filtering
     setFilteredShifts(filtered); // Update state with the filtered shifts
   };
-  
-  
+
   const handleDelete = async (id) => {
     try {
       await client.graphql({
@@ -135,7 +134,65 @@ const TaskList = () => {
       console.error('Error deleting item:', error);
     }
   };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
+  const totalPages = Math.ceil(filteredShifts.length / itemsPerPage);
+  const startIdx = (currentPage - 1) * itemsPerPage;
+  const paginatedData = filteredShifts.slice(startIdx, startIdx + itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (event) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1); // Reset to page 1 when items per page changes
+  };
+
+  const renderPageNumbers = () => {
+    const pages = [];
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, '...', totalPages);
+      } else if (currentPage > totalPages - 3) {
+        pages.push(1, '...', totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(
+          1,
+          '...',
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          '...',
+          totalPages,
+        );
+      }
+    }
+    return pages.map((page, index) =>
+      typeof page === 'number' ? (
+        <button
+          key={index}
+          onClick={() => handlePageChange(page)}
+          className={`w-8 h-8 flex items-center justify-center rounded-md  ${
+            currentPage === page
+              ? 'bg-blue-500 text-white'
+              : 'text-gray-700'
+          } transition duration-200 hover:bg-blue-400 hover:text-white`}
+        >
+          {page}
+        </button>
+      ) : (
+        <span key={index} className="px-3 py-1 text-gray-700">
+          ...
+        </span>
+      ),
+    );
+  };
   return (
     <>
       <div className="flex items-center justify-between mb-6">
@@ -202,81 +259,121 @@ const TaskList = () => {
       </div>
 
       <div className="overflow-x-auto mt-10">
-  <table className="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
-    <thead className="bg-gradient-to-r from-[#4c4b4b] to-[#454545]">
-      <tr>
-        <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
-          Location
-        </th>
-        <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
-          Duties
-        </th>
-        <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
-          Employee Name
-        </th>
-        <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
-          Shift Time
-        </th>
-        <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
-          Created By (Admin/Staff)
-        </th>
-        <th className="px-4 py-3 text-center text-white text-sm uppercase font-bold">
-          Action
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      {filteredShifts.length === 0 ? (
-        <tr>
-          <td colSpan={6} className="px-6 py-4 text-center">
-            No Data Found
-          </td>
-        </tr>
-      ) : (
-        filteredShifts.map((shift) => (
-          <tr
-            key={shift.id}
-            className="hover:bg-gray-50 transition-all duration-200"
+        <table className="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
+          <thead className="bg-gradient-to-r from-[#4c4b4b] to-[#454545]">
+            <tr>
+              <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+                Location
+              </th>
+              <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+                Duties
+              </th>
+              <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+                Employee Name
+              </th>
+              <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+                Shift Time
+              </th>
+              <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+                Created By (Admin/Staff)
+              </th>
+              <th className="px-4 py-3 text-center text-white text-sm uppercase font-bold">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedData.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-6 py-4 text-center">
+                  No Data Found
+                </td>
+              </tr>
+            ) : (
+              paginatedData.map((shift) => (
+                <tr
+                  key={shift.id}
+                  className="hover:bg-gray-50 transition-all duration-200"
+                >
+                  <td className="px-4 py-4 border-b align-middle">
+                    {shift.Location}
+                  </td>
+                  <td className="px-4 py-4 border-b align-middle">
+                    {shift.duties}
+                  </td>
+                  <td className="px-4 py-4 border-b align-middle">
+                    {shift.staffName ?? 'Unknown'}
+                  </td>
+                  <td className="px-4 py-4 border-b align-middle">
+                    {dayjs(shift.startTime).format('YYYY-MM-DD h:mm A')} -{' '}
+                    {dayjs(shift.endTime).format('h:mm A')}
+                  </td>
+                  <td className="px-4 py-4 border-b align-middle">
+                    {shift.adminName && shift.adminName.trim() !== ''
+                      ? shift.adminName
+                      : 'Admin'}
+                  </td>
+                  <td className="px-4 py-4 border-b align-middle text-center">
+                    <div className="flex justify-center space-x-4">
+                      <PencilIcon
+                        onClick={() => navigation(`/addTask/edit/${shift.id}`)}
+                        className="cursor-pointer hover:text-indigo-600 transform hover:scale-110 transition-all"
+                        size={20}
+                      />
+                      <Trash2
+                        onClick={() => handleDelete(shift.id)}
+                        className="cursor-pointer hover:text-red-600 transform hover:scale-110 transition-all"
+                        size={20}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+
+        {/* Pagination controls */}
+        <div className="flex justify-between items-center mt-4 space-x-2">
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="w-8 h-8 flex items-center justify-center rounded-md  bg-white  text-gray-700 hover:bg-blue-400 hover:text-white transition duration-200"
+            >
+              <ChevronLeft color="gray" />
+            </button>
+            {renderPageNumbers()}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="w-8 h-8 flex items-center justify-center rounded-md  bg-white  text-gray-700 hover:bg-blue-400 hover:text-white transition duration-200"
+            >
+              <ChevronRight color="gray" />
+            </button>
+          </div>
+
+          {/* Results info */}
+          <div className="text-gray-600">
+            Results: {startIdx + 1} -{' '}
+            {Math.min(startIdx + itemsPerPage, filteredShifts.length)} of{' '}
+            {filteredShifts.length}
+          </div>
+
+          {/* Items per page dropdown */}
+          <select
+            value={itemsPerPage}
+            onChange={handleItemsPerPageChange}
+            className="px-3 py-1 bg-white  border-gray-300 rounded shadow-md text-gray-700"
           >
-            <td className="px-4 py-4 border-b align-middle">
-              {shift.Location}
-            </td>
-            <td className="px-4 py-4 border-b align-middle">{shift.duties}</td>
-            <td className="px-4 py-4 border-b align-middle">
-              {shift.staffName ?? 'Unknown'}
-            </td>
-            <td className="px-4 py-4 border-b align-middle">
-              {dayjs(shift.startTime).format('YYYY-MM-DD h:mm A')} -{' '}
-              {dayjs(shift.endTime).format('h:mm A')}
-            </td>
-            <td className="px-4 py-4 border-b align-middle">
-              {shift.adminName && shift.adminName.trim() !== ''
-                ? shift.adminName
-                : 'Admin'}
-            </td>
-            <td className="px-4 py-4 border-b align-middle text-center">
-              <div className="flex justify-center space-x-4">
-                <PencilIcon
-                  onClick={() => navigation(`/addTask/edit/${shift.id}`)}
-                  className="cursor-pointer hover:text-indigo-600 transform hover:scale-110 transition-all"
-                  size={20}
-                />
-                <Trash2
-                  onClick={() => handleDelete(shift.id)}
-                  className="cursor-pointer hover:text-red-600 transform hover:scale-110 transition-all"
-                  size={20}
-                />
-              </div>
-            </td>
-            
-          </tr>
-        ))
-      )}
-    </tbody>
-  </table>
-</div>
-
-
+            {[10, 20, 50, 100].map((number) => (
+              <option key={number} value={number}>
+                {number}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
     </>
   );
 };

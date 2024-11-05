@@ -52,14 +52,10 @@ async function sendEmail(email, username, password) {
 }
 async function sendTextMessage(phoneNumber, username, password) {
   const message = `Hello,
-
-  Your account has been created successfully. Here are your login credentials:
-  
+Your account has been created successfully. Here are your login credentials:
   Username: ${username}
-  Password: ${password}
-  
+  Password: ${password} 
   Please use these credentials to log in to your account.
-  
   Best regards,
   Biologic App`;
 
@@ -147,12 +143,22 @@ exports.handler = async (event) => {
       await cognito.adminSetUserPassword(setPasswordParams).promise();
       console.log('email', email);
       // Send email with credentials
-     // await sendEmail(email, username, randomPassword);
-      await sendTextMessage(phoneNumber,username,randomPassword)
+      // await sendEmail(email, username, randomPassword);
+      const formatPhoneNumber = (phoneNumber) => {
+        if (!phoneNumber.startsWith("+1")) {
+          return `+1${phoneNumber}`;
+        }
+        return phoneNumber;
+      };
+      
+      // Call sendTextMessage with the formatted phone number
+      const formattedPhoneNumber = formatPhoneNumber(phoneNumber);
+      console.log("formattedPhoneNumber",formattedPhoneNumber);
+      await sendTextMessage(formattedPhoneNumber, username, randomPassword);
 
       response = {
-         statusCode: 200,
-          body: JSON.stringify({
+        statusCode: 200,
+        body: JSON.stringify({
           message: 'User created successfully',
           username: username,
           password: randomPassword,
