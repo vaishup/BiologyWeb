@@ -38,7 +38,8 @@ const ClientList = () => {
       console.error('Error deleting item:', error);
     }
   };
-
+//GraphQL endpoint: https://kfh66zv2vrg4lmd7d63crztdei.appsync-api.us-east-2.amazonaws.com/graphql
+//GraphQL API KEY: da2-mttg3c4kpjgi3jgfvaelnjquji
   useEffect(() => {
     listStaff();
   }, []);
@@ -49,6 +50,9 @@ const ClientList = () => {
       const staffdata = await client.graphql({
         query: listTheStaffs,
         variables: {},
+       // authMode: 'da2-mttg3c4kpjgi3jgfvaelnjquji', // Use public access via API key
+
+
       });
 
       const staffList = staffdata.data.listTheStaffs.items;
@@ -70,6 +74,8 @@ const ClientList = () => {
               const adminData = await client.graphql({
                 query: getTheAdminStaffUser,
                 variables: { id: staff.userId },
+               // authMode: 'da2-mttg3c4kpjgi3jgfvaelnjquji', // Use public access via API key
+
               });
 
               adminName = adminData.data.getTheAdminStaffUser?.name || 'Admin';
@@ -89,7 +95,7 @@ const ClientList = () => {
       setStaffList(staffWithAdminNames); // Set the processed staff data in state
       console.log('Updated Staff List:', staffWithAdminNames);
     } catch (error) {
-      console.error('Error fetching staff details:', error);
+      console.error('Error fetching staff detailsssdsdsd:', error);
     }
   };
 

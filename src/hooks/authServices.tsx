@@ -67,6 +67,8 @@ export async function getCustomAttributes() {
 }
 
 export async function getUserInfo(tableID: string) {
+  console.log("tableID",tableID);
+  
   try {
     console.log("Fetching user info for tableID:", tableID); // Debug the tableID
 
@@ -87,18 +89,11 @@ export async function getUserInfo(tableID: string) {
     `;
 
     // Execute the GraphQL query
-    const { data, errors } = await client.graphql({
+    const { data, } = await client.graphql({
       query: userInfoQuery,
       variables: { id: tableID }, // Pass the correct tableID
     });
 
-    // Handle errors from GraphQL response
-    if (errors) {
-      console.error("GraphQL Errors:", errors);
-      return null;
-    }
-
-    console.log("GraphQL Response:", data); // Debug the raw response
 
     // Extract the user information correctly
     const userInfo = data?.getTheAdminStaffUser;

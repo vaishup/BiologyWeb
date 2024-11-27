@@ -49,7 +49,6 @@ const AddClient = () => {
     try {
       const userId = await getTableID();
       console.log('userDetail', userId);
-
       const userData = await getUserInfo(userId); // Fetch the user info
       setStaffType(userData.userType)
      // setUser(userData); // Store the user data in state
@@ -67,60 +66,69 @@ const AddClient = () => {
   }, []); 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const userId = await getTableID();
+  
+    // Fetch User ID
+    const userId = await getTableID().catch((err) => {
+      console.error('Error fetching User ID:', err);
+      return null;
+    });
     console.log('Fetched User ID:', userId);
   
-    // Fetch user info if userId is present
     let user = null;
     if (userId) {
-      user = await getUserInfo(userId);
+      user = await getUserInfo(userId).catch((err) => {
+        console.error('Error fetching User Info:', err);
+        return null;
+      });
       console.log('User Info:', user);
     }
-    // Step 1: Perform validation
-    const validationErrors = validate(); // Assume validate() is a function that returns an object of errors
+  
+    // Validation
+    const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors); // Set the errors in state to display in the UI
-      return; // Stop the form submission if validation fails
+      console.error('Validation Errors:', validationErrors);
+      setErrors(validationErrors);
+      return;
     }
+  
+    // Create or Update Staff
     try {
-      // Step 2: Create the input object for staff creation or update
       const staffInput = {
         name: formData.name,
         phoneNumber: formData.phoneNumber,
         email: formData.email,
-        employeeId:formData.employeeId,
-        profileStatus: id ? formData.status : 'Incomplete', // Set 'Incomplete' if creating new staff
-        userId: staffType === 'staff' && userId ? userId : '', // Conditional userId
-
-        // Add other fields as needed
+        employeeId: formData.employeeId,
+        profileStatus: id ? formData.status : 'Incomplete',
+        userId: staffType === 'staff' && userId ? userId : '',
       };
+      //console.log('Staff Input:', staffInput);
+  
       let staffResponse;
       if (id) {
-        // Update existing staff member
         staffResponse = await API.graphql({
           query: mutation.updateTheStaff,
           variables: { input: { id, ...staffInput } },
+          //authMode: 'AMAZON_COGNITO_USER_POOLS',
         });
       } else {
-        // Create a new staff member
         staffResponse = await API.graphql({
           query: mutation.createTheStaff,
           variables: { input: staffInput },
+        //  authMode: 'AMAZON_COGNITO_USER_POOLS',
         });
       }
-      // Step 3: Handle the response and navigation
+  
       const createdItem =
         staffResponse.data.createTheStaff || staffResponse.data.updateTheStaff;
-      console.log(createdItem.id, 'successfully created/updated');
-      setId(createdItem.id); // Set the ID if it's a new creation
-      // Step 4: Show success message and optionally navigate
+      console.log('Success:', createdItem.id);
+      setId(createdItem.id);
       setIsOpen(true);
-      navigation('/clientlist'); // Uncomment this if you want to navigate to the staff list page after submission
+      navigate('/clientlist');
     } catch (error) {
       console.error('Error creating or updating staff:', error);
-      // Handle the error (display message, etc.)
     }
   };
+  
   useEffect(() => {
     if (id) {
       const fetchStaffData = async () => {

@@ -70,6 +70,7 @@ const TaskList = () => {
               const adminData = await client.graphql({
                 query: getTheAdminStaffUser,
                 variables: { id: shift.userId },
+
               });
 
               adminName = adminData.data.getTheAdminStaffUser.name || 'Admin';
@@ -179,9 +180,7 @@ const TaskList = () => {
           key={index}
           onClick={() => handlePageChange(page)}
           className={`w-8 h-8 flex items-center justify-center rounded-md  ${
-            currentPage === page
-              ? 'bg-blue-500 text-white'
-              : 'text-gray-700'
+            currentPage === page ? 'bg-blue-500 text-white' : 'text-gray-700'
           } transition duration-200 hover:bg-blue-400 hover:text-white`}
         >
           {page}
@@ -202,8 +201,7 @@ const TaskList = () => {
 
         <button
           className="btn-grad w-[180px] pr-20"
-          onClick={() => navigation(`/addTask/add`)}
-        >
+          onClick={() => navigation(`/addTask/add`)}>
           <svg
             className="w-5 h-5"
             fill="none"

@@ -5,6 +5,7 @@ const ses = new AWS.SES({ region: 'us-east-2' }); // Ensure this region matches 
 const { default: fetch, Request } = require('node-fetch');
 const nodemailer = require('nodemailer');
 const sesTransport = require('nodemailer-ses-transport');
+
 function generateRandomPassword(length) {
   const charset =
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

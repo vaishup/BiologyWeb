@@ -221,6 +221,9 @@ const AddTask = () => {
         staffResponse = await API.graphql({
           query: mutation.updateTheShifts,
           variables: { input: { id, ...staffInput } },
+          apiKey:'da2-mttg3c4kpjgi3jgfvaelnjquji'
+
+          //authMode: 'AMAZON_COGNITO_USER_POOLS',
         });
         console.log(staffInput);
 
@@ -230,6 +233,8 @@ const AddTask = () => {
         staffResponse = await API.graphql({
           query: mutation.createTheShifts,
           variables: { input: staffInput },
+          apiKey:'da2-mttg3c4kpjgi3jgfvaelnjquji'
+        //  authMode: 'AMAZON_COGNITO_USER_POOLS',
         });
         setIsShow(true);
       }
@@ -264,11 +269,9 @@ const AddTask = () => {
   const handleDateChange = (date, dateString) => {
     console.log('date', date);
     console.log('dateString', dateString);
-
     console.log(date, dateString);
     setSelectedDate(dateString); // Store selected date
     updateDateTime(date, selectedTimes); // Call the function to update formData.dateTime
-
     if (date) {
       const dayOfWeek = dayjs(date).format('dddd'); // Get the day of the week (e.g., Monday)
       setSelectedDay(dayOfWeek); // Store the day in state
@@ -301,6 +304,8 @@ const AddTask = () => {
       const staffdata = await client.graphql({
         query: listTheStaffs,
         variables: {},
+        //authMode: 'AMAZON_COGNITO_USER_POOLS', // Use Cognito User Pools authentication
+
       });
       const staffList = staffdata.data.listTheStaffs.items;
       const sortedTasks = staffList.sort(

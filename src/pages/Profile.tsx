@@ -35,6 +35,7 @@ const Profile = () => {
           const staffData = await API.graphql({
             query: getTheStaff, // Replace with your actual query to get staff by ID
             variables: { id },
+            authMode: 'AMAZON_COGNITO_USER_POOLS',
           });
 
           const staff = staffData.data.getTheStaff;

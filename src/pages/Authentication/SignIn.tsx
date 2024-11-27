@@ -1,32 +1,31 @@
-import { Link } from "react-router-dom";
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
-import LogoDark from "../../images/logo/logo.png";
-import Logo from "../../images/logo/logo.svg";
-import DefaultLayout from "../../layout/DefaultLayout";
-import { signUp } from "aws-amplify/auth";
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { generateClient } from "aws-amplify/api";
-import * as mutation from "../../graphql/mutations";
+import { Link } from 'react-router-dom';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import LogoDark from '../../images/logo/logo.png';
+import Logo from '../../images/logo/logo.svg';
+import DefaultLayout from '../../layout/DefaultLayout';
+import { signUp } from 'aws-amplify/auth';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { generateClient } from 'aws-amplify/api';
+import * as mutation from '../../graphql/mutations';
 
-import { getCustomAttributes } from "../../hooks/authServices";
+import { getCustomAttributes } from '../../hooks/authServices';
 import {
   signIn,
   confirmSignUp,
   signOut,
   getCurrentUser,
   updateUserAttribute,
-} from "aws-amplify/auth";
-import { Eye, EyeOff, Rss } from "lucide-react";
+} from 'aws-amplify/auth';
+import { Eye, EyeOff, Rss } from 'lucide-react';
 
 interface SignInProps {
   onLoginSuccess: () => void;
 }
 const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
-
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState();
   //   const handleClickSignup = async () => {
   //     console.log("tesr");
@@ -47,32 +46,29 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
   const handleLogout = async () => {
     try {
       const response = await signOut();
-      console.log("signout response ", response);
-      localStorage.removeItem("loginTimestamp");
-      navigate("/auth/signin");
+      console.log('signout response ', response);
+      localStorage.removeItem('loginTimestamp');
+      navigate('/auth/signin');
     } catch (error) {
-      console.log("error signing out: ", error);
+      console.log('error signing out: ', error);
     }
   };
   const handleClickSignup = async (event) => {
     event.preventDefault(); // Prevents page reload
- 
     try {
       const { isSignUpComplete, userId, nextStep } = await signUp({
-        username: "Lindaf",
-        password: "KIdo3015%#$",
+        username: 'Harsimranpreetkaur',
+        password: 'KIdo3015%#$',
 
         options: {
           userAttributes: {
-            email: "vaishalipanchal6899@gmail.com",
-            phone_number: "+6476419995", // E.164 number convention
+            email: 'vsp681999@gmail.com',
+            phone_number: '+4166481620', // E.164 number convention
           },
         },
-
-
       });
     } catch (error) {
-      console.log("Error signing up:", error);
+      console.log('Error signing up:', error);
     }
   };
 
@@ -80,17 +76,16 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
     event.preventDefault(); // Prevents page reload
     try {
       const { isSignUpComplete, nextStep } = await confirmSignUp({
-        username: "Lindaf",
-        confirmationCode: "613909",
+        username: 'Harsimranpreetkaur',
+        confirmationCode: '776398',
       });
 
       const newUser = {
-        //  id: generateUniqueId(), // Generate unique ID here
-        name: "Linda F. Deluca",
-        email: "vaishalipanchal6899@gmail.com",
-        phoneNumber: "+16476419995",
-        userType: "staff",
-        
+       // id: generateUniqueId(), // Generate unique ID here
+        name: 'Harsimranpreetkaur',
+        email: 'vsp681999@gmail.com',
+        phoneNumber: '+4166481620',
+        userType: 'Staff',
       };
 
       // Call the createPharmacy mutation
@@ -98,16 +93,16 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
         query: mutation.createTheAdminStaffUser,
         variables: { input: newUser },
       });
-    
-      console.log("res", res);
+
+      console.log('res', res);
     } catch (error) {
-      console.log("Error signing up:", error);
+      console.log('Error signing up:', error);
     }
   };
 
   const handleClickSignIn = async (event) => {
     event.preventDefault();
-    console.log("username: ", username, ", password: ", password);
+    console.log('username: ', username, ', password: ', password);
     try {
       const { isSignedIn, nextStep } = await signIn({
         username: username,
@@ -118,7 +113,7 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
       isSignedIn && onLoginSuccess();
       // isSignedIn && onLoginSuccess();
     } catch (error) {
-      console.log("error signing in", error);
+      console.log('error signing in', error);
       // 'Invalid username or password'
       setErrorMsg(error.message);
     }
@@ -128,7 +123,7 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  
+
   useEffect(() => {
     handleLogout();
   }, []);
@@ -142,8 +137,8 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
               <Link className="mb-5.5 inline-block" to="/">
                 <img src={LogoDark} alt="Logo" />
                 <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2 uppercase">
-               by Royal Employment
-              </h2>
+                  by Royal Employment
+                </h2>
               </Link>
             </div>
           </div>
@@ -188,25 +183,24 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
                   </div>
                 </div>
 
-            
                 <div className="mb-6">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Re-type Password
                   </label>
                   <div className="relative">
-                  <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          type={showPassword ? 'text' : 'password'}  // Toggle between 'text' and 'password'
-          placeholder="Enter your Password"
-          className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-        />
+                    <input
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      type={showPassword ? 'text' : 'password'} // Toggle between 'text' and 'password'
+                      placeholder="Enter your Password"
+                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
                     <div
-          onClick={togglePasswordVisibility}
-          className="absolute right-3 top-4 cursor-pointer"
-        >
-          {showPassword ? <Eye /> : <EyeOff />}
-        </div>
+                      onClick={togglePasswordVisibility}
+                      className="absolute right-3 top-4 cursor-pointer"
+                    >
+                      {showPassword ? <Eye /> : <EyeOff />}
+                    </div>
                   </div>
                 </div>
 
@@ -218,9 +212,8 @@ const SignIn: React.FC<SignInProps> = ({ onLoginSuccess }) => {
                   />
                 </div>
                 {errorMsg && (
-                <p className="text-red-500 text-sm mt-1">{errorMsg}</p>
-              )}
-             
+                  <p className="text-red-500 text-sm mt-1">{errorMsg}</p>
+                )}
               </form>
             </div>
           </div>

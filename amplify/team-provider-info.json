@@ -16,20 +16,20 @@
         "bilogicea355cc4": {}
       },
       "function": {
-        "CreateStaff": {
-          "deploymentBucketName": "amplify-bilogic-staging-8e024-deployment",
-          "s3Key": "amplify-builds/CreateStaff-4f524e46424774754465-build.zip"
-        },
         "CreateShiftForEmployee": {
           "deploymentBucketName": "amplify-bilogic-staging-8e024-deployment",
-          "s3Key": "amplify-builds/CreateShiftForEmployee-2b32532b6f71376d6966-build.zip"
+          "s3Key": "amplify-builds/CreateShiftForEmployee-57432b504c713675794c-build.zip"
+        },
+        "CreateStaff": {
+          "deploymentBucketName": "amplify-bilogic-staging-8e024-deployment",
+          "s3Key": "amplify-builds/CreateStaff-73314875636965465175-build.zip"
         }
-      },
-      "api": {
-        "bilogic": {}
       },
       "storage": {
         "s38a04c9da": {}
+      },
+      "api": {
+        "bilogic": {}
       }
     }
   }
