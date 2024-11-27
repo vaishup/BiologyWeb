@@ -31,7 +31,6 @@ const StaffList = () => {
             },
           },
         },
-        authMode: 'AMAZON_COGNITO_USER_POOLS', // Ensure this matches auth requirements
 
       });
 

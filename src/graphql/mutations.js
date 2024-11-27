@@ -86,13 +86,14 @@ export const createTheStaff = /* GraphQL */ `
       profileStatus
       Location
       IsActive
-      shiftIds
-      userId
       latitude
       longitude
+      shiftIds
+      userId
       employeeId
       createdAt
       updatedAt
+      owner
       __typename
     }
   }
@@ -113,13 +114,14 @@ export const updateTheStaff = /* GraphQL */ `
       profileStatus
       Location
       IsActive
-      shiftIds
-      userId
       latitude
       longitude
+      shiftIds
+      userId
       employeeId
       createdAt
       updatedAt
+      owner
       __typename
     }
   }
@@ -140,13 +142,14 @@ export const deleteTheStaff = /* GraphQL */ `
       profileStatus
       Location
       IsActive
-      shiftIds
-      userId
       latitude
       longitude
+      shiftIds
+      userId
       employeeId
       createdAt
       updatedAt
+      owner
       __typename
     }
   }

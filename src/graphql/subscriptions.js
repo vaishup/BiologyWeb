@@ -68,8 +68,11 @@ export const onDeleteTheShifts = /* GraphQL */ `
   }
 `;
 export const onCreateTheStaff = /* GraphQL */ `
-  subscription OnCreateTheStaff($filter: ModelSubscriptionTheStaffFilterInput) {
-    onCreateTheStaff(filter: $filter) {
+  subscription OnCreateTheStaff(
+    $filter: ModelSubscriptionTheStaffFilterInput
+    $owner: String
+  ) {
+    onCreateTheStaff(filter: $filter, owner: $owner) {
       id
       name
       phoneNumber
@@ -80,20 +83,24 @@ export const onCreateTheStaff = /* GraphQL */ `
       profileStatus
       Location
       IsActive
-      shiftIds
-      userId
       latitude
       longitude
+      shiftIds
+      userId
       employeeId
       createdAt
       updatedAt
+      owner
       __typename
     }
   }
 `;
 export const onUpdateTheStaff = /* GraphQL */ `
-  subscription OnUpdateTheStaff($filter: ModelSubscriptionTheStaffFilterInput) {
-    onUpdateTheStaff(filter: $filter) {
+  subscription OnUpdateTheStaff(
+    $filter: ModelSubscriptionTheStaffFilterInput
+    $owner: String
+  ) {
+    onUpdateTheStaff(filter: $filter, owner: $owner) {
       id
       name
       phoneNumber
@@ -104,20 +111,24 @@ export const onUpdateTheStaff = /* GraphQL */ `
       profileStatus
       Location
       IsActive
-      shiftIds
-      userId
       latitude
       longitude
+      shiftIds
+      userId
       employeeId
       createdAt
       updatedAt
+      owner
       __typename
     }
   }
 `;
 export const onDeleteTheStaff = /* GraphQL */ `
-  subscription OnDeleteTheStaff($filter: ModelSubscriptionTheStaffFilterInput) {
-    onDeleteTheStaff(filter: $filter) {
+  subscription OnDeleteTheStaff(
+    $filter: ModelSubscriptionTheStaffFilterInput
+    $owner: String
+  ) {
+    onDeleteTheStaff(filter: $filter, owner: $owner) {
       id
       name
       phoneNumber
@@ -128,13 +139,14 @@ export const onDeleteTheStaff = /* GraphQL */ `
       profileStatus
       Location
       IsActive
-      shiftIds
-      userId
       latitude
       longitude
+      shiftIds
+      userId
       employeeId
       createdAt
       updatedAt
+      owner
       __typename
     }
   }

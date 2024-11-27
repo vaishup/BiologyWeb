@@ -70,7 +70,6 @@ const TaskList = () => {
               const adminData = await client.graphql({
                 query: getTheAdminStaffUser,
                 variables: { id: shift.userId },
-
               });
 
               adminName = adminData.data.getTheAdminStaffUser.name || 'Admin';
@@ -201,7 +200,8 @@ const TaskList = () => {
 
         <button
           className="btn-grad w-[180px] pr-20"
-          onClick={() => navigation(`/addTask/add`)}>
+          onClick={() => navigation(`/addTask/add`)}
+        >
           <svg
             className="w-5 h-5"
             fill="none"

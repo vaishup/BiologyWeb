@@ -62,13 +62,14 @@ export const getTheStaff = /* GraphQL */ `
       profileStatus
       Location
       IsActive
-      shiftIds
-      userId
       latitude
       longitude
+      shiftIds
+      userId
       employeeId
       createdAt
       updatedAt
+      owner
       __typename
     }
   }
@@ -91,13 +92,14 @@ export const listTheStaffs = /* GraphQL */ `
         profileStatus
         Location
         IsActive
-        shiftIds
-        userId
         latitude
         longitude
+        shiftIds
+        userId
         employeeId
         createdAt
         updatedAt
+        owner
         __typename
       }
       nextToken
