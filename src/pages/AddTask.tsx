@@ -20,7 +20,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import { TimePicker as Time } from '@mui/x-date-pickers/TimePicker';
-import { listTheStaffs, getTheShifts } from '../graphql/queries';
+import { listTheStaffs, getTheShifts, listLocations } from '../graphql/queries';
 const AddTask = () => {
   const [stafflist, setStaffList] = useState([]);
   const navigation = useNavigate();
@@ -44,6 +44,9 @@ const AddTask = () => {
   const [error, setError] = useState('');
   const [ids, setId] = useState();
   const [status, setStatus] = useState();
+  const [locations, setLocations] = useState([]); // Store dynamic locations
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false); // Control modal visibility
+  const [newLocation, setNewLocation] = useState(''); // New location input
 
   const updateDateTime = (date, times) => {
     if (date && times && times.length === 2) {
@@ -98,6 +101,7 @@ const AddTask = () => {
       fetchStaffData();
     }
   }, [id]);
+
   const formattedStartDate = dayjs(formData.startDate);
   const formattedEndDate = dayjs(formData.endDate);
 
@@ -133,7 +137,6 @@ const AddTask = () => {
     return errors;
   };
 
-  const [selectedTimes, setSelectedTimes] = useState([]); // Store start and end times
   const [isOpen, setIsOpen] = useState(false);
   const [show, setIsShow] = useState(false);
   const [staffType, setStaffType] = useState('');
@@ -143,11 +146,9 @@ const AddTask = () => {
       const { tableID } = await getCustomAttributes();
       const userId = await getTableID();
       console.log('userDetail', userId);
-
       const userData = await getUserInfo(userId); // Fetch the user info
       setStaffType(userData.userType);
       console.log('serData.userType---', userData.userType);
-
       // setUser(userData); // Store the user data in state
     } catch (err) {
       console.error('Error fetching user data:', err);
@@ -156,7 +157,6 @@ const AddTask = () => {
       // setLoading(false); // Stop loading when operation is complete
     }
   };
-
   // useEffect to call the fetch function when the component mounts
   useEffect(() => {
     fetchUserData(); // Call the async function inside useEffect
@@ -170,20 +170,18 @@ const AddTask = () => {
       setErrors(validationErrors); // Set the errors in state to display in the UI
       return; // Stop the form submission if validation fails
     }
+    console.log("location---",formData.location);
+    
     try {
       const formattedStartDates =
         formData.startDate.format('YYYY-MM-DD hh:mm A');
-
       const enddate = dayjs(formData.endDate).format('hh:mm A');
       const userId = await getTableID();
-      console.log('userId', userId);
 
       // Step 2: Create the input object for staff creation or update
       const staffInput = {
-        Location: formData.location,
+        locationID: formData.location,
         duties: formData.duties,
-        staffId: formData.staffid,
-        time: formData.dateTime, // This now contains the selected date and time range
         startDate: formattedStartDates, // Add formatted start date
         endDate: enddate, // Same date for start and end (assuming same-day shift)
         // startTime: startDateTime, // Add formatted start time in AWS DateTime format
@@ -193,26 +191,24 @@ const AddTask = () => {
         //userId: staffType === 'staff' ? userId : userId, // Conditional assignment
         // Add other fields as needed
       };
-      console.log('Staff Input:', staffInput);
 
-      let staffResponse;
+    let staffResponse;
       if (tag == 'edit') {
         console.log('staffInput...', staffInput);
-
         // Update existing staff member
         staffResponse = await API.graphql({
-          query: mutation.updateTheShifts,
+          query: mutation.updateMainShift,
           variables: { input: { id, ...staffInput } },
           apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
           //authMode: 'AMAZON_COGNITO_USER_POOLS',
         });
-        console.log(staffInput);
-
         navigation('/ShiftList');
       } else {
+        console.log('staffInput', staffInput);
+
         // Create a new staff member
         staffResponse = await API.graphql({
-          query: mutation.createTheShifts,
+          query: mutation.createMainShift,
           variables: { input: staffInput },
           apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
           //  authMode: 'AMAZON_COGNITO_USER_POOLS',
@@ -220,18 +216,18 @@ const AddTask = () => {
         setIsShow(true);
       }
 
-      // Debug the API response
+      // // Debug the API response
       console.log('Staff Response:', staffResponse);
 
       // Step 3: Handle the response and navigation
       const createdItem =
-        staffResponse.data.createTheShifts ||
-        staffResponse.data.updateTheShifts;
+        staffResponse.data.createMainShift ||
+        staffResponse.data.updateMainShift;
       if (!createdItem || !createdItem.id) {
         throw new Error('No ID returned from the GraphQL response.');
       }
 
-      console.log(createdItem.id, 'successfully created/updated');
+      // console.log(createdItem.id, 'successfully created/updated');
       setId(createdItem.id); // Set the ID if it's a new creation
       if (tag == 'edit') {
         navigation('/ShiftList');
@@ -243,11 +239,9 @@ const AddTask = () => {
       // Handle the error (display message, etc.)
     }
   };
-
   // Handle date change and get the day of the week
   const [selectedDates, setSelectedDates] = useState(); // Start date and time
   const [endTimes, setEndTimes] = useState(); // End time
-
   const handleDateChanges = (newValue) => {
     setFormData((prev) => ({ ...prev, startDate: newValue }));
     setErrors((prev) => ({
@@ -266,6 +260,7 @@ const AddTask = () => {
 
   useEffect(() => {
     listStaff();
+    getLocation();
   }, []);
 
   const handleChange = (e) => {
@@ -313,7 +308,7 @@ const AddTask = () => {
         apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji', // Replace with your actual API key
       });
       const newLoc = response.data.createLocation;
-      setLocations([...locations, newLoc]); // Add the new location to the dropdown
+      setLocations([...locations, newLoc.name]); // Add the new location to the dropdown
       setNewLocation(''); // Reset input field
       setIsLocationModalOpen(false); // Close modal
     } catch (error) {
@@ -321,10 +316,27 @@ const AddTask = () => {
       alert('Failed to add location.');
     }
   };
-  const [locations, setLocations] = useState([]); // Store dynamic locations
-  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false); // Control modal visibility
-  const [newLocation, setNewLocation] = useState(''); // New location input
 
+  const getLocation = async () => {
+    try {
+      // Fetch the list of locations from GraphQL
+      const response = await API.graphql({
+        query: listLocations, // Your GraphQL query
+        apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji', // Your API key
+      });
+      // Check the structure of the response to ensure you're accessing the correct part
+      const newLocations = response.data.listLocations.items || []; // Make sure we access 'items' array
+      console.log('Fetched Locations:', newLocations);
+  
+      // Set locations in state
+      setLocations(newLocations); // Update state with the fetched locations
+  
+    } catch (error) {
+      console.error('Error fetching locations:', error);
+      alert('Failed to fetch locations.');
+    }
+  };
+  
   const handleCancle = () => {
     setIsOpen(false);
     navigation('/ShiftList');
@@ -394,7 +406,7 @@ const AddTask = () => {
             Shift's Details
           </h3>
           <div className="border-b mt-3 mb-6"></div>
-         
+
           <div className="w-full">
             <div className="w-full flex items-center justify-between   mb-2">
               <label className="text-black dark:text-white">Location</label>
@@ -408,28 +420,22 @@ const AddTask = () => {
 
             <div className="flex items-center space-x-4">
               {/* Location Dropdown */}
-              <select
-                name="location" // Ensure this matches the formData key
-                value={formData.location} // Bind the value to formData.location
-                onChange={handleChange} // Handle change to update formData
-                className={`w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary ${
-                  errors.location ? 'border-red-500' : ''
-                } dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
-              >
-                <option value="">Select Location</option>
-                <option value="Airport">
-                  Airport - 2710 Britannia Rd E, Mississauga, ON L4W 1S9
-                </option>
-                <option value="Office">
-                  Office - 2552 Finch Ave. West. Unit 105. Toronto M9M 2G3
-                </option>
-                {/* Dynamically render added locations */}
-                {locations.map((loc) => (
-                  <option key={loc.id} value={loc.name}>
-                    {loc.name}
-                  </option>
-                ))}
-              </select>
+<select
+  name="location"
+  value={formData.location} // Bind value to formData.location
+  onChange={handleChange} // Update formData.location on change
+  className={`w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary ${
+    errors.location ? 'border-red-500' : ''
+  } dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
+>
+  <option value="">Select Location</option>
+
+  {Array.isArray(locations) && locations.length > 0 && locations.map((loc) => (
+        <option key={loc.id} value={loc.id}>
+        {loc.name}
+    </option>
+  ))}
+</select>
               {/* "Add New Location" Button */}
             </div>
           </div>
@@ -506,7 +512,7 @@ const AddTask = () => {
               )}
             </div>
           </LocalizationProvider>
-          
+
           {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
 
           {errors.selectedDate && (

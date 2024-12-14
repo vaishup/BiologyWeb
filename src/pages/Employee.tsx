@@ -13,13 +13,19 @@ import { Modal } from 'antd';
 import { getTheAdminStaffUser } from '../graphql/queries.js';
 import { listTheStaffs } from '../graphql/queries.js';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb.js';
+import { useLocation } from 'react-router-dom';
+
 const Employee = () => {
+  const location = useLocation(); // Access the navigation state
+  const initialFilter = location.state?.filter || 'all'; // Default to 'all' if no filter is passed
+
   const client = generateClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [show, setIsShow] = useState(false);
   const [selectedId, setSelectedId] = useState('');
   const navigation = useNavigate();
+
   const [stafflist, setStaffList] = useState([]);
   const handleDelete = async () => {
     try {
@@ -39,9 +45,14 @@ const Employee = () => {
 
   //GraphQL endpoint: https://kfh66zv2vrg4lmd7d63crztdei.appsync-api.us-east-2.amazonaws.com/graphql
   //GraphQL API KEY: da2-mttg3c4kpjgi3jgfvaelnjquji
+  const [filteredStaffList, setFilteredStaffList] = useState([]); // Filtered list
+  const [filter, setFilter] = useState(initialFilter || 'all'); // Initialize with the passed filter
+
+  // Fetch staff list on component mount
   useEffect(() => {
     listStaff();
   }, []);
+
   const listStaff = async () => {
     const client = generateClient();
     try {
@@ -49,7 +60,6 @@ const Employee = () => {
       const staffdata = await client.graphql({
         query: listTheStaffs,
         variables: {},
-        // authMode: 'da2-mttg3c4kpjgi3jgfvaelnjquji', // Use public access via API key
       });
 
       const staffList = staffdata.data.listTheStaffs.items;
@@ -71,7 +81,6 @@ const Employee = () => {
               const adminData = await client.graphql({
                 query: getTheAdminStaffUser,
                 variables: { id: staff.userId },
-                // authMode: 'da2-mttg3c4kpjgi3jgfvaelnjquji', // Use public access via API key
               });
 
               adminName = adminData.data.getTheAdminStaffUser?.name || 'Admin';
@@ -88,14 +97,26 @@ const Employee = () => {
         }),
       );
 
-      setStaffList(staffWithAdminNames); // Set the processed staff data in state
-      console.log('Updated Staff List:', staffWithAdminNames);
+      setStaffList(staffWithAdminNames); // Set the full staff list
+      setFilteredStaffList(staffWithAdminNames); // Initially display all staff
     } catch (error) {
-      console.error('Error fetching staff detailsssdsdsd:', error);
+      console.error('Error fetching staff details:', error);
     }
   };
 
-  const filteredStaffs = stafflist.filter((client) =>
+  // Filter staff list based on the current filter
+  useEffect(() => {
+    if (filter === 'all') {
+      setFilteredStaffList(stafflist); // Show all staff
+    } else if (filter === 'assigned') {
+      const assignedStaff = stafflist.filter(
+        (staff) => staff.staffStatus === 'assigned',
+      );
+      setFilteredStaffList(assignedStaff); // Show only assigned staff
+    }
+  }, [filter, stafflist]);
+
+  const filteredStaffs = filteredStaffList.filter((client) =>
     client.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
   const [currentPage, setCurrentPage] = useState(1);
@@ -165,7 +186,6 @@ const Employee = () => {
 
   return (
     <>
-
       <Modal
         open={isOpen}
         onCancel={() => {
@@ -196,6 +216,7 @@ const Employee = () => {
           </p>
         </div>
       </Modal>
+
       <div className="flex items-center justify-between">
         <h2 className="text-title-md2 font-semibold text-black dark:text-white">
           Employee List
@@ -222,6 +243,30 @@ const Employee = () => {
           </svg>
           Add New Employee
         </button>
+      </div>
+      <div className="p-4 mb-6">
+        <nav className="flex space-x-4" aria-label="Tabs">
+          <button
+            className={`px-6 py-2 text-sm font-medium rounded-md transition-all ${
+              filter === 'all'
+                ? 'bg-[#8c8c8c] text-white shadow-md'
+                : 'bg-white text-gray-600 shadow-lg border-gray-300 hover:bg-gray-100 hover:text-indigo-600'
+            }`}
+            onClick={() => setFilter('all')}
+          >
+            All
+          </button>
+          <button
+            className={`px-6 py-2 text-sm font-medium rounded-md transition-all ${
+              filter === 'assigned'
+                ? 'bg-[#8c8c8c] text-white shadow-md'
+                : 'bg-white text-gray-600 shadow-lg border-gray-300 hover:bg-gray-100 hover:text-indigo-600'
+            }`}
+            onClick={() => setFilter('assigned')}
+          >
+            Assigned
+          </button>
+        </nav>
       </div>
       <div className="overflow-x-auto mt-10">
         {stafflist.length > 0 ? (

@@ -1,6 +1,26 @@
+type MainShift @model 
+  @auth(rules: [
+  { allow: public, provider: apiKey, operations: [read, create, update, delete] }
+]) {
+  id: ID!
+  locationID: String
+  shiftName: String
+  duties: String
+  shiftDate: AWSDateTime
+  shiftStartTime: AWSDateTime
+  shiftEndTime: AWSDateTime
+  createdBy: String
+  startDate: String
+  endDate: String
+  shiftstatus: String
+  userId: String
+  staffIds: [String]
+  shifts: [TheShifts] @hasMany(indexName: "byMainShift", fields: ["id"]) # One-to-many relationship
+}
+
 type TheShifts @model 
   @auth(rules: [
-  { allow: public, provider: apiKey, operations: [read, create, update,delete]  } # Allow public read access
+  { allow: public, provider: apiKey, operations: [read, create, update, delete] }
 ]) {
   id: ID!
   Location: String
@@ -12,12 +32,14 @@ type TheShifts @model
   startDate: String
   endDate: String
   shiftstatus: String
-  userId:String
-  checkInTIme:String
-  checkOutTime:String
-  AdminTime:String
-  AssignStatus:String
-  locationID:String
+  userId: String
+  checkInTIme: String
+  checkOutTime: String
+  AdminTime: String
+  AssignStatus: String
+  locationID: String
+  mainShiftID: ID @index(name: "byMainShift", sortKeyFields: ["startDate"]) # Foreign key to MainShift
+  mainShift: MainShift @belongsTo(fields: ["mainShiftID"]) # Belongs-to relationship
 }
 
 type Location @model 
@@ -95,6 +117,8 @@ type TheStaff
   shiftIds: [String]
   userId: String
   employeeId: String
+  staffStatus:String
+  shiftstatus:String
 }
 
 

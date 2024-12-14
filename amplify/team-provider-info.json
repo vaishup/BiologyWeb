@@ -18,7 +18,7 @@
       "function": {
         "CreateShiftForEmployee": {
           "deploymentBucketName": "amplify-bilogic-staging-8e024-deployment",
-          "s3Key": "amplify-builds/CreateShiftForEmployee-736c7053397054315959-build.zip"
+          "s3Key": "amplify-builds/CreateShiftForEmployee-4233382f6c525374712b-build.zip"
         },
         "CreateStaff": {
           "deploymentBucketName": "amplify-bilogic-staging-8e024-deployment",

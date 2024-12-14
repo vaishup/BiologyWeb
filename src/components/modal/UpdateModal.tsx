@@ -66,11 +66,8 @@ const UpdateModal = ({ id, setIsShow,onClose }) => {
   const handleAssign = async () => {
     console.log("id",id);
     console.log("selectedDClients--------",selectedDClients);
-    
-  
     if (selectedDClients.length === 0) {
-      setErrorMessage('Please select at least one Client.');
-     
+      setErrorMessage('Please select at least one Client.');     
       return;
     } else {
       //setErrorMessage('');
@@ -79,7 +76,6 @@ const UpdateModal = ({ id, setIsShow,onClose }) => {
           id: id,
           selectedStaffIds: selectedDClients
         };
-        
         triggerCreateBatchFunction(payload)
         setIsShow(false);
         setIsDialogShow(false);
@@ -102,6 +98,7 @@ const UpdateModal = ({ id, setIsShow,onClose }) => {
   const handleSearchChange = (e) => {
     setSearchValue(e.target.value);
   };
+
   const handFetch = () => {
     setIsModalShow(false);
     navigation('/ShiftList');
@@ -116,7 +113,6 @@ const UpdateModal = ({ id, setIsShow,onClose }) => {
             },
             body: JSON.stringify(payload), // Ensure payload is correctly serialized
         });
-
         const data = await response.json();
         console.log("Lambda response:", data);
     } catch (error) {

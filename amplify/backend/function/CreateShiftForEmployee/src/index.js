@@ -6,12 +6,11 @@ const sns = new AWS.SNS({ region: 'us-east-2' }); // Replace 'your-region' with 
 const sesTransport = require('nodemailer-ses-transport');
 
 // Function to fetch a shift by ID
-async function fetchShiftById(shiftId) {
+async function fetchMainShiftById(shiftId) {
   const params = {
-    TableName: 'TheShifts-qfmdhqquffcdzhgu6efvoqwpru-staging',
+    TableName: 'MainShift-qfmdhqquffcdzhgu6efvoqwpru-staging',
     Key: { id: shiftId },
   };
-
   try {
     const result = await docClient.get(params).promise();
     return result.Item;
@@ -36,25 +35,33 @@ async function fetchStaffDetailsById(staffId) {
   }
 }
 
-// Function to send SMS
-// Function to send SMS with shift details
-const locationMap = {
-  Airport: '2710 Britannia Rd E, Mississauga, ON L4W 1S9',
-  Office: '2552 Finch Ave. West. Unit 105. Toronto M9M 2G3',
-};
-
 // Function to send SMS with formatted details
 async function sendTextMessage(phoneNumber, shiftDetails) {
-  console.log('shiftDetails...', shiftDetails);
-  const { Location, startDate } = shiftDetails;
-  console.log('startDate', startDate);
+  const { Location, startDate,locationID } = shiftDetails;
   // Format date and time
   const formattedDate = dayjs(startDate).format('YYYY-MM-DD'); // Extract date part
   const formattedTime = dayjs(startDate).format('hh:mm A'); // Extract time part in 12-hour format with AM/PM
-  console.log('formattedTime', formattedTime);
-  console.log('formattedDate', formattedDate);
+ 
+  let fullLocation = Location; // Fallback to Location if LocationId is not valid
+  if (locationID) {
+    try {
+      // Fetch location details from the location table
+      const params = {
+        TableName: 'Location-qfmdhqquffcdzhgu6efvoqwpru-staging', // Replace with your actual table name
+        Key: { id: locationID }, // Use LocationId as the key to fetch location details
+      };
+      const result = await docClient.get(params).promise();
+      // Extract location name if available
+      if (result.Item && result.Item.name) {
+        fullLocation = result.Item.name;
+      } else {
+        console.warn(`Location not found for LocationId: ${LocationId}`);
+      }
+    } catch (error) {
+      console.error(`Error fetching location for LocationId: ${LocationId}`, error);
+    }
+  }
   // Get full address for location
-  const fullLocation = locationMap[Location] || Location; // Use map, fallback to original if not found
 
   const message = `Hello, You have been assigned a new shift by Royal Employment. Location: ${fullLocation}, Date: ${formattedDate}, Time: ${formattedTime}.`;
 
@@ -81,17 +88,22 @@ const formatPhoneNumber = (phoneNumber) => {
   return phoneNumber;
 };
 // Function to create a new shift
-async function createShift(shiftDetails, staffId) {
+async function createShift(shiftDetails, staffId, mainShiftID) {
+  // Destructure `staffIds` out of shiftDetails so it is excluded
+  const { staffIds, ...remainingShiftDetails } = shiftDetails;
+
   const newShift = {
-    ...shiftDetails,
-    id: AWS.util.uuid.v4(), // Generate a new unique ID
+    ...remainingShiftDetails, // Include all properties except staffIds
+    id: AWS.util.uuid.v4(), // Generate a new unique ID for TheShifts table
     staffId, // Assign the new staff ID
+    mainShiftID, // Set the foreign key to MainShift
   };
 
   const params = {
     TableName: 'TheShifts-qfmdhqquffcdzhgu6efvoqwpru-staging',
     Item: newShift,
   };
+
   try {
     await docClient.put(params).promise();
     console.log('Shift created successfully for staffId:', staffId);
@@ -101,45 +113,55 @@ async function createShift(shiftDetails, staffId) {
   }
 }
 
+
 // Function to update an existing shift
-async function updateShift(shiftId, staffId) {
+async function updateMainShift(shiftId, staffIds) {
+  console.log("staffIds to update:", staffIds);
+
   const params = {
-    TableName: 'TheShifts-qfmdhqquffcdzhgu6efvoqwpru-staging',
+    TableName: 'MainShift-qfmdhqquffcdzhgu6efvoqwpru-staging',
     Key: { id: shiftId },
-    UpdateExpression: 'SET staffId = :staffId',
+    UpdateExpression: 'SET staffIds = :staffIds',
     ExpressionAttributeValues: {
-      ':staffId': staffId,
+      ':staffIds': staffIds, // Ensure this is an array
     },
     ReturnValues: 'UPDATED_NEW',
   };
 
   try {
-    await docClient.update(params).promise();
-    console.log('Shift updated successfully with staffId:', staffId);
+    const result = await docClient.update(params).promise();
+    console.log('Shift updated successfully with staffIds:', result.Attributes.staffIds);
+    return result.Attributes.staffIds; // Return the updated staffIds
   } catch (error) {
     console.error('Error updating shift:', error);
     throw new Error('Could not update shift');
   }
 }
 
+
 // Main function to replicate or update shifts
 async function replicateShiftForStaff(shiftId, selectedStaffIds) {
   try {
     console.log('Shift ID:', shiftId);
     console.log('Selected Staff IDs:', selectedStaffIds);
-    // Fetch the shift details
-    const shiftDetails = await fetchShiftById(shiftId);
-    if (selectedStaffIds.length === 1) {
-      // Update the shift with the only staff ID
-      await updateShift(shiftId, selectedStaffIds[0]);
-    } else {
-      // Update the original shift with the first staff ID
-      await updateShift(shiftId, selectedStaffIds[0]);
-      // Create new shifts for the remaining staff IDs
-      for (let i = 1; i < selectedStaffIds.length; i++) {
-        await createShift(shiftDetails, selectedStaffIds[i]);
-      }
+
+    // Step 1: Update the MainShift with the staffIds array
+    await updateMainShift(shiftId, selectedStaffIds);
+
+    // Step 2: Fetch the updated MainShift details
+    const shiftDetails = await fetchMainShiftById(shiftId);
+
+    if (!shiftDetails) {
+      throw new Error('Shift details not found');
     }
+
+    // Step 3: Create individual shifts for each staffId in the selectedStaffIds array
+    for (let i = 0; i < selectedStaffIds.length; i++) {
+      const staffId = selectedStaffIds[i];
+      console.log(`Creating shift for staffId: ${staffId}`);
+      await createShift(shiftDetails, staffId,shiftId );
+    }
+
     console.log('Shifts processed successfully');
     return {
       statusCode: 200,
@@ -151,6 +173,28 @@ async function replicateShiftForStaff(shiftId, selectedStaffIds) {
       statusCode: 500,
       body: JSON.stringify({ message: error.message }),
     };
+  }
+}
+
+async function updateStaffShiftStatus(staffId) {
+  const params = {
+    TableName: 'TheStaff-qfmdhqquffcdzhgu6efvoqwpru-staging', // Replace with the actual staff table name
+    Key: { id: staffId }, // Use the staffId as the key
+    UpdateExpression: 'SET shiftstatus = :shiftstatus, staffStatus = :staffStatus',
+    ExpressionAttributeValues: {
+      ':shiftstatus': 'assigned', // Update the shiftstatus to "assigned"
+      ':staffStatus': 'assigned', // Update the staffStatus to "assigned"
+    },
+    ReturnValues: 'UPDATED_NEW',
+  };
+
+  try {
+    const result = await docClient.update(params).promise();
+    console.log(`Staff ${staffId} shiftstatus and staffStatus updated to "assigned"`, result.Attributes);
+    return result.Attributes; // Return the updated attributes if needed
+  } catch (error) {
+    console.error(`Error updating shiftstatus and staffStatus for staff ID: ${staffId}`, error);
+    throw new Error('Could not update shiftstatus and staffStatus');
   }
 }
 
@@ -170,14 +214,14 @@ exports.handler = async (event) => {
   }
   const { id, selectedStaffIds } = parsedEvent;
   console.log('', selectedStaffIds);
-  const shiftDetails = await fetchShiftById(id);
+  const shiftDetails = await fetchMainShiftById(id);
   console.log('test drive-------------', shiftDetails);
   for (const staffId of selectedStaffIds) {
     const staffDetailsd = await fetchStaffDetailsById(staffId);
     console.log('shiftDetails', staffDetailsd);
     if (staffDetailsd && staffDetailsd.phoneNumber) {
       console.log('shiftDetails------', shiftDetails);
-
+      await updateStaffShiftStatus(staffId);
       const formattedPhoneNumber = formatPhoneNumber(staffDetailsd.phoneNumber);
       console.log('formattedPhoneNumber', formattedPhoneNumber);
 

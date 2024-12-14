@@ -7,7 +7,9 @@ import { Modal } from 'antd';
 
 import {
   listTheShifts,
+  listMainShifts,
   getTheStaff,
+  //listTheStaff,
   getTheAdminStaffUser,
 } from '../graphql/queries.js';
 import * as mutation from '../graphql/mutations.js';
@@ -18,75 +20,108 @@ const ShiftList = () => {
   const [filter, setFilter] = useState('today'); // State to manage current filter
   const [isOpen, setIsOpen] = useState(false);
   const [selectedId, setSelectedId] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const totalPages = Math.ceil(filteredShifts.length / itemsPerPage);
+  const startIdx = (currentPage - 1) * itemsPerPage;
+  const paginatedData = filteredShifts.slice(startIdx, startIdx + itemsPerPage);
+
   const client = generateClient();
   const navigation = useNavigate();
 
   useEffect(() => {
-    listShifts();
+   // listShifts();
   }, []);
 
+  // async function fetchStaffDetailsBatch(staffIds) {
+  //   try {
+  //     const staffData = await client.graphql({
+  //       query: listTheStaff, // Replace with your batch query
+  //       variables: { ids: staffIds },
+  //     });
+
+  //     const staffList = staffData.data.listTheStaff.items;
+
+  //     // Map staff details for easy lookup
+  //     const staffDetailsMap = staffList.reduce((acc, staff) => {
+  //       acc[staff.id] = { staffName: staff.name, employeeId: staff.employeeId };
+  //       return acc;
+  //     }, {});
+
+  //     console.log('Fetched Staff Details:', staffDetailsMap);
+  //     return staffDetailsMap;
+  //   } catch (error) {
+  //     console.error('Error fetching staff details in batch:', error);
+  //     return {}; // Return an empty object in case of an error
+  //   }
+  // }
   useEffect(() => {
     applyFilter(); // Apply the filter whenever stafflist or filter changes
   }, [stafflist, filter]);
 
   const listShifts = async () => {
     try {
-      const staffdata = await client.graphql({
-        query: listTheShifts,
+      // Fetch all main shifts
+      const shiftData = await client.graphql({
+        query: listMainShifts,
         variables: {},
       });
-      const shiftsList = staffdata.data.listTheShifts.items;
+      const shiftsList = shiftData.data.listMainShifts.items || [];
 
-      const sortedTasks = shiftsList.sort(
+      // Sort shifts by creation date (newest first)
+      const sortedShifts = shiftsList.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
       );
 
-      const shiftsWithDetails = await Promise.all(
-        sortedTasks.map(async (shift) => {
-          let staffName = 'Unknown';
-          let employeeId = 'Unknown';
-          let adminName = '';
+      // Extract all unique staff IDs
+      const allStaffIds = [
+        ...new Set(sortedShifts.flatMap((shift) => shift.staffIds || [])),
+      ];
 
-          // Fetch staff name if `staffId` exists
-          if (shift.staffId) {
-            try {
-              const staffData = await client.graphql({
-                query: getTheStaff,
-                variables: { id: shift.staffId },
-              });
+      // Fetch staff details in batch
+    //  const staffDetails = await fetchStaffDetailsBatch(shiftsList.staffIds);
 
-              staffName = staffData.data.getTheStaff.name;
-              employeeId = staffData.data.getTheStaff.employeeId;
-              //console.log(staffData.data.getTheStaff.employeeId);
-            } catch (error) {
-              console.error(
-                `Error fetching staff name for ${shift.staffId}:`,
-                error,
-              );
-            }
-          }
+      // Process each shift and add staff and admin details
+      // const shiftsWithDetails = await Promise.all(
+      //   sortedShifts.map(async (shift) => {
+      //     let adminName = 'Admin';
 
-          // Fetch admin name if `userId` exists
-          if (shift.userId) {
-            try {
-              const adminData = await client.graphql({
-                query: getTheAdminStaffUser,
-                variables: { id: shift.userId },
-              });
-              adminName = adminData.data.getTheAdminStaffUser.name || 'Admin';
-            } catch (error) {
-              console.error(
-                `Error fetching admin name for ${shift.userId}:`,
-                error,
-              );
-            }
-          }
-          // Combine shift with staffName and adminName
-          return { ...shift, staffName, adminName, employeeId };
-        }),
-      );
+      //     // Map staff details for this shift
+      //     const staffDetailsForShift = (shift.staffIds || []).map((staffId) => {
+      //       const staffInfo = staffDetails[staffId] || {
+      //         staffName: 'Unknown',
+      //         employeeId: 'Unknown',
+      //       };
+      //       return { staffId, ...staffInfo };
+      //     });
 
-      setStaffList(shiftsWithDetails); // Set the processed shift data in state
+      //     // Fetch admin details if userId exists
+      //     if (shift.userId) {
+      //       try {
+      //         const adminData = await client.graphql({
+      //           query: getTheAdminStaffUser,
+      //           variables: { id: shift.userId },
+      //         });
+      //         adminName = adminData.data.getTheAdminStaffUser.name || 'Admin';
+      //       } catch (error) {
+      //         console.error(
+      //           `Error fetching admin name for userId: ${shift.userId}`,
+      //           error,
+      //         );
+      //       }
+      //     }
+
+      //     // Combine shift details with staff and admin info
+      //     return {
+      //       ...shift,
+      //       staffDetails: staffDetailsForShift, // Array of staff details for the shift
+      //       adminName,
+      //     };
+      //   }),
+      // );
+
+      // Update state with processed shifts
+     // setStaffList(shiftsWithDetails);
     } catch (error) {
       console.error('Error fetching shifts:', error);
     }
@@ -150,12 +185,6 @@ const ShiftList = () => {
       console.error('Error deleting item:', error);
     }
   };
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const totalPages = Math.ceil(filteredShifts.length / itemsPerPage);
-  const startIdx = (currentPage - 1) * itemsPerPage;
-  const paginatedData = filteredShifts.slice(startIdx, startIdx + itemsPerPage);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -298,6 +327,7 @@ const ShiftList = () => {
             }`}
             onClick={() => setFilter('previous')}
           >
+            {' '}
             Previous Shifts
           </button>
           <button
@@ -310,9 +340,6 @@ const ShiftList = () => {
           >
             All Shifts
           </button>
-
-         
-         
         </nav>
       </div>
 
@@ -363,7 +390,7 @@ const ShiftList = () => {
                     {shift.duties}
                   </td>
                   <td className="px-4 py-4 border-b align-middle">
-                    {shift.employeeId}
+                    {shift.staffDetails.employeeId}
                   </td>
                   <td className="px-4 py-4 border-b align-middle">
                     {shift.staffName ?? 'Unknown'}

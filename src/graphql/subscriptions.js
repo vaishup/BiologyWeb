@@ -1,6 +1,90 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateMainShift = /* GraphQL */ `
+  subscription OnCreateMainShift(
+    $filter: ModelSubscriptionMainShiftFilterInput
+  ) {
+    onCreateMainShift(filter: $filter) {
+      id
+      locationID
+      shiftName
+      duties
+      shiftDate
+      shiftStartTime
+      shiftEndTime
+      createdBy
+      startDate
+      endDate
+      shiftstatus
+      userId
+      staffIds
+      shifts {
+        nextToken
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateMainShift = /* GraphQL */ `
+  subscription OnUpdateMainShift(
+    $filter: ModelSubscriptionMainShiftFilterInput
+  ) {
+    onUpdateMainShift(filter: $filter) {
+      id
+      locationID
+      shiftName
+      duties
+      shiftDate
+      shiftStartTime
+      shiftEndTime
+      createdBy
+      startDate
+      endDate
+      shiftstatus
+      userId
+      staffIds
+      shifts {
+        nextToken
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteMainShift = /* GraphQL */ `
+  subscription OnDeleteMainShift(
+    $filter: ModelSubscriptionMainShiftFilterInput
+  ) {
+    onDeleteMainShift(filter: $filter) {
+      id
+      locationID
+      shiftName
+      duties
+      shiftDate
+      shiftStartTime
+      shiftEndTime
+      createdBy
+      startDate
+      endDate
+      shiftstatus
+      userId
+      staffIds
+      shifts {
+        nextToken
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const onCreateTheShifts = /* GraphQL */ `
   subscription OnCreateTheShifts(
     $filter: ModelSubscriptionTheShiftsFilterInput
@@ -21,6 +105,26 @@ export const onCreateTheShifts = /* GraphQL */ `
       checkOutTime
       AdminTime
       AssignStatus
+      locationID
+      mainShiftID
+      mainShift {
+        id
+        locationID
+        shiftName
+        duties
+        shiftDate
+        shiftStartTime
+        shiftEndTime
+        createdBy
+        startDate
+        endDate
+        shiftstatus
+        userId
+        staffIds
+        createdAt
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -47,6 +151,26 @@ export const onUpdateTheShifts = /* GraphQL */ `
       checkOutTime
       AdminTime
       AssignStatus
+      locationID
+      mainShiftID
+      mainShift {
+        id
+        locationID
+        shiftName
+        duties
+        shiftDate
+        shiftStartTime
+        shiftEndTime
+        createdBy
+        startDate
+        endDate
+        shiftstatus
+        userId
+        staffIds
+        createdAt
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -73,6 +197,26 @@ export const onDeleteTheShifts = /* GraphQL */ `
       checkOutTime
       AdminTime
       AssignStatus
+      locationID
+      mainShiftID
+      mainShift {
+        id
+        locationID
+        shiftName
+        duties
+        shiftDate
+        shiftStartTime
+        shiftEndTime
+        createdBy
+        startDate
+        endDate
+        shiftstatus
+        userId
+        staffIds
+        createdAt
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -136,6 +280,8 @@ export const onCreateTheStaff = /* GraphQL */ `
       shiftIds
       userId
       employeeId
+      staffStatus
+      shiftstatus
       createdAt
       updatedAt
       owner
@@ -164,6 +310,8 @@ export const onUpdateTheStaff = /* GraphQL */ `
       shiftIds
       userId
       employeeId
+      staffStatus
+      shiftstatus
       createdAt
       updatedAt
       owner
@@ -192,6 +340,8 @@ export const onDeleteTheStaff = /* GraphQL */ `
       shiftIds
       userId
       employeeId
+      staffStatus
+      shiftstatus
       createdAt
       updatedAt
       owner

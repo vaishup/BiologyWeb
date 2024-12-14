@@ -74,6 +74,40 @@
       "service": "Lambda"
     }
   },
+  "parameters": {
+    "AMPLIFY_function_CreateShiftForEmployee_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "CreateShiftForEmployee"
+        }
+      ]
+    },
+    "AMPLIFY_function_CreateShiftForEmployee_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "CreateShiftForEmployee"
+        }
+      ]
+    },
+    "AMPLIFY_function_CreateStaff_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "CreateStaff"
+        }
+      ]
+    },
+    "AMPLIFY_function_CreateStaff_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "CreateStaff"
+        }
+      ]
+    }
+  },
   "storage": {
     "s38a04c9da": {
       "dependsOn": [],

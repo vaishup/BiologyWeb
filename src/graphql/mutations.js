@@ -1,6 +1,93 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createMainShift = /* GraphQL */ `
+  mutation CreateMainShift(
+    $input: CreateMainShiftInput!
+    $condition: ModelMainShiftConditionInput
+  ) {
+    createMainShift(input: $input, condition: $condition) {
+      id
+      locationID
+      shiftName
+      duties
+      shiftDate
+      shiftStartTime
+      shiftEndTime
+      createdBy
+      startDate
+      endDate
+      shiftstatus
+      userId
+      staffIds
+      shifts {
+        nextToken
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateMainShift = /* GraphQL */ `
+  mutation UpdateMainShift(
+    $input: UpdateMainShiftInput!
+    $condition: ModelMainShiftConditionInput
+  ) {
+    updateMainShift(input: $input, condition: $condition) {
+      id
+      locationID
+      shiftName
+      duties
+      shiftDate
+      shiftStartTime
+      shiftEndTime
+      createdBy
+      startDate
+      endDate
+      shiftstatus
+      userId
+      staffIds
+      shifts {
+        nextToken
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteMainShift = /* GraphQL */ `
+  mutation DeleteMainShift(
+    $input: DeleteMainShiftInput!
+    $condition: ModelMainShiftConditionInput
+  ) {
+    deleteMainShift(input: $input, condition: $condition) {
+      id
+      locationID
+      shiftName
+      duties
+      shiftDate
+      shiftStartTime
+      shiftEndTime
+      createdBy
+      startDate
+      endDate
+      shiftstatus
+      userId
+      staffIds
+      shifts {
+        nextToken
+        __typename
+      }
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const createTheShifts = /* GraphQL */ `
   mutation CreateTheShifts(
     $input: CreateTheShiftsInput!
@@ -22,6 +109,26 @@ export const createTheShifts = /* GraphQL */ `
       checkOutTime
       AdminTime
       AssignStatus
+      locationID
+      mainShiftID
+      mainShift {
+        id
+        locationID
+        shiftName
+        duties
+        shiftDate
+        shiftStartTime
+        shiftEndTime
+        createdBy
+        startDate
+        endDate
+        shiftstatus
+        userId
+        staffIds
+        createdAt
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -49,6 +156,26 @@ export const updateTheShifts = /* GraphQL */ `
       checkOutTime
       AdminTime
       AssignStatus
+      locationID
+      mainShiftID
+      mainShift {
+        id
+        locationID
+        shiftName
+        duties
+        shiftDate
+        shiftStartTime
+        shiftEndTime
+        createdBy
+        startDate
+        endDate
+        shiftstatus
+        userId
+        staffIds
+        createdAt
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -76,6 +203,26 @@ export const deleteTheShifts = /* GraphQL */ `
       checkOutTime
       AdminTime
       AssignStatus
+      locationID
+      mainShiftID
+      mainShift {
+        id
+        locationID
+        shiftName
+        duties
+        shiftDate
+        shiftStartTime
+        shiftEndTime
+        createdBy
+        startDate
+        endDate
+        shiftstatus
+        userId
+        staffIds
+        createdAt
+        updatedAt
+        __typename
+      }
       createdAt
       updatedAt
       __typename
@@ -148,6 +295,8 @@ export const createTheStaff = /* GraphQL */ `
       shiftIds
       userId
       employeeId
+      staffStatus
+      shiftstatus
       createdAt
       updatedAt
       owner
@@ -176,6 +325,8 @@ export const updateTheStaff = /* GraphQL */ `
       shiftIds
       userId
       employeeId
+      staffStatus
+      shiftstatus
       createdAt
       updatedAt
       owner
@@ -204,6 +355,8 @@ export const deleteTheStaff = /* GraphQL */ `
       shiftIds
       userId
       employeeId
+      staffStatus
+      shiftstatus
       createdAt
       updatedAt
       owner
