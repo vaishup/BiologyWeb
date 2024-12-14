@@ -8,8 +8,8 @@ const AddStaff = lazy(() => import('../pages/AddStaff'));
 const AddClient = lazy(() => import('../pages/AddClient'));
 const AddTask = lazy(() => import('../pages/AddTask'));
 const StaffList = lazy(() => import('../pages/StaffList'));
-const TaskList = lazy(() => import('../pages/TaskList'));
-const ClientList = lazy(() => import('../pages/ClientList'));
+const ShiftList = lazy(() => import('../pages/ShiftList'));
+const Employee = lazy(() => import('../pages/Employee'));
 const IncidenetsList = lazy(() => import('../pages/IncidenetsList'));
 const Profile = lazy(() => import('../pages/Profile'));
 const MapScreen = lazy(() => import('../pages/MapScreen'));
@@ -45,14 +45,14 @@ const coreRoutes = [
     component: StaffList,
   },
   {
-    path: '/taskList',
-    title: 'TaskList',
-    component: TaskList,
+    path: '/ShiftList',
+    title: 'ShiftList',
+    component: ShiftList,
   },
   {
-    path: '/clientlist',
-    title: 'clientlist',
-    component: ClientList,
+    path: '/Employee',
+    title: 'Employee',
+    component: Employee,
   },
   {
     path: '/incidenetsList',

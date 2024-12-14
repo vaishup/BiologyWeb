@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'; // Import hooks from react-route
 import {
   listTheStaffs
 } from '../../graphql/queries';
-const UpdateModal = ({ id, setIsShow }) => {
+const UpdateModal = ({ id, setIsShow,onClose }) => {
   console.log('id', id);
 
   const [isDialogShow, setIsDialogShow] = useState(false); // State to track if the dialog is open
@@ -22,12 +22,12 @@ const UpdateModal = ({ id, setIsShow }) => {
   const [clientList, setClientList] = useState([]);
   const navigation = useNavigate();
 
-  const handleDialogue = () => {
-    setIsShow(true);
-    setIsModalShow(false);
-  };
+
   const handleCancle = () => {
-    navigation('/taskList');
+    if (onClose) {
+      onClose(); // Call the parent's `listStaff` function
+    }
+   // navigation('/ShiftList');
     setIsModalShow(false);
     setIsShow(false);
   };
@@ -79,7 +79,6 @@ const UpdateModal = ({ id, setIsShow }) => {
           id: id,
           selectedStaffIds: selectedDClients
         };
-        console.log("payload",payload);
         
         triggerCreateBatchFunction(payload)
         setIsShow(false);
@@ -105,7 +104,7 @@ const UpdateModal = ({ id, setIsShow }) => {
   };
   const handFetch = () => {
     setIsModalShow(false);
-    navigation('/taskList');
+    navigation('/ShiftList');
   };
 
   async function triggerCreateBatchFunction(payload) {

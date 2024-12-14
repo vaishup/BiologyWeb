@@ -1,5 +1,7 @@
 const AWS = require('aws-sdk');
 const docClient = new AWS.DynamoDB.DocumentClient();
+const dayjs = require('dayjs'); // Import dayjs
+
 const sns = new AWS.SNS({ region: 'us-east-2' }); // Replace 'your-region' with your AWS region
 const sesTransport = require('nodemailer-ses-transport');
 
@@ -44,12 +46,11 @@ const locationMap = {
 // Function to send SMS with formatted details
 async function sendTextMessage(phoneNumber, shiftDetails) {
   console.log('shiftDetails...', shiftDetails);
-  const { Location, startDate, startTime } = shiftDetails;
+  const { Location, startDate } = shiftDetails;
   console.log('startDate', startDate);
-  console.log('startTime', startTime);
   // Format date and time
-  const formattedDate = startDate.split('T')[0]; // Extract date part
-  const formattedTime = startDate.split('T')[1].split('.')[0]; // Extract time part
+  const formattedDate = dayjs(startDate).format('YYYY-MM-DD'); // Extract date part
+  const formattedTime = dayjs(startDate).format('hh:mm A'); // Extract time part in 12-hour format with AM/PM
   console.log('formattedTime', formattedTime);
   console.log('formattedDate', formattedDate);
   // Get full address for location

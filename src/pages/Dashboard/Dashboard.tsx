@@ -76,7 +76,7 @@ const ECommerce: React.FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-3 2xl:gap-7.5">
         {/* Total Employee Card */}
         <div onClick={() =>{
-          navigation('/clientlist')
+          navigation('/Employee')
         }}>
         <CardDataStats title="Total Employee" total={staffCount.toString()}>
           <SquareUserRound color="white" />
@@ -86,7 +86,15 @@ const ECommerce: React.FC = () => {
 
         {/* Total Shifts Card */}
         <div className="ml-10" onClick={() =>{
-          navigation('/taskList')
+          navigation('/Employee')
+        }}>
+          <CardDataStats title="Total Assigned Employees" total={shiftCount.toString()}>
+            <Hotel color="white" />
+          </CardDataStats>
+        </div>
+
+        <div className="ml-10" onClick={() =>{
+          navigation('/ShiftList')
         }}>
           <CardDataStats title="Total Shifts" total={shiftCount.toString()}>
             <Hotel color="white" />

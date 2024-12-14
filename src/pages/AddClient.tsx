@@ -31,10 +31,39 @@ const AddClient = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
+    // Validate and restrict phone number
+    if (name === "phoneNumber") {
+      // Allow only numeric input
+      if (!/^\d*$/.test(value)) {
+        setErrors((prev) => ({
+          ...prev,
+          phoneNumber: "Phone number must contain only numbers",
+        }));
+        return; // Stop updating the state
+      }
+
+      // Restrict to 10 digits
+      if (value.length > 10) {
+        setErrors((prev) => ({
+          ...prev,
+          phoneNumber: "Phone number must be exactly 10 digits",
+        }));
+        return; // Stop updating the state
+      } else if (value.length < 10 && value.length > 0) {
+        setErrors((prev) => ({
+          ...prev,
+          phoneNumber: "Phone number must be exactly 10 digits",
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, phoneNumber: "" })); // Clear error if valid
+      }
+    }
+
+    // Update formData for all fields
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
   const validate = () => {
     const errors = {};
@@ -99,8 +128,8 @@ const AddClient = () => {
         email: formData.email,
         employeeId: formData.employeeId,
         profileStatus: id ? formData.status : 'Incomplete',
-        userId: staffType === 'staff' && userId ? userId : '',
-      };
+        userId:userId
+            };
       //console.log('Staff Input:', staffInput);
   
       let staffResponse;
@@ -123,7 +152,7 @@ const AddClient = () => {
       console.log('Success:', createdItem.id);
       setId(createdItem.id);
       setIsOpen(true);
-      navigate('/clientlist');
+      navigation('/Employee');
     } catch (error) {
       console.error('Error creating or updating staff:', error);
     }
@@ -164,7 +193,7 @@ const AddClient = () => {
   };
   const handleCancle = () => {
     setIsOpen(false);
-    navigation('/taskList');
+    navigation('/ShiftList');
   };
   return (
     <>
@@ -233,6 +262,19 @@ const AddClient = () => {
                 {' '}
                 {/* Increase this container's width */}
                 {/* Name Field */}
+                <div className="w-full">  
+                  <label className="mb-2.5 mt-2 block text-black dark:text-white">
+                   Employee ID <span className="text-meta-1">*</span>
+                  </label>
+                  <input
+                    name="employeeId" // Add this line
+                    value={formData.employeeId}
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="Enter your Employee Id"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
                 <div className="w-full">
                   <label className="mb-2.5 block text-black dark:text-white">
                     Name <span className="text-meta-1">*</span>
@@ -267,27 +309,19 @@ const AddClient = () => {
                     Phone Number <span className="text-meta-1">*</span>
                   </label>
                   <input
-                    name="phoneNumber" // Add this line
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    type="text"
-                    placeholder="Enter your Phone Number"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
+        name="phoneNumber"
+        value={formData.phoneNumber}
+        onChange={handleChange}
+        type="text"
+        placeholder="Enter your Phone Number"
+        className={`w-full rounded border-[1.5px] py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter ${
+          errors.phoneNumber
+            ? "border-red-500 dark:border-red-500"
+            : "border-stroke dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+        }`}
+      />
                 </div>
-                <div className="w-full">
-                  <label className="mb-2.5 mt-2 block text-black dark:text-white">
-                   Employee ID <span className="text-meta-1">*</span>
-                  </label>
-                  <input
-                    name="employeeId" // Add this line
-                    value={formData.employeeId}
-                    onChange={handleChange}
-                    type="text"
-                    placeholder="Enter your Employee Id"
-                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  />
-                </div>
+
                 {id && (
                   <div className="w-full">
                     <label className="mb-2.5 mt-3 block text-black dark:text-white">
@@ -297,7 +331,7 @@ const AddClient = () => {
                       name="status" // Ensure this matches the formData key
                       value={formData.status} // Bind the value to formData.status
                       onChange={handleChange} // Handle change to update formData
-                      className={`w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary ${errors.frequency ? 'border-red-500' : ''} dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
+                      className={`w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
                     >
                       <option value="">Select Profile Status</option>
                       <option value="Pending">Pending</option>

@@ -18,6 +18,10 @@ export const createTheShifts = /* GraphQL */ `
       endDate
       shiftstatus
       userId
+      checkInTIme
+      checkOutTime
+      AdminTime
+      AssignStatus
       createdAt
       updatedAt
       __typename
@@ -41,6 +45,10 @@ export const updateTheShifts = /* GraphQL */ `
       endDate
       shiftstatus
       userId
+      checkInTIme
+      checkOutTime
+      AdminTime
+      AssignStatus
       createdAt
       updatedAt
       __typename
@@ -64,6 +72,55 @@ export const deleteTheShifts = /* GraphQL */ `
       endDate
       shiftstatus
       userId
+      checkInTIme
+      checkOutTime
+      AdminTime
+      AssignStatus
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createLocation = /* GraphQL */ `
+  mutation CreateLocation(
+    $input: CreateLocationInput!
+    $condition: ModelLocationConditionInput
+  ) {
+    createLocation(input: $input, condition: $condition) {
+      id
+      name
+      status
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateLocation = /* GraphQL */ `
+  mutation UpdateLocation(
+    $input: UpdateLocationInput!
+    $condition: ModelLocationConditionInput
+  ) {
+    updateLocation(input: $input, condition: $condition) {
+      id
+      name
+      status
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteLocation = /* GraphQL */ `
+  mutation DeleteLocation(
+    $input: DeleteLocationInput!
+    $condition: ModelLocationConditionInput
+  ) {
+    deleteLocation(input: $input, condition: $condition) {
+      id
+      name
+      status
       createdAt
       updatedAt
       __typename

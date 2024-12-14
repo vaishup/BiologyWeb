@@ -13,19 +13,33 @@ type TheShifts @model
   endDate: String
   shiftstatus: String
   userId:String
+  checkInTIme:String
+  checkOutTime:String
+  AdminTime:String
+  AssignStatus:String
+  locationID:String
+}
+
+type Location @model 
+  @auth(rules: [
+  { allow: public, provider: apiKey, operations: [read, create, update, delete] } # Allow public access
+]) {
+  id: ID! # Unique identifier for the location
+  name: String! # Name of the location
+  status: String # Status of the location (e.g., Active, Inactive)
 }
 
 
 
 type TheStaff
   @model
-  @auth(
-    rules: [
-      { allow: owner, operations: [read, create, update, delete] },
-      { allow: groups, groups: ["Admin"], operations: [read, create, update, delete] },
-      { allow: public, provider: apiKey, operations: [read ,update, create] } # Optional: Public read access
-    ]
-  ) {
+@auth(
+  rules: [
+    { allow: owner, operations: [read, create, update, delete] },
+    { allow: groups, groups: ["Admin"], operations: [read, create, update, delete] },
+    { allow: public, provider: apiKey, operations: [read, update, create, delete] }
+  ]
+) {
   id: ID!
   name: String
   phoneNumber: String
@@ -34,9 +48,9 @@ type TheStaff
   photourl: String
     @auth(
       rules: [
-        { allow: owner, operations: [read, update] },
-        { allow: groups, groups: ["Admin"], operations: [read, update] },
-              { allow: public, provider: apiKey, operations: [read ,update, create] } # Optional: Public read access
+        { allow: owner, operations: [read, update,delete] },
+        { allow: groups, groups: ["Admin"], operations: [read, update,delete] },
+              { allow: public, provider: apiKey, operations: [read ,update, create,delete] } # Optional: Public read access
 
       ]
     )
@@ -45,36 +59,36 @@ type TheStaff
   Location: String
     @auth(
       rules: [
-        { allow: owner, operations: [read, update] },
-        { allow: groups, groups: ["Admin"], operations: [read, update] },
-              { allow: public, provider: apiKey, operations: [read ,update, create] } # Optional: Public read access
+        { allow: owner, operations: [read, update,delete] },
+        { allow: groups, groups: ["Admin"], operations: [read, update,delete] },
+              { allow: public, provider: apiKey, operations: [read ,update, create,delete] } # Optional: Public read access
 
       ]
     )
   IsActive: String
     @auth(
       rules: [
-        { allow: owner, operations: [read, update] },
-        { allow: groups, groups: ["Admin"], operations: [read, update] },
-              { allow: public, provider: apiKey, operations: [read ,update, create] } # Optional: Public read access
+        { allow: owner, operations: [read, update,delete] },
+        { allow: groups, groups: ["Admin"], operations: [read, update,delete] },
+              { allow: public, provider: apiKey, operations: [read ,update, create,delete] } # Optional: Public read access
 
       ]
     )
   latitude: String
     @auth(
       rules: [
-        { allow: owner, operations: [read, update] },
-        { allow: groups, groups: ["Admin"], operations: [read, update] },
-              { allow: public, provider: apiKey, operations: [read ,update, create] } # Optional: Public read access
+        { allow: owner, operations: [read, update,delete] },
+        { allow: groups, groups: ["Admin"], operations: [read, update,delete] },
+              { allow: public, provider: apiKey, operations: [read ,update, create,delete] } # Optional: Public read access
 
       ]
     )
   longitude: String
     @auth(
       rules: [
-        { allow: owner, operations: [read, update] },
-        { allow: groups, groups: ["Admin"], operations: [read, update] },
-              { allow: public, provider: apiKey, operations: [read ,update, create] } # Optional: Public read access
+        { allow: owner, operations: [read, update,delete] },
+        { allow: groups, groups: ["Admin"], operations: [read, update,delete] },
+              { allow: public, provider: apiKey, operations: [read ,update, create,delete] } # Optional: Public read access
 
       ]
     )

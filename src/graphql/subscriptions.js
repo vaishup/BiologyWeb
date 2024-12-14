@@ -17,6 +17,10 @@ export const onCreateTheShifts = /* GraphQL */ `
       endDate
       shiftstatus
       userId
+      checkInTIme
+      checkOutTime
+      AdminTime
+      AssignStatus
       createdAt
       updatedAt
       __typename
@@ -39,6 +43,10 @@ export const onUpdateTheShifts = /* GraphQL */ `
       endDate
       shiftstatus
       userId
+      checkInTIme
+      checkOutTime
+      AdminTime
+      AssignStatus
       createdAt
       updatedAt
       __typename
@@ -61,6 +69,46 @@ export const onDeleteTheShifts = /* GraphQL */ `
       endDate
       shiftstatus
       userId
+      checkInTIme
+      checkOutTime
+      AdminTime
+      AssignStatus
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateLocation = /* GraphQL */ `
+  subscription OnCreateLocation($filter: ModelSubscriptionLocationFilterInput) {
+    onCreateLocation(filter: $filter) {
+      id
+      name
+      status
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateLocation = /* GraphQL */ `
+  subscription OnUpdateLocation($filter: ModelSubscriptionLocationFilterInput) {
+    onUpdateLocation(filter: $filter) {
+      id
+      name
+      status
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteLocation = /* GraphQL */ `
+  subscription OnDeleteLocation($filter: ModelSubscriptionLocationFilterInput) {
+    onDeleteLocation(filter: $filter) {
+      id
+      name
+      status
       createdAt
       updatedAt
       __typename

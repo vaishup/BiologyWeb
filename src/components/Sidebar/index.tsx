@@ -151,16 +151,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Dashboard --> */}
 
               <SidebarLinkGroup
-  activeCondition={pathname === '/clientlist' || pathname.includes('')}
+  activeCondition={pathname === '/Employee' || pathname.includes('')}
 >
   {(handleClick, open) => {
     return (
       <React.Fragment>
         <NavLink
-          to="/clientlist"
+          to="/Employee"
           className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-black dark:hover:bg-meta-4 ${
-            (pathname === '/clientlist' ||
-              pathname.includes('clientlist')) &&
+            (pathname === '/Employee' ||
+              pathname.includes('Employee')) &&
             'bg-[#666666] text-white dark:bg-white'
           }`}
           onMouseOver={(e) => {
@@ -255,7 +255,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   return (
                     <React.Fragment>
                       <NavLink
-                        to="/taskList"
+                        to="/ShiftList"
                         className={`group relative flex items-center gap-2.5 rounded-lg py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-black dark:hover:bg-meta-4 ${
                           (pathname === '#' || pathname.includes('#')) &&
                           'bg-primary text-white  dark:bg-meta-4'
