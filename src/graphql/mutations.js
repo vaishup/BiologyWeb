@@ -95,7 +95,6 @@ export const createTheShifts = /* GraphQL */ `
   ) {
     createTheShifts(input: $input, condition: $condition) {
       id
-      Location
       duties
       staffId
       time
@@ -110,6 +109,7 @@ export const createTheShifts = /* GraphQL */ `
       AdminTime
       AssignStatus
       locationID
+      amendment
       mainShiftID
       mainShift {
         id
@@ -142,7 +142,6 @@ export const updateTheShifts = /* GraphQL */ `
   ) {
     updateTheShifts(input: $input, condition: $condition) {
       id
-      Location
       duties
       staffId
       time
@@ -157,6 +156,7 @@ export const updateTheShifts = /* GraphQL */ `
       AdminTime
       AssignStatus
       locationID
+      amendment
       mainShiftID
       mainShift {
         id
@@ -189,7 +189,6 @@ export const deleteTheShifts = /* GraphQL */ `
   ) {
     deleteTheShifts(input: $input, condition: $condition) {
       id
-      Location
       duties
       staffId
       time
@@ -204,6 +203,7 @@ export const deleteTheShifts = /* GraphQL */ `
       AdminTime
       AssignStatus
       locationID
+      amendment
       mainShiftID
       mainShift {
         id

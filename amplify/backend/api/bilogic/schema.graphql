@@ -23,7 +23,6 @@ type TheShifts @model
   { allow: public, provider: apiKey, operations: [read, create, update, delete] }
 ]) {
   id: ID!
-  Location: String
   duties: String
   staffId: String
   time: String
@@ -38,6 +37,7 @@ type TheShifts @model
   AdminTime: String
   AssignStatus: String
   locationID: String
+  amendment:String
   mainShiftID: ID @index(name: "byMainShift", sortKeyFields: ["startDate"]) # Foreign key to MainShift
   mainShift: MainShift @belongsTo(fields: ["mainShiftID"]) # Belongs-to relationship
 }

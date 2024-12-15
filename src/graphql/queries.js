@@ -61,7 +61,6 @@ export const getTheShifts = /* GraphQL */ `
   query GetTheShifts($id: ID!) {
     getTheShifts(id: $id) {
       id
-      Location
       duties
       staffId
       time
@@ -76,6 +75,7 @@ export const getTheShifts = /* GraphQL */ `
       AdminTime
       AssignStatus
       locationID
+      amendment
       mainShiftID
       mainShift {
         id
@@ -110,7 +110,6 @@ export const listTheShifts = /* GraphQL */ `
     listTheShifts(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        Location
         duties
         staffId
         time
@@ -125,6 +124,7 @@ export const listTheShifts = /* GraphQL */ `
         AdminTime
         AssignStatus
         locationID
+        amendment
         mainShiftID
         createdAt
         updatedAt
@@ -154,7 +154,6 @@ export const theShiftsByMainShiftIDAndStartDate = /* GraphQL */ `
     ) {
       items {
         id
-        Location
         duties
         staffId
         time
@@ -169,6 +168,7 @@ export const theShiftsByMainShiftIDAndStartDate = /* GraphQL */ `
         AdminTime
         AssignStatus
         locationID
+        amendment
         mainShiftID
         createdAt
         updatedAt

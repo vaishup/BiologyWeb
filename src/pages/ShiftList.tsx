@@ -9,8 +9,9 @@ import {
   listTheShifts,
   listMainShifts,
   getTheStaff,
-  //listTheStaff,
+  listTheStaffs,
   getTheAdminStaffUser,
+  getLocation,
 } from '../graphql/queries.js';
 import * as mutation from '../graphql/mutations.js';
 
@@ -30,31 +31,31 @@ const ShiftList = () => {
   const navigation = useNavigate();
 
   useEffect(() => {
-   // listShifts();
+    listShifts();
   }, []);
 
-  // async function fetchStaffDetailsBatch(staffIds) {
-  //   try {
-  //     const staffData = await client.graphql({
-  //       query: listTheStaff, // Replace with your batch query
-  //       variables: { ids: staffIds },
-  //     });
+  async function fetchStaffDetailsBatch(staffIds) {
+    try {
+      const staffData = await client.graphql({
+        query: listTheStaffs, // Replace with your batch query
+        variables: { ids: staffIds },
+      });
 
-  //     const staffList = staffData.data.listTheStaff.items;
+      const staffList = staffData.data.listTheStaffs.items;
 
-  //     // Map staff details for easy lookup
-  //     const staffDetailsMap = staffList.reduce((acc, staff) => {
-  //       acc[staff.id] = { staffName: staff.name, employeeId: staff.employeeId };
-  //       return acc;
-  //     }, {});
+      // Map staff details for easy lookup
+      const staffDetailsMap = staffList.reduce((acc, staff) => {
+        acc[staff.id] = { staffName: staff.name, employeeId: staff.employeeId };
+        return acc;
+      }, {});
 
-  //     console.log('Fetched Staff Details:', staffDetailsMap);
-  //     return staffDetailsMap;
-  //   } catch (error) {
-  //     console.error('Error fetching staff details in batch:', error);
-  //     return {}; // Return an empty object in case of an error
-  //   }
-  // }
+      console.log('Fetched Staff Details:', staffDetailsMap);
+      return staffDetailsMap;
+    } catch (error) {
+      console.error('Error fetching staff details in batch:', error);
+      return {}; // Return an empty object in case of an error
+    }
+  }
   useEffect(() => {
     applyFilter(); // Apply the filter whenever stafflist or filter changes
   }, [stafflist, filter]);
@@ -79,49 +80,63 @@ const ShiftList = () => {
       ];
 
       // Fetch staff details in batch
-    //  const staffDetails = await fetchStaffDetailsBatch(shiftsList.staffIds);
+      const staffDetails = await fetchStaffDetailsBatch(shiftsList.staffIds);
 
       // Process each shift and add staff and admin details
-      // const shiftsWithDetails = await Promise.all(
-      //   sortedShifts.map(async (shift) => {
-      //     let adminName = 'Admin';
+      const shiftsWithDetails = await Promise.all(
+        sortedShifts.map(async (shift) => {
+          let adminName = 'Admin';
+          let location = '';
 
-      //     // Map staff details for this shift
-      //     const staffDetailsForShift = (shift.staffIds || []).map((staffId) => {
-      //       const staffInfo = staffDetails[staffId] || {
-      //         staffName: 'Unknown',
-      //         employeeId: 'Unknown',
-      //       };
-      //       return { staffId, ...staffInfo };
-      //     });
+          // Map staff details for this shift
+          const staffDetailsForShift = (shift.staffIds || []).map((staffId) => {
+            const staffInfo = staffDetails[staffId] || {
+              staffName: 'Unknown',
+              employeeId: 'Unknown',
+            };
+            return { staffId, ...staffInfo };
+          });
 
-      //     // Fetch admin details if userId exists
-      //     if (shift.userId) {
-      //       try {
-      //         const adminData = await client.graphql({
-      //           query: getTheAdminStaffUser,
-      //           variables: { id: shift.userId },
-      //         });
-      //         adminName = adminData.data.getTheAdminStaffUser.name || 'Admin';
-      //       } catch (error) {
-      //         console.error(
-      //           `Error fetching admin name for userId: ${shift.userId}`,
-      //           error,
-      //         );
-      //       }
-      //     }
+          try {
+            const locationData = await client.graphql({
+              query: getLocation,
+              variables: { id: shift.locationID },
+            });
+            location = locationData.data.getLocation.name;
+          } catch (error) {
+            console.error(
+              `Error fetching admin name for userId: ${shift.userId}`,
+              error,
+            );
+          }
+          // Fetch admin details if userId exists
+          if (shift.userId) {
+            try {
+              const adminData = await client.graphql({
+                query: getTheAdminStaffUser,
+                variables: { id: shift.userId },
+              });
+              adminName = adminData.data.getTheAdminStaffUser.name || 'Admin';
+            } catch (error) {
+              console.error(
+                `Error fetching admin name for userId: ${shift.userId}`,
+                error,
+              );
+            }
+          }
 
-      //     // Combine shift details with staff and admin info
-      //     return {
-      //       ...shift,
-      //       staffDetails: staffDetailsForShift, // Array of staff details for the shift
-      //       adminName,
-      //     };
-      //   }),
-      // );
+          // Combine shift details with staff and admin info
+          return {
+            ...shift,
+            staffDetails: staffDetailsForShift, // Array of staff details for the shift
+            adminName,
+            location,
+          };
+        }),
+      );
 
       // Update state with processed shifts
-     // setStaffList(shiftsWithDetails);
+      setStaffList(shiftsWithDetails);
     } catch (error) {
       console.error('Error fetching shifts:', error);
     }
@@ -175,7 +190,7 @@ const ShiftList = () => {
   const delet = async () => {
     try {
       await client.graphql({
-        query: mutation.deleteTheShifts,
+        query: mutation.deleteMainShift,
         variables: { input: { id: selectedId } },
         apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
       });
@@ -353,14 +368,17 @@ const ShiftList = () => {
               <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
                 Description
               </th>
-              <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+              {/* <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
                 Employee ID
               </th>
               <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
                 Employee Name
-              </th>
+              </th> */}
               <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
                 Shift Time
+              </th>
+              <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
+                Assigned Employees
               </th>
               <th className="px-4 py-3 text-left text-white text-sm uppercase font-bold">
                 Created By (Admin/Staff)
@@ -384,17 +402,17 @@ const ShiftList = () => {
                   className="hover:bg-gray-50 transition-all duration-200"
                 >
                   <td className="px-4 py-4 border-b align-middle">
-                    {shift.Location}
+                    {shift.location}
                   </td>
                   <td className="px-4 py-4 border-b align-middle">
                     {shift.duties}
                   </td>
-                  <td className="px-4 py-4 border-b align-middle">
+                  {/* <td className="px-4 py-4 border-b align-middle">
                     {shift.staffDetails.employeeId}
                   </td>
                   <td className="px-4 py-4 border-b align-middle">
                     {shift.staffName ?? 'Unknown'}
-                  </td>
+                  </td> */}
 
                   <td className="px-4 py-4 border-b align-middle">
                     {`${shift.startDate} - ${
@@ -409,6 +427,18 @@ const ShiftList = () => {
                         : 'Invalid Date'
                     }`}
                   </td>
+                  <td
+  onClick={() => {
+    const staffIdsString = Array.isArray(shift.staffIds)
+      ? shift.staffIds.join(',')
+      : ''; // Default to an empty string
+
+    navigation(`/ShiftDetails/${staffIdsString}/${shift.id}?from=ShiftList`);
+  }}
+  className="px-4 py-4 border-b align-middle text-center text-blue-500 underline"
+>
+  {Array.isArray(shift.staffIds) ? shift.staffIds.length : 0} {/* Default to 0 */}
+</td>
 
                   <td className="px-4 py-4 border-b align-middle">
                     {shift.adminName && shift.adminName.trim() !== ''
@@ -476,6 +506,7 @@ const ShiftList = () => {
               </option>
             ))}
           </select>
+
         </div>
       </div>
     </>

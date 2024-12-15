@@ -18,9 +18,8 @@ import {
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
 import { TimePicker as Time } from '@mui/x-date-pickers/TimePicker';
-import { listTheStaffs, getTheShifts, listLocations } from '../graphql/queries';
+import { listTheStaffs, getMainShift, listLocations } from '../graphql/queries';
 const AddTask = () => {
   const [stafflist, setStaffList] = useState([]);
   const navigation = useNavigate();
@@ -75,10 +74,10 @@ const AddTask = () => {
       const fetchStaffData = async () => {
         try {
           const staffData = await API.graphql({
-            query: getTheShifts, // Replace with your actual query to get staff by ID
+            query: getMainShift, // Replace with your actual query to get staff by ID
             variables: { id },
           });
-          const staff = staffData.data.getTheShifts;
+          const staff = staffData.data.getMainShift;
           console.log('staff.dateTime', staff.time);
           setStatus(staff.shiftstatus);
 
@@ -87,7 +86,7 @@ const AddTask = () => {
           setSelectedDates(parsedStartDate); // Update with parsed dayjs object
           setEndTimes(parsedEndDate); // Update with parsed dayjs object
           setFormData({
-            location: staff.Location,
+            location: staff.locationID,
             duties: staff.duties,
             dateTime: staff.dateTime,
             staffid: staff.staffId,
@@ -125,14 +124,14 @@ const AddTask = () => {
     //   errors.endDate = "End time must be after the start date and time";
     // }
 
-    console.log(
-      'formattedStartDate:',
-      formattedStartDate.format('YYYY-MM-DD HH:mm'),
-    );
-    console.log(
-      'formattedEndDate:',
-      formattedEndDate.format('YYYY-MM-DD HH:mm'),
-    );
+    // console.log(
+    //   'formattedStartDate:',
+    //   formattedStartDate.format('YYYY-MM-DD HH:mm'),
+    // );
+    // console.log(
+    //   'formattedEndDate:',
+    //   formattedEndDate.format('YYYY-MM-DD HH:mm'),
+    // );
 
     return errors;
   };

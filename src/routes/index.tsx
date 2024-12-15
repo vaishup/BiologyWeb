@@ -4,6 +4,7 @@ import { lazy } from 'react';
 // const Buttons = lazy(() => import('../pages/UiElements/Buttons'));
 
 const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'));
+const ShiftDetails = lazy(() => import('../pages/ShiftDetails'));
 const AddStaff = lazy(() => import('../pages/AddStaff'));
 const AddClient = lazy(() => import('../pages/AddClient'));
 const AddTask = lazy(() => import('../pages/AddTask'));
@@ -68,6 +69,11 @@ const coreRoutes = [
     path: '/MapScreen',
     title: 'MapScreen',
     component: MapScreen,
+  },
+  {
+    path: '/ShiftDetails/:staffIds/:id',
+    title: 'ShiftDetails',
+    component: ShiftDetails,
   }
 ];
 
