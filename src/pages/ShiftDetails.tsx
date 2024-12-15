@@ -371,11 +371,11 @@ const ShiftDetails = () => {
                   <h4 className="font-semibold text-black">Profile Status</h4>
                   <span
                     className={`text-sm ml-4 px-2 py-1 border rounded ${
-                      staff.profileStatus === 'Incomplete'
+                      staff.staffDetails.profileStatus === 'Incomplete'
                         ? 'text-yellow-600 border-yellow-600'
-                        : staff.profileStatus === 'Pending'
+                        : staff.staffDetails.profileStatus === 'Pending'
                           ? 'text-orange-600 border-orange-600'
-                          : staff.profileStatus === 'Completed'
+                          : staff.staffDetails.profileStatus === 'Completed'
                             ? 'text-green-600 border-green-600'
                             : 'text-gray-600 border-gray-300'
                     }`}
@@ -390,7 +390,7 @@ const ShiftDetails = () => {
                 <div className="flex p-3">
                   <h4 className="font-semibold text-black">Start Time</h4>
                   <span className="text-sm ml-4">
-                    {staff.startTime || 'Not Set'}
+                    {staff.checkInTIme || 'Not Set'}
                   </span>
                 </div>
 
@@ -398,7 +398,7 @@ const ShiftDetails = () => {
                 <div className="flex p-3">
                   <h4 className="font-semibold text-black">End Time</h4>
                   <span className="text-sm ml-4">
-                    {staff.endTime || 'Not Set'}
+                    {staff.checkOutTime || 'Not Set'}
                   </span>
                 </div>
 

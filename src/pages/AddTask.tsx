@@ -15,6 +15,7 @@ import {
   getUserInfo,
   getCustomAttributes,
 } from '../hooks/authServices.js';
+import { listTheShifts } from '../graphql/queries';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -44,6 +45,7 @@ const AddTask = () => {
   const [ids, setId] = useState();
   const [status, setStatus] = useState();
   const [locations, setLocations] = useState([]); // Store dynamic locations
+  const [shiftList, setShiftListArray] = useState([]); // Store dynamic locations
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false); // Control modal visibility
   const [newLocation, setNewLocation] = useState(''); // New location input
 
@@ -80,7 +82,17 @@ const AddTask = () => {
           const staff = staffData.data.getMainShift;
           console.log('staff.dateTime', staff.time);
           setStatus(staff.shiftstatus);
-
+          const shiftData1 = await API.graphql({
+            query: listTheShifts,
+            variables: {
+              filter: {
+                mainShiftID: { eq: id }, // Filter shifts by mainShiftID
+              },
+            },
+          });
+          const shiftList = shiftData1.data.listTheShifts.items; // Ensure it's an array
+          console.log('shiftList---', shiftList); // Verify the structure
+          setShiftListArray(shiftList);
           const parsedStartDate = dayjs(staff.startDate); // Ensure this is a valid date format
           const parsedEndDate = dayjs(staff.endDate, 'hh:mm A'); // Parse time with specific format
           setSelectedDates(parsedStartDate); // Update with parsed dayjs object
@@ -90,8 +102,8 @@ const AddTask = () => {
             duties: staff.duties,
             dateTime: staff.dateTime,
             staffid: staff.staffId,
-            startDate: staff.parsedStartDate,
-            endDate: staff.parsedEndDate,
+            startDate: parsedStartDate,
+            endDate: parsedEndDate,
           });
         } catch (error) {
           console.error('Error fetching staff data:', error);
@@ -163,35 +175,50 @@ const AddTask = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     // Step 1: Perform validation
     const validationErrors = validate(); // Assume validate() is a function that returns an object of errors
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors); // Set the errors in state to display in the UI
       return; // Stop the form submission if validation fails
     }
-    console.log("location---",formData.location);
-    
+    console.log('location---', formData.location);
+
     try {
-      const formattedStartDates =
-        formData.startDate.format('YYYY-MM-DD hh:mm A');
-      const enddate = dayjs(formData.endDate).format('hh:mm A');
+      console.log(formData );
+      console.log(formData.endDate );
+      
+      // Step 2: Check if startDate and endDate are valid
+      if (!formData.startDate || !formData.endDate) {
+        throw new Error('Start date or end date is missing');
+      }
+
+      const formattedStartDates = formData.startDate
+        ? formData.startDate.format('YYYY-MM-DD hh:mm A')
+        : '';
+      const enddate = formData.endDate
+        ? dayjs(formData.endDate).format('hh:mm A')
+        : '';
+
+      if (!formattedStartDates || !enddate) {
+        throw new Error('Invalid date format');
+      }
+
       const userId = await getTableID();
 
-      // Step 2: Create the input object for staff creation or update
+      // Step 3: Create the input object for staff creation or update
       const staffInput = {
         locationID: formData.location,
         duties: formData.duties,
         startDate: formattedStartDates, // Add formatted start date
         endDate: enddate, // Same date for start and end (assuming same-day shift)
-        // startTime: startDateTime, // Add formatted start time in AWS DateTime format
-        // endTime: startDateTime,
         shiftstatus: status ? status : 'Pending',
         userId: userId,
-        //userId: staffType === 'staff' ? userId : userId, // Conditional assignment
-        // Add other fields as needed
       };
+      console.log('staffInput', staffInput);
+console.log("tag",tag);
 
-    let staffResponse;
+      let staffResponse;
       if (tag == 'edit') {
         console.log('staffInput...', staffInput);
         // Update existing staff member
@@ -199,8 +226,33 @@ const AddTask = () => {
           query: mutation.updateMainShift,
           variables: { input: { id, ...staffInput } },
           apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
-          //authMode: 'AMAZON_COGNITO_USER_POOLS',
         });
+console.log("staffResponse",staffResponse);
+console.log("staffInput",staffInput);
+
+        if (staffResponse.data.updateMainShift) {
+          for (let shift of shiftList) {
+            try {
+              const updateShiftResponse = await API.graphql({
+                query: mutation.updateTheShifts,
+                variables: { input: { id:shift.id, ...staffInput } },
+              });
+
+              if (updateShiftResponse.data.updateTheShifts) {
+                console.log(
+                  'Shift updated successfully:',
+                  updateShiftResponse.data.updateTheShifts,
+                );
+              } else {
+                console.error('Failed to update shift', shift.id);
+              }
+            } catch (error) {
+              console.error('Error updating shift', shift.id, error);
+            }
+          }
+        } else {
+          console.error('Failed to update MainShift');
+        }
         navigation('/ShiftList');
       } else {
         console.log('staffInput', staffInput);
@@ -210,15 +262,13 @@ const AddTask = () => {
           query: mutation.createMainShift,
           variables: { input: staffInput },
           apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
-          //  authMode: 'AMAZON_COGNITO_USER_POOLS',
         });
         setIsShow(true);
       }
 
-      // // Debug the API response
       console.log('Staff Response:', staffResponse);
 
-      // Step 3: Handle the response and navigation
+      // Step 4: Handle the response and navigation
       const createdItem =
         staffResponse.data.createMainShift ||
         staffResponse.data.updateMainShift;
@@ -226,18 +276,16 @@ const AddTask = () => {
         throw new Error('No ID returned from the GraphQL response.');
       }
 
-      // console.log(createdItem.id, 'successfully created/updated');
       setId(createdItem.id); // Set the ID if it's a new creation
       if (tag == 'edit') {
         navigation('/ShiftList');
       }
-      // Step 4: Show success message and optionally navigate
-      // Uncomment this if you want to navigate to the staff list page after submission
     } catch (error) {
       console.error('Error creating or updating staff:', error);
       // Handle the error (display message, etc.)
     }
   };
+
   // Handle date change and get the day of the week
   const [selectedDates, setSelectedDates] = useState(); // Start date and time
   const [endTimes, setEndTimes] = useState(); // End time
@@ -326,16 +374,15 @@ const AddTask = () => {
       // Check the structure of the response to ensure you're accessing the correct part
       const newLocations = response.data.listLocations.items || []; // Make sure we access 'items' array
       console.log('Fetched Locations:', newLocations);
-  
+
       // Set locations in state
       setLocations(newLocations); // Update state with the fetched locations
-  
     } catch (error) {
       console.error('Error fetching locations:', error);
       alert('Failed to fetch locations.');
     }
   };
-  
+
   const handleCancle = () => {
     setIsOpen(false);
     navigation('/ShiftList');
@@ -419,22 +466,24 @@ const AddTask = () => {
 
             <div className="flex items-center space-x-4">
               {/* Location Dropdown */}
-<select
-  name="location"
-  value={formData.location} // Bind value to formData.location
-  onChange={handleChange} // Update formData.location on change
-  className={`w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary ${
-    errors.location ? 'border-red-500' : ''
-  } dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
->
-  <option value="">Select Location</option>
+              <select
+                name="location"
+                value={formData.location} // Bind value to formData.location
+                onChange={handleChange} // Update formData.location on change
+                className={`w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary ${
+                  errors.location ? 'border-red-500' : ''
+                } dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
+              >
+                <option value="">Select Location</option>
 
-  {Array.isArray(locations) && locations.length > 0 && locations.map((loc) => (
-        <option key={loc.id} value={loc.id}>
-        {loc.name}
-    </option>
-  ))}
-</select>
+                {Array.isArray(locations) &&
+                  locations.length > 0 &&
+                  locations.map((loc) => (
+                    <option key={loc.id} value={loc.id}>
+                      {loc.name}
+                    </option>
+                  ))}
+              </select>
               {/* "Add New Location" Button */}
             </div>
           </div>
