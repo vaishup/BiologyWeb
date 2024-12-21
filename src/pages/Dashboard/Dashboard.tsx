@@ -22,15 +22,11 @@ const ECommerce: React.FC = () => {
         query: listTheStaffs,
         variables: {},
       });
-
       const staffList = staffdata.data.listTheStaffs.items;
       setStaffList(staffList);
-      const assignedCount = staffList.filter(
-        (staff) => staff.staffStatus === 'assigned',
-      ).length;
+      const assignedCount = staffList.filter((staff) => staff.staffStatus === 'assigned').length;
       setShiftAssignedCount(assignedCount);
-      setStaffCount(staffList.length); // Set staff count
-      console.log('Staff List:', staffList);
+      setStaffCount(staffList.length); 
     } catch (error) {
       console.error('Error fetching staff details:', error);
     }

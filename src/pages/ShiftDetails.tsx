@@ -38,123 +38,92 @@ const ShiftDetails = () => {
     }
   }, [id]);
 
-    const listShifts = async (id: any) => {
-      console.log('MainShift ID:', id);
-      try {
-        // Fetch the MainShift data using the ID
-        const shiftData = await API.graphql({
-          query: getMainShift,
-          variables: { id: id },
-        });
-        const datatMainShift = shiftData.data.getMainShift;
-        setMainShift(datatMainShift);
-        // Fetch the shifts data using the MainShift ID
-        const shiftData1 = await API.graphql({
-          query: listTheShifts,
-          variables: {
-            filter: {
-              mainShiftID: { eq: id }, // Filter shifts by mainShiftID
-            },
+  const listShifts = async (id: any) => {
+    try {
+      // Fetch the MainShift data using the ID
+      const shiftData = await API.graphql({
+        query: getMainShift,
+        variables: { id: id },
+      });
+      const datatMainShift = shiftData.data.getMainShift;
+      setMainShift(datatMainShift);
+      // Fetch the shifts data using the MainShift ID
+      const shiftData1 = await API.graphql({
+        query: listTheShifts,
+        variables: {
+          filter: {
+            mainShiftID: { eq: id }, // Filter shifts by mainShiftID
           },
+        },
+      });
+      const shiftList = shiftData1.data.listTheShifts.items; // Ensure it's an array
+      const allShiftWithStaff = await Promise.all(
+        shiftList.map(async (shift) => {
+          const staffDetails = await fetchStaffData(shift.staffId);
+          return { ...shift, staffDetails }; // Combine the shift data with staff details
+        }),
+      );
+      setShiftList(allShiftWithStaff);
+
+      try {
+        const locationData = await API.graphql({
+          query: getLocation,
+          variables: { id: datatMainShift.locationID },
         });
-        const shiftList = shiftData1.data.listTheShifts.items; // Ensure it's an array
-        console.log('shiftList---', shiftList); // Verify the structure
-        // Proceed to map over shiftList
-        const allShiftWithStaff = await Promise.all(
-          shiftList.map(async (shift) => {
-            // For each shift, fetch the staff details using the staffId
-            const staffDetails = await fetchStaffData(shift.staffId);
-            console.log('staffDetails', staffDetails);
-          
+        setLocation(locationData.data.getLocation.name); // Set location using state
+      } catch (error) {
+        console.error(
+          `Error fetching location for ID: ${datatMainShift.locationID}`,
+          error,
+        );
+      }
+    } catch (error) {
+      console.error('Error fetching shifts:', error);
+    }
+  };
+  console.log("shiftList---",shiftList);
+  
+  const fetchStaffData = async (ids: string | string[]) => {
+    console.log('ids----', ids);
+    try {
+      const idsArray = Array.isArray(ids) ? ids : [ids];
+      console.log('Array of ids:', idsArray);
+      const allStaffData = await Promise.all(
+        idsArray.map(async (id) => {
+          try {
+            console.log('Fetching data for ID:', id);
+            const staffData = await API.graphql({
+              query: getTheStaff,
+              variables: { id },
+            });
+            const staffDetails = staffData.data.getTheStaff;
+            let profilePicUrl = null;
             await downloadFromS3({
               folder: 'userprofile',
               subFolder: 'selfie',
               setFileUrl: (url) => {
-                setFileUri(url);
-                setPrevFileUri(url);
-                console.log('url', url);
+                profilePicUrl = url;
+                  console.log('Profile Picture URL:', url);
               },
-              id: shift.staffId, // Map `shift.staffId` to `id`
+              id: id,
             });
-        
-
-            return { ...shift, staffDetails }; // Combine the shift data with staff details
-          }),
-        );
-        setShiftList(allShiftWithStaff);
-
-        try {
-          const locationData = await API.graphql({
-            query: getLocation,
-            variables: { id: datatMainShift.locationID },
-          });
-          setLocation(locationData.data.getLocation.name); // Set location using state
-        } catch (error) {
-          console.error(
-            `Error fetching location for ID: ${datatMainShift.locationID}`,
-            error,
-          );
-        }
-      } catch (error) {
-        console.error('Error fetching shifts:', error);
-      }
-    };
-    const fetchStaffData = async (ids) => {
-      try {
-        let allStaffData;
-        if (Array.isArray(ids)) {
-          allStaffData = await Promise.all(
-            ids.map(async (id) => {
-              const staffData = await API.graphql({
-                query: getTheStaff,
-                variables: { id: id },
-              });
-              const staffDetails = staffData.data.getTheStaff;
-    const ids =staffDetails.id.toString()
-              // Fetch the file from S3 for this staffId
-              // await downloadFromS3({
-              //   folder: 'userprofile',
-              //   subFolder: 'selfie',
-              //   setFileUrl: (url) => {
-              //     setFileUri(url);
-              //     setPrevFileUri(url);
-              //     console.log('url', url);
-              //   },
-              //   ids
-              // });
-    
-              return staffDetails;
-            }),
-          );
-        } else {
-          const staffData = await API.graphql({
-            query: getTheStaff,
-            variables: { id: ids },
-          });
-          const staffDetails = staffData.data.getTheStaff;
-    
-          // Fetch the file from S3 for this staffId
-          // await downloadFromS3({
-          //   folder: 'userprofile',
-          //   subFolder: 'selfie',
-          //   setFileUrl: (url) => {
-          //     setFileUri(url);
-          //     setPrevFileUri(url);
-          //     console.log('url', url);
-          //   },
-          //   id:ids
-          // });
-    
-          allStaffData = staffDetails;
-        }
-        return allStaffData; // Return the fetched staff data (single or array)
-      } catch (error) {
-        console.error('Error fetching staff data:', error);
-        return []; // Return an empty array in case of error
-      }
-    };
-    
-    
+            return {
+              ...staffDetails,
+              profilePic: profilePicUrl, // Add profile picture to staff details
+            };
+          } catch (error) {
+            console.error(`Error fetching data for ID: ${id}`, error);
+            return null; // Return null or handle errors gracefully
+          }
+        }),
+      );
+      console.log('All fetched staff data:', allStaffData);
+      return allStaffData;
+    } catch (error) {
+      console.error('Error fetching staff data:', error);
+      return []; // Return an empty array in case of error
+    }
+  };
 
   const [fileUri, setFileUri] = useState<string | null>(null);
   const [prevFileUri, setPrevFileUri] = useState<string | null>(null);
@@ -164,13 +133,13 @@ const ShiftDetails = () => {
     subFolder,
     fullPath,
     setFileUrl,
-    id
+    id,
   }: {
     folder?: string;
     subFolder?: string;
     fullPath?: string;
     setFileUrl: (url: string) => void;
-    id:string
+    id: string;
   }) => {
     try {
       if (fullPath) {
@@ -188,7 +157,6 @@ const ShiftDetails = () => {
       console.log('Error downloading from S3 ', Error);
     }
   };
-
 
   useEffect(() => {
     const downloadFile = async () => {
@@ -219,7 +187,6 @@ const ShiftDetails = () => {
   };
   const handleAddAmendment = async (e) => {
     e.preventDefault();
-
     try {
       // Define the input fields required by your GraphQL mutation
       const updateInput = {
@@ -318,111 +285,123 @@ const ShiftDetails = () => {
         </button>
       </Modal>
       <div className="mt-4">
-        {shiftList.map((staff, index) => (
-          <div
-            key={index}
-            className="overflow-hidden rounded-lg border border-[#d9d9d9] bg-white mb-4"
-          >
-            <div className="flex">
-              {/* Profile Section */}
-              <div className="p-5">
-                <img
-                  src={fileUri || UserOne} // Use placeholder if fileUri is not available
-                  alt="profile"
-                  width={130}
-                  style={{
-                    width: 130,
-                    height: 130,
-                    borderRadius: 65,
-                    objectFit: 'cover',
-                  }}
-                />
-                <h3 className="mb-1.5 text-2xl mt-3 font-semibold text-black">
-                  {staff.staffDetails.name}
-                </h3>
-              </div>
+       
 
-              {/* Details Section */}
-              <div className="justify-center items-center mt-5">
-                {/* Employee ID */}
-                <div className="flex p-3">
-                  <h4 className="font-semibold text-black">Employee Id</h4>
-                  <span className="text-sm ml-4">
-                    {staff.staffDetails.employeeId}
-                  </span>
-                </div>
 
-                {/* Phone Number */}
-                <div className="flex p-3">
-                  <h4 className="font-semibold text-black">Phone Number</h4>
-                  <span className="text-sm ml-4">
-                    {staff.staffDetails.phoneNumber}
-                  </span>
-                </div>
+{shiftList.map((shift, index) => (
+  <div
+    key={index}
+    className="overflow-hidden rounded-lg border border-[#d9d9d9] bg-white mb-4"
+  >
+    {/* Render staff details inside shift */}
+    {shift.staffDetails.map((staff, staffIndex) => (
+      <div
+      key={index}
+      className="overflow-hidden rounded-lg  bg-white mb-4"
+    >
+      <div className="flex">
+        {/* Profile Section */}
+        <div className="p-5">
+          <img
+            src={staff.profilePic || UserOne} // Use placeholder if fileUri is not available
+            alt="profile"
+            width={130}
+            style={{
+              width: 130,
+              height: 130,
+              borderRadius: 65,
+              objectFit: 'cover',
+            }}
+          />
+          <h3 className="mb-1.5 text-2xl mt-3 font-semibold text-black">
+            {staff.name}
+          </h3>
+        </div>
 
-                {/* DOB */}
-                <div className="flex p-3">
-                  <h4 className="font-semibold text-black">DOB</h4>
-                  <span className="text-sm ml-4">{staff.staffDetails.DOB}</span>
-                </div>
-
-                {/* Profile Status */}
-                <div className="flex p-3">
-                  <h4 className="font-semibold text-black">Profile Status</h4>
-                  <span
-                    className={`text-sm ml-4 px-2 py-1 border rounded ${
-                      staff.staffDetails.profileStatus === 'Incomplete'
-                        ? 'text-yellow-600 border-yellow-600'
-                        : staff.staffDetails.profileStatus === 'Pending'
-                          ? 'text-orange-600 border-orange-600'
-                          : staff.staffDetails.profileStatus === 'Completed'
-                            ? 'text-green-600 border-green-600'
-                            : 'text-gray-600 border-gray-300'
-                    }`}
-                  >
-                    {staff.staffDetails.profileStatus}
-                  </span>
-                </div>
-              </div>
-
-              <div className="justify-center items-center mt-5 ml-10">
-                {/* Start Time */}
-                <div className="flex p-3">
-                  <h4 className="font-semibold text-black">Start Time</h4>
-                  <span className="text-sm ml-4">
-                    {staff.checkInTIme || 'Not Set'}
-                  </span>
-                </div>
-
-                {/* End Time */}
-                <div className="flex p-3">
-                  <h4 className="font-semibold text-black">End Time</h4>
-                  <span className="text-sm ml-4">
-                    {staff.checkOutTime || 'Not Set'}
-                  </span>
-                </div>
-
-                {/* Unassign */}
-                <div className="flex flex-row p-3">
-                  <button
-                    className="text-sm ml-4 text-red-600 border border-red-600 rounded px-2 py-1"
-                    onClick={() => delet(staff.id)}
-                  >
-                    Unassign
-                  </button>
-                  <button
-                    className="text-sm ml-4 bg-gradient-to-r from-[#4fa3f7] to-[#00aaff] text-white border border-transparent rounded-lg px-1  py-1 hover:bg-gradient-to-r hover:from-[#0099cc] hover:to-[#0077b3] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                    onClick={() => handleAmedn(staff.id)}
-                  >
-                    Add Amendment
-                  </button>
-                </div>
-
-                {/* Amendment */}
-              </div>
-            </div>
+        {/* Details Section */}
+        <div className="justify-center items-center mt-5">
+          {/* Employee ID */}
+          <div className="flex p-3">
+            <h4 className="font-semibold text-black">Employee Id</h4>
+            <span className="text-sm ml-4">
+              {staff.employeeId}
+            </span>
           </div>
-        ))}
+
+          {/* Phone Number */}
+          <div className="flex p-3">
+            <h4 className="font-semibold text-black">Phone Number</h4>
+            <span className="text-sm ml-4">
+              {staff.phoneNumber}
+            </span>
+          </div>
+
+          {/* DOB */}
+          <div className="flex p-3">
+            <h4 className="font-semibold text-black">DOB</h4>
+            <span className="text-sm ml-4">{staff.DOB}</span>
+          </div>
+
+          {/* Profile Status */}
+          <div className="flex p-3">
+            <h4 className="font-semibold text-black">Profile Status</h4>
+            <span
+              className={`text-sm ml-4 px-2 py-1 border rounded ${
+                staff.profileStatus === 'Incomplete'
+                  ? 'text-yellow-600 border-yellow-600'
+                  : staff.profileStatus === 'Pending'
+                    ? 'text-orange-600 border-orange-600'
+                    : staff.profileStatus === 'Completed'
+                      ? 'text-green-600 border-green-600'
+                      : 'text-gray-600 border-gray-300'
+              }`}
+            >
+              {staff.profileStatus}
+            </span>
+          </div>
+        </div>
+
+        <div className="justify-center items-center mt-5 ml-10">
+          {/* Start Time */}
+          <div className="flex p-3">
+            <h4 className="font-semibold text-black">Start Time</h4>
+            <span className="text-sm ml-4">
+              {staff.checkInTIme || 'Not Set'}
+            </span>
+          </div>
+
+          {/* End Time */}
+          <div className="flex p-3">
+            <h4 className="font-semibold text-black">End Time</h4>
+            <span className="text-sm ml-4">
+              {staff.checkOutTime || 'Not Set'}
+            </span>
+          </div>
+
+          {/* Unassign */}
+          <div className="flex flex-row p-3">
+            <button
+              className="text-sm ml-4 text-red-600 border border-red-600 rounded px-2 py-1"
+              onClick={() => delet(staff.id)}
+            >
+              UN-ASSIGN
+            </button>
+            <button
+              className="text-sm ml-4 bg-gradient-to-r from-[#4fa3f7] to-[#00aaff] text-white border border-transparent rounded-lg px-1  py-1 hover:bg-gradient-to-r hover:from-[#0099cc] hover:to-[#0077b3] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              onClick={() => handleAmedn(staff.id)}
+            >
+              Add Amendment
+            </button>
+          </div>
+
+          {/* Amendment */}
+        </div>
+      </div>
+    </div>
+    ))}
+  </div>
+))}
+
       </div>
     </>
   );
