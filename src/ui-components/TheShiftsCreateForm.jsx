@@ -23,7 +23,6 @@ export default function TheShiftsCreateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    Location: "",
     duties: "",
     staffId: "",
     time: "",
@@ -33,8 +32,13 @@ export default function TheShiftsCreateForm(props) {
     endDate: "",
     shiftstatus: "",
     userId: "",
+    checkInTIme: "",
+    checkOutTime: "",
+    AdminTime: "",
+    AssignStatus: "",
+    locationID: "",
+    amendment: "",
   };
-  const [Location, setLocation] = React.useState(initialValues.Location);
   const [duties, setDuties] = React.useState(initialValues.duties);
   const [staffId, setStaffId] = React.useState(initialValues.staffId);
   const [time, setTime] = React.useState(initialValues.time);
@@ -46,9 +50,20 @@ export default function TheShiftsCreateForm(props) {
     initialValues.shiftstatus
   );
   const [userId, setUserId] = React.useState(initialValues.userId);
+  const [checkInTIme, setCheckInTIme] = React.useState(
+    initialValues.checkInTIme
+  );
+  const [checkOutTime, setCheckOutTime] = React.useState(
+    initialValues.checkOutTime
+  );
+  const [AdminTime, setAdminTime] = React.useState(initialValues.AdminTime);
+  const [AssignStatus, setAssignStatus] = React.useState(
+    initialValues.AssignStatus
+  );
+  const [locationID, setLocationID] = React.useState(initialValues.locationID);
+  const [amendment, setAmendment] = React.useState(initialValues.amendment);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    setLocation(initialValues.Location);
     setDuties(initialValues.duties);
     setStaffId(initialValues.staffId);
     setTime(initialValues.time);
@@ -58,10 +73,15 @@ export default function TheShiftsCreateForm(props) {
     setEndDate(initialValues.endDate);
     setShiftstatus(initialValues.shiftstatus);
     setUserId(initialValues.userId);
+    setCheckInTIme(initialValues.checkInTIme);
+    setCheckOutTime(initialValues.checkOutTime);
+    setAdminTime(initialValues.AdminTime);
+    setAssignStatus(initialValues.AssignStatus);
+    setLocationID(initialValues.locationID);
+    setAmendment(initialValues.amendment);
     setErrors({});
   };
   const validations = {
-    Location: [],
     duties: [],
     staffId: [],
     time: [],
@@ -71,6 +91,12 @@ export default function TheShiftsCreateForm(props) {
     endDate: [],
     shiftstatus: [],
     userId: [],
+    checkInTIme: [],
+    checkOutTime: [],
+    AdminTime: [],
+    AssignStatus: [],
+    locationID: [],
+    amendment: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -115,7 +141,6 @@ export default function TheShiftsCreateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          Location,
           duties,
           staffId,
           time,
@@ -125,6 +150,12 @@ export default function TheShiftsCreateForm(props) {
           endDate,
           shiftstatus,
           userId,
+          checkInTIme,
+          checkOutTime,
+          AdminTime,
+          AssignStatus,
+          locationID,
+          amendment,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -179,39 +210,6 @@ export default function TheShiftsCreateForm(props) {
       {...rest}
     >
       <TextField
-        label="Location"
-        isRequired={false}
-        isReadOnly={false}
-        value={Location}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              Location: value,
-              duties,
-              staffId,
-              time,
-              startTime,
-              endTime,
-              startDate,
-              endDate,
-              shiftstatus,
-              userId,
-            };
-            const result = onChange(modelFields);
-            value = result?.Location ?? value;
-          }
-          if (errors.Location?.hasError) {
-            runValidationTasks("Location", value);
-          }
-          setLocation(value);
-        }}
-        onBlur={() => runValidationTasks("Location", Location)}
-        errorMessage={errors.Location?.errorMessage}
-        hasError={errors.Location?.hasError}
-        {...getOverrideProps(overrides, "Location")}
-      ></TextField>
-      <TextField
         label="Duties"
         isRequired={false}
         isReadOnly={false}
@@ -220,7 +218,6 @@ export default function TheShiftsCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              Location,
               duties: value,
               staffId,
               time,
@@ -230,6 +227,12 @@ export default function TheShiftsCreateForm(props) {
               endDate,
               shiftstatus,
               userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment,
             };
             const result = onChange(modelFields);
             value = result?.duties ?? value;
@@ -253,7 +256,6 @@ export default function TheShiftsCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              Location,
               duties,
               staffId: value,
               time,
@@ -263,6 +265,12 @@ export default function TheShiftsCreateForm(props) {
               endDate,
               shiftstatus,
               userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment,
             };
             const result = onChange(modelFields);
             value = result?.staffId ?? value;
@@ -286,7 +294,6 @@ export default function TheShiftsCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              Location,
               duties,
               staffId,
               time: value,
@@ -296,6 +303,12 @@ export default function TheShiftsCreateForm(props) {
               endDate,
               shiftstatus,
               userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment,
             };
             const result = onChange(modelFields);
             value = result?.time ?? value;
@@ -321,7 +334,6 @@ export default function TheShiftsCreateForm(props) {
             e.target.value === "" ? "" : new Date(e.target.value).toISOString();
           if (onChange) {
             const modelFields = {
-              Location,
               duties,
               staffId,
               time,
@@ -331,6 +343,12 @@ export default function TheShiftsCreateForm(props) {
               endDate,
               shiftstatus,
               userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment,
             };
             const result = onChange(modelFields);
             value = result?.startTime ?? value;
@@ -356,7 +374,6 @@ export default function TheShiftsCreateForm(props) {
             e.target.value === "" ? "" : new Date(e.target.value).toISOString();
           if (onChange) {
             const modelFields = {
-              Location,
               duties,
               staffId,
               time,
@@ -366,6 +383,12 @@ export default function TheShiftsCreateForm(props) {
               endDate,
               shiftstatus,
               userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment,
             };
             const result = onChange(modelFields);
             value = result?.endTime ?? value;
@@ -389,7 +412,6 @@ export default function TheShiftsCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              Location,
               duties,
               staffId,
               time,
@@ -399,6 +421,12 @@ export default function TheShiftsCreateForm(props) {
               endDate,
               shiftstatus,
               userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment,
             };
             const result = onChange(modelFields);
             value = result?.startDate ?? value;
@@ -422,7 +450,6 @@ export default function TheShiftsCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              Location,
               duties,
               staffId,
               time,
@@ -432,6 +459,12 @@ export default function TheShiftsCreateForm(props) {
               endDate: value,
               shiftstatus,
               userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment,
             };
             const result = onChange(modelFields);
             value = result?.endDate ?? value;
@@ -455,7 +488,6 @@ export default function TheShiftsCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              Location,
               duties,
               staffId,
               time,
@@ -465,6 +497,12 @@ export default function TheShiftsCreateForm(props) {
               endDate,
               shiftstatus: value,
               userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment,
             };
             const result = onChange(modelFields);
             value = result?.shiftstatus ?? value;
@@ -488,7 +526,6 @@ export default function TheShiftsCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              Location,
               duties,
               staffId,
               time,
@@ -498,6 +535,12 @@ export default function TheShiftsCreateForm(props) {
               endDate,
               shiftstatus,
               userId: value,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment,
             };
             const result = onChange(modelFields);
             value = result?.userId ?? value;
@@ -511,6 +554,234 @@ export default function TheShiftsCreateForm(props) {
         errorMessage={errors.userId?.errorMessage}
         hasError={errors.userId?.hasError}
         {...getOverrideProps(overrides, "userId")}
+      ></TextField>
+      <TextField
+        label="Check in t ime"
+        isRequired={false}
+        isReadOnly={false}
+        value={checkInTIme}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              duties,
+              staffId,
+              time,
+              startTime,
+              endTime,
+              startDate,
+              endDate,
+              shiftstatus,
+              userId,
+              checkInTIme: value,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment,
+            };
+            const result = onChange(modelFields);
+            value = result?.checkInTIme ?? value;
+          }
+          if (errors.checkInTIme?.hasError) {
+            runValidationTasks("checkInTIme", value);
+          }
+          setCheckInTIme(value);
+        }}
+        onBlur={() => runValidationTasks("checkInTIme", checkInTIme)}
+        errorMessage={errors.checkInTIme?.errorMessage}
+        hasError={errors.checkInTIme?.hasError}
+        {...getOverrideProps(overrides, "checkInTIme")}
+      ></TextField>
+      <TextField
+        label="Check out time"
+        isRequired={false}
+        isReadOnly={false}
+        value={checkOutTime}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              duties,
+              staffId,
+              time,
+              startTime,
+              endTime,
+              startDate,
+              endDate,
+              shiftstatus,
+              userId,
+              checkInTIme,
+              checkOutTime: value,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment,
+            };
+            const result = onChange(modelFields);
+            value = result?.checkOutTime ?? value;
+          }
+          if (errors.checkOutTime?.hasError) {
+            runValidationTasks("checkOutTime", value);
+          }
+          setCheckOutTime(value);
+        }}
+        onBlur={() => runValidationTasks("checkOutTime", checkOutTime)}
+        errorMessage={errors.checkOutTime?.errorMessage}
+        hasError={errors.checkOutTime?.hasError}
+        {...getOverrideProps(overrides, "checkOutTime")}
+      ></TextField>
+      <TextField
+        label="Admin time"
+        isRequired={false}
+        isReadOnly={false}
+        value={AdminTime}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              duties,
+              staffId,
+              time,
+              startTime,
+              endTime,
+              startDate,
+              endDate,
+              shiftstatus,
+              userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime: value,
+              AssignStatus,
+              locationID,
+              amendment,
+            };
+            const result = onChange(modelFields);
+            value = result?.AdminTime ?? value;
+          }
+          if (errors.AdminTime?.hasError) {
+            runValidationTasks("AdminTime", value);
+          }
+          setAdminTime(value);
+        }}
+        onBlur={() => runValidationTasks("AdminTime", AdminTime)}
+        errorMessage={errors.AdminTime?.errorMessage}
+        hasError={errors.AdminTime?.hasError}
+        {...getOverrideProps(overrides, "AdminTime")}
+      ></TextField>
+      <TextField
+        label="Assign status"
+        isRequired={false}
+        isReadOnly={false}
+        value={AssignStatus}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              duties,
+              staffId,
+              time,
+              startTime,
+              endTime,
+              startDate,
+              endDate,
+              shiftstatus,
+              userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus: value,
+              locationID,
+              amendment,
+            };
+            const result = onChange(modelFields);
+            value = result?.AssignStatus ?? value;
+          }
+          if (errors.AssignStatus?.hasError) {
+            runValidationTasks("AssignStatus", value);
+          }
+          setAssignStatus(value);
+        }}
+        onBlur={() => runValidationTasks("AssignStatus", AssignStatus)}
+        errorMessage={errors.AssignStatus?.errorMessage}
+        hasError={errors.AssignStatus?.hasError}
+        {...getOverrideProps(overrides, "AssignStatus")}
+      ></TextField>
+      <TextField
+        label="Location id"
+        isRequired={false}
+        isReadOnly={false}
+        value={locationID}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              duties,
+              staffId,
+              time,
+              startTime,
+              endTime,
+              startDate,
+              endDate,
+              shiftstatus,
+              userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID: value,
+              amendment,
+            };
+            const result = onChange(modelFields);
+            value = result?.locationID ?? value;
+          }
+          if (errors.locationID?.hasError) {
+            runValidationTasks("locationID", value);
+          }
+          setLocationID(value);
+        }}
+        onBlur={() => runValidationTasks("locationID", locationID)}
+        errorMessage={errors.locationID?.errorMessage}
+        hasError={errors.locationID?.hasError}
+        {...getOverrideProps(overrides, "locationID")}
+      ></TextField>
+      <TextField
+        label="Amendment"
+        isRequired={false}
+        isReadOnly={false}
+        value={amendment}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              duties,
+              staffId,
+              time,
+              startTime,
+              endTime,
+              startDate,
+              endDate,
+              shiftstatus,
+              userId,
+              checkInTIme,
+              checkOutTime,
+              AdminTime,
+              AssignStatus,
+              locationID,
+              amendment: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.amendment ?? value;
+          }
+          if (errors.amendment?.hasError) {
+            runValidationTasks("amendment", value);
+          }
+          setAmendment(value);
+        }}
+        onBlur={() => runValidationTasks("amendment", amendment)}
+        errorMessage={errors.amendment?.errorMessage}
+        hasError={errors.amendment?.hasError}
+        {...getOverrideProps(overrides, "amendment")}
       ></TextField>
       <Flex
         justifyContent="space-between"

@@ -4,6 +4,10 @@
  * Any changes to this file will be overwritten when running amplify pull. *
  **************************************************************************/
 
+export { default as LocationCreateForm } from "./LocationCreateForm";
+export { default as LocationUpdateForm } from "./LocationUpdateForm";
+export { default as MainShiftCreateForm } from "./MainShiftCreateForm";
+export { default as MainShiftUpdateForm } from "./MainShiftUpdateForm";
 export { default as TheAdminStaffUserCreateForm } from "./TheAdminStaffUserCreateForm";
 export { default as TheAdminStaffUserUpdateForm } from "./TheAdminStaffUserUpdateForm";
 export { default as TheShiftsCreateForm } from "./TheShiftsCreateForm";

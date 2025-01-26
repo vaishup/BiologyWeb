@@ -233,7 +233,6 @@ export const getTheStaff = /* GraphQL */ `
       shiftstatus
       createdAt
       updatedAt
-      owner
       __typename
     }
   }
@@ -265,7 +264,6 @@ export const listTheStaffs = /* GraphQL */ `
         shiftstatus
         createdAt
         updatedAt
-        owner
         __typename
       }
       nextToken

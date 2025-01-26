@@ -128,7 +128,17 @@ const AddClient = () => {
         email: formData.email,
         employeeId: formData.employeeId,
         profileStatus: id ? formData.status : 'Incomplete',
-        userId:userId
+        userId:userId,
+        DOB:"24",
+        photourl:"2e2e",
+        isBiomatritcs:"",
+        Location:"",
+        IsActive:"",
+        latitude:"",
+        longitude:"",
+        shiftIds:"",
+        staffStatus:"",
+        shiftstatus:""
             };
       //console.log('Staff Input:', staffInput);
   
@@ -137,13 +147,11 @@ const AddClient = () => {
         staffResponse = await API.graphql({
           query: mutation.updateTheStaff,
           variables: { input: { id, ...staffInput } },
-          //authMode: 'AMAZON_COGNITO_USER_POOLS',
         });
       } else {
         staffResponse = await API.graphql({
           query: mutation.createTheStaff,
           variables: { input: staffInput },
-        //  authMode: 'AMAZON_COGNITO_USER_POOLS',
         });
       }
   
@@ -154,7 +162,7 @@ const AddClient = () => {
       setIsOpen(true);
       navigation('/Employee');
     } catch (error) {
-      console.error('Error creating or updating staff:', error);
+      console.error('Error creating or updating employee:', error);
     }
   };
   

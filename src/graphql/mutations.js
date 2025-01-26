@@ -299,7 +299,6 @@ export const createTheStaff = /* GraphQL */ `
       shiftstatus
       createdAt
       updatedAt
-      owner
       __typename
     }
   }
@@ -329,7 +328,6 @@ export const updateTheStaff = /* GraphQL */ `
       shiftstatus
       createdAt
       updatedAt
-      owner
       __typename
     }
   }
@@ -359,7 +357,6 @@ export const deleteTheStaff = /* GraphQL */ `
       shiftstatus
       createdAt
       updatedAt
-      owner
       __typename
     }
   }

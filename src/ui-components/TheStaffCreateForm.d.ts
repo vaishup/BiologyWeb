@@ -31,11 +31,13 @@ export declare type TheStaffCreateFormInputValues = {
     profileStatus?: string;
     Location?: string;
     IsActive?: string;
-    shiftIds?: string[];
-    userId?: string;
     latitude?: string;
     longitude?: string;
+    shiftIds?: string[];
+    userId?: string;
     employeeId?: string;
+    staffStatus?: string;
+    shiftstatus?: string;
 };
 export declare type TheStaffCreateFormValidationValues = {
     name?: ValidationFunction<string>;
@@ -47,11 +49,13 @@ export declare type TheStaffCreateFormValidationValues = {
     profileStatus?: ValidationFunction<string>;
     Location?: ValidationFunction<string>;
     IsActive?: ValidationFunction<string>;
-    shiftIds?: ValidationFunction<string>;
-    userId?: ValidationFunction<string>;
     latitude?: ValidationFunction<string>;
     longitude?: ValidationFunction<string>;
+    shiftIds?: ValidationFunction<string>;
+    userId?: ValidationFunction<string>;
     employeeId?: ValidationFunction<string>;
+    staffStatus?: ValidationFunction<string>;
+    shiftstatus?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type TheStaffCreateFormOverridesProps = {
@@ -65,11 +69,13 @@ export declare type TheStaffCreateFormOverridesProps = {
     profileStatus?: PrimitiveOverrideProps<TextFieldProps>;
     Location?: PrimitiveOverrideProps<TextFieldProps>;
     IsActive?: PrimitiveOverrideProps<TextFieldProps>;
-    shiftIds?: PrimitiveOverrideProps<TextFieldProps>;
-    userId?: PrimitiveOverrideProps<TextFieldProps>;
     latitude?: PrimitiveOverrideProps<TextFieldProps>;
     longitude?: PrimitiveOverrideProps<TextFieldProps>;
+    shiftIds?: PrimitiveOverrideProps<TextFieldProps>;
+    userId?: PrimitiveOverrideProps<TextFieldProps>;
     employeeId?: PrimitiveOverrideProps<TextFieldProps>;
+    staffStatus?: PrimitiveOverrideProps<TextFieldProps>;
+    shiftstatus?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type TheStaffCreateFormProps = React.PropsWithChildren<{
     overrides?: TheStaffCreateFormOverridesProps | undefined | null;

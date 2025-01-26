@@ -22,7 +22,6 @@ export declare type ValidationResponse = {
 };
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
 export declare type TheShiftsUpdateFormInputValues = {
-    Location?: string;
     duties?: string;
     staffId?: string;
     time?: string;
@@ -32,9 +31,14 @@ export declare type TheShiftsUpdateFormInputValues = {
     endDate?: string;
     shiftstatus?: string;
     userId?: string;
+    checkInTIme?: string;
+    checkOutTime?: string;
+    AdminTime?: string;
+    AssignStatus?: string;
+    locationID?: string;
+    amendment?: string;
 };
 export declare type TheShiftsUpdateFormValidationValues = {
-    Location?: ValidationFunction<string>;
     duties?: ValidationFunction<string>;
     staffId?: ValidationFunction<string>;
     time?: ValidationFunction<string>;
@@ -44,11 +48,16 @@ export declare type TheShiftsUpdateFormValidationValues = {
     endDate?: ValidationFunction<string>;
     shiftstatus?: ValidationFunction<string>;
     userId?: ValidationFunction<string>;
+    checkInTIme?: ValidationFunction<string>;
+    checkOutTime?: ValidationFunction<string>;
+    AdminTime?: ValidationFunction<string>;
+    AssignStatus?: ValidationFunction<string>;
+    locationID?: ValidationFunction<string>;
+    amendment?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type TheShiftsUpdateFormOverridesProps = {
     TheShiftsUpdateFormGrid?: PrimitiveOverrideProps<GridProps>;
-    Location?: PrimitiveOverrideProps<TextFieldProps>;
     duties?: PrimitiveOverrideProps<TextFieldProps>;
     staffId?: PrimitiveOverrideProps<TextFieldProps>;
     time?: PrimitiveOverrideProps<TextFieldProps>;
@@ -58,6 +67,12 @@ export declare type TheShiftsUpdateFormOverridesProps = {
     endDate?: PrimitiveOverrideProps<TextFieldProps>;
     shiftstatus?: PrimitiveOverrideProps<TextFieldProps>;
     userId?: PrimitiveOverrideProps<TextFieldProps>;
+    checkInTIme?: PrimitiveOverrideProps<TextFieldProps>;
+    checkOutTime?: PrimitiveOverrideProps<TextFieldProps>;
+    AdminTime?: PrimitiveOverrideProps<TextFieldProps>;
+    AssignStatus?: PrimitiveOverrideProps<TextFieldProps>;
+    locationID?: PrimitiveOverrideProps<TextFieldProps>;
+    amendment?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type TheShiftsUpdateFormProps = React.PropsWithChildren<{
     overrides?: TheShiftsUpdateFormOverridesProps | undefined | null;
