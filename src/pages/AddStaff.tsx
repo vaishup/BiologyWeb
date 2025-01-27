@@ -5,12 +5,12 @@ import { useParams, useNavigate } from 'react-router-dom'; // Import hooks from 
 import { generateClient } from 'aws-amplify/api';
 import { Modal } from 'antd';
 import { Check } from 'lucide-react';
-const AddStaff = () => {
+import mutation from 'antd';
 
+const AddStaff = () => {
   const navigation = useNavigate();
   const API = generateClient();
   const { id } = useParams(); // Get the staff ID from the URL, if it exists
-
   // State to manage form inputs
   const [formData, setFormData] = useState({
     firstName: '',
@@ -40,7 +40,7 @@ const AddStaff = () => {
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Step 1: Perform validation
     const validationErrors = validate(); // Assume validate() is a function that returns an object of errors
     if (Object.keys(validationErrors).length > 0) {
@@ -55,7 +55,7 @@ const AddStaff = () => {
         lname: formData.lastName,
         email: formData.email,
         joiningdate: formData.joiningDate,
-        staffType:formData.staffType
+        staffType: formData.staffType,
         // Add other fields as needed
       };
       let staffResponse;
@@ -73,9 +73,10 @@ const AddStaff = () => {
         });
       }
       // Step 3: Handle the response and navigation
-      const createdItem = staffResponse.data.createTheStaff || staffResponse.data.updateTheStaff;
+      const createdItem =
+        staffResponse.data.createTheStaff || staffResponse.data.updateTheStaff;
       console.log(createdItem.id, 'successfully created/updated');
-      setId(createdItem.id); // Set the ID if it's a new creation
+      //setId(createdItem.id); // Set the ID if it's a new creation
       // Step 4: Show success message and optionally navigate
       setIsOpen(true);
       // navigation("/staffList"); // Uncomment this if you want to navigate to the staff list page after submission
@@ -84,21 +85,24 @@ const AddStaff = () => {
       // Handle the error (display message, etc.)
     }
   };
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [show, setIsShow] = useState(false);
+
   const handleDialogue = () => {
     setIsShow(true);
     setIsOpen(false);
   };
+
   const handleCancle = () => {
     setIsOpen(false);
     navigation('/stafflist');
   };
+
   return (
     <>
-        <Breadcrumb pageName="Add Employee" />
-        <Modal
+      <Breadcrumb pageName="Add Employee" />
+      <Modal
         open={isOpen}
         onCancel={handleCancle}
         footer={[
@@ -149,90 +153,93 @@ const AddStaff = () => {
           </p>
         </div>
       </Modal>
-        <div className="flex justify-center items-center  bg-gray-100">
-  <div className="bg-white p-6  rounded-lg shadow-lg w-full max-w-xl">
-  <h3 className="font-medium text-black dark:text-white  border-b border-stroke dark:border-gray-700 pb-2">
-      Staff's Details
-    </h3>    <form action="#" className="w-full">
-                <div className="p-6.5 ">
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        First name<span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                      
-                        type="text"
-                        placeholder="Enter your first name"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        Last name<span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter your last name"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-                  <div className="mb-4.5  w-full flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        Email <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        placeholder="Enter your email address"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        Phone Number <span className="text-meta-1">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        placeholder="Enter your phone Number"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-                  <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="mb-4.5">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        Joining date
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter JoiningDate"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                    <div className="mb-4.5">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        UserName
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Enter UserName"
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      />
-                    </div>
-                  </div>
-
-                  <button className="btn-grad w-full py-3" onClick={() => {}}>
-        Submit
-      </button> 
+      <div className="flex justify-center items-center  bg-gray-100">
+        <div className="bg-white p-6  rounded-lg shadow-lg w-full max-w-xl">
+          <h3 className="font-medium text-black dark:text-white  border-b border-stroke dark:border-gray-700 pb-2">
+            Staff's Details
+          </h3>{' '}
+          <form action="#" className="w-full">
+            <div className="p-6.5 ">
+              <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                <div className="w-full xl:w-1/2">
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    First name<span className="text-meta-1">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter your first name"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
                 </div>
-              </form>
+
+                <div className="w-full xl:w-1/2">
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    Last name<span className="text-meta-1">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter your last name"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+
+              </div>
+
+              <div className="mb-4.5  w-full flex flex-col gap-6 xl:flex-row">
+                <div className="w-full xl:w-1/2">
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    Email <span className="text-meta-1">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="Enter your email address"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+
+                <div className="w-full xl:w-1/2">
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    Phone Number <span className="text-meta-1">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="Enter your phone Number"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                <div className="mb-4.5">
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    Joining date
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter JoiningDate"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+                <div className="mb-4.5">
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    UserName
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter UserName"
+                    className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                  />
+                </div>
+              </div>
+
+              <button className="btn-grad w-full py-3" onClick={() => {}}>
+                Submit
+              </button>
             </div>
-          </div>
-   
+          </form>
+          
+        </div>
+      </div>
     </>
   );
 };
