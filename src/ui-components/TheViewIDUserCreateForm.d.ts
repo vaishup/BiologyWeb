@@ -26,12 +26,14 @@ export declare type TheViewIDUserCreateFormInputValues = {
     employeeId?: string;
     profileStatus?: string;
     attachment?: string;
+    isLogin?: string;
 };
 export declare type TheViewIDUserCreateFormValidationValues = {
     name?: ValidationFunction<string>;
     employeeId?: ValidationFunction<string>;
     profileStatus?: ValidationFunction<string>;
     attachment?: ValidationFunction<string>;
+    isLogin?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type TheViewIDUserCreateFormOverridesProps = {
@@ -40,6 +42,7 @@ export declare type TheViewIDUserCreateFormOverridesProps = {
     employeeId?: PrimitiveOverrideProps<TextFieldProps>;
     profileStatus?: PrimitiveOverrideProps<TextFieldProps>;
     attachment?: PrimitiveOverrideProps<TextFieldProps>;
+    isLogin?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type TheViewIDUserCreateFormProps = React.PropsWithChildren<{
     overrides?: TheViewIDUserCreateFormOverridesProps | undefined | null;

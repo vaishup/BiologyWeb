@@ -46,6 +46,7 @@ const MakeID = () => {
       const clientInput = {
         name: formData.name,
         employeeId: formData.employeeId,
+        isLogin: 'false',
       };
       const clientResponse = await API.graphql({
         query: mutation.createTheViewIDUser,

@@ -27,6 +27,7 @@ export default function TheViewIDUserCreateForm(props) {
     employeeId: "",
     profileStatus: "",
     attachment: "",
+    isLogin: "",
   };
   const [name, setName] = React.useState(initialValues.name);
   const [employeeId, setEmployeeId] = React.useState(initialValues.employeeId);
@@ -34,12 +35,14 @@ export default function TheViewIDUserCreateForm(props) {
     initialValues.profileStatus
   );
   const [attachment, setAttachment] = React.useState(initialValues.attachment);
+  const [isLogin, setIsLogin] = React.useState(initialValues.isLogin);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setName(initialValues.name);
     setEmployeeId(initialValues.employeeId);
     setProfileStatus(initialValues.profileStatus);
     setAttachment(initialValues.attachment);
+    setIsLogin(initialValues.isLogin);
     setErrors({});
   };
   const validations = {
@@ -47,6 +50,7 @@ export default function TheViewIDUserCreateForm(props) {
     employeeId: [],
     profileStatus: [],
     attachment: [],
+    isLogin: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -78,6 +82,7 @@ export default function TheViewIDUserCreateForm(props) {
           employeeId,
           profileStatus,
           attachment,
+          isLogin,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -144,6 +149,7 @@ export default function TheViewIDUserCreateForm(props) {
               employeeId,
               profileStatus,
               attachment,
+              isLogin,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -171,6 +177,7 @@ export default function TheViewIDUserCreateForm(props) {
               employeeId: value,
               profileStatus,
               attachment,
+              isLogin,
             };
             const result = onChange(modelFields);
             value = result?.employeeId ?? value;
@@ -198,6 +205,7 @@ export default function TheViewIDUserCreateForm(props) {
               employeeId,
               profileStatus: value,
               attachment,
+              isLogin,
             };
             const result = onChange(modelFields);
             value = result?.profileStatus ?? value;
@@ -225,6 +233,7 @@ export default function TheViewIDUserCreateForm(props) {
               employeeId,
               profileStatus,
               attachment: value,
+              isLogin,
             };
             const result = onChange(modelFields);
             value = result?.attachment ?? value;
@@ -238,6 +247,34 @@ export default function TheViewIDUserCreateForm(props) {
         errorMessage={errors.attachment?.errorMessage}
         hasError={errors.attachment?.hasError}
         {...getOverrideProps(overrides, "attachment")}
+      ></TextField>
+      <TextField
+        label="Is login"
+        isRequired={false}
+        isReadOnly={false}
+        value={isLogin}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              name,
+              employeeId,
+              profileStatus,
+              attachment,
+              isLogin: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.isLogin ?? value;
+          }
+          if (errors.isLogin?.hasError) {
+            runValidationTasks("isLogin", value);
+          }
+          setIsLogin(value);
+        }}
+        onBlur={() => runValidationTasks("isLogin", isLogin)}
+        errorMessage={errors.isLogin?.errorMessage}
+        hasError={errors.isLogin?.hasError}
+        {...getOverrideProps(overrides, "isLogin")}
       ></TextField>
       <Flex
         justifyContent="space-between"

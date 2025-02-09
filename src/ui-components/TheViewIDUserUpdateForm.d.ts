@@ -26,12 +26,14 @@ export declare type TheViewIDUserUpdateFormInputValues = {
     employeeId?: string;
     profileStatus?: string;
     attachment?: string;
+    isLogin?: string;
 };
 export declare type TheViewIDUserUpdateFormValidationValues = {
     name?: ValidationFunction<string>;
     employeeId?: ValidationFunction<string>;
     profileStatus?: ValidationFunction<string>;
     attachment?: ValidationFunction<string>;
+    isLogin?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type TheViewIDUserUpdateFormOverridesProps = {
@@ -40,6 +42,7 @@ export declare type TheViewIDUserUpdateFormOverridesProps = {
     employeeId?: PrimitiveOverrideProps<TextFieldProps>;
     profileStatus?: PrimitiveOverrideProps<TextFieldProps>;
     attachment?: PrimitiveOverrideProps<TextFieldProps>;
+    isLogin?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type TheViewIDUserUpdateFormProps = React.PropsWithChildren<{
     overrides?: TheViewIDUserUpdateFormOverridesProps | undefined | null;

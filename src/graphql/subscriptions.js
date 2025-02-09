@@ -395,6 +395,7 @@ export const onCreateTheViewIDUser = /* GraphQL */ `
       employeeId
       profileStatus
       attachment
+      isLogin
       createdAt
       updatedAt
       __typename
@@ -411,6 +412,7 @@ export const onUpdateTheViewIDUser = /* GraphQL */ `
       employeeId
       profileStatus
       attachment
+      isLogin
       createdAt
       updatedAt
       __typename
@@ -427,6 +429,7 @@ export const onDeleteTheViewIDUser = /* GraphQL */ `
       employeeId
       profileStatus
       attachment
+      isLogin
       createdAt
       updatedAt
       __typename

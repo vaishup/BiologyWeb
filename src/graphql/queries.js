@@ -319,6 +319,7 @@ export const getTheViewIDUser = /* GraphQL */ `
       employeeId
       profileStatus
       attachment
+      isLogin
       createdAt
       updatedAt
       __typename
@@ -338,6 +339,7 @@ export const listTheViewIDUsers = /* GraphQL */ `
         employeeId
         profileStatus
         attachment
+        isLogin
         createdAt
         updatedAt
         __typename

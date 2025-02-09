@@ -8,7 +8,11 @@ import { Modal } from 'antd';
 import { Check } from 'lucide-react';
 import * as mutation from '../graphql/mutations.js';
 import { getTheStaff, listTheStaffs } from '../graphql/queries';
-import { getTableID,getUserInfo,getCustomAttributes } from '../hooks/authServices.js';
+import {
+  getTableID,
+  getUserInfo,
+  getCustomAttributes,
+} from '../hooks/authServices.js';
 
 const AddClient = () => {
   const navigation = useNavigate();
@@ -23,17 +27,17 @@ const AddClient = () => {
     email: '',
     phoneNumber: '',
     status: '',
-    employeeId:''
+    employeeId: '',
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
     // Validate and restrict phone number
-    if (name === "phoneNumber") {
+    if (name === 'phoneNumber') {
       // Allow only numeric input
       if (!/^\d*$/.test(value)) {
         setErrors((prev) => ({
           ...prev,
-          phoneNumber: "Phone number must contain only numbers",
+          phoneNumber: 'Phone number must contain only numbers',
         }));
         return; // Stop updating the state
       }
@@ -42,16 +46,16 @@ const AddClient = () => {
       if (value.length > 10) {
         setErrors((prev) => ({
           ...prev,
-          phoneNumber: "Phone number must be exactly 10 digits",
+          phoneNumber: 'Phone number must be exactly 10 digits',
         }));
         return; // Stop updating the state
       } else if (value.length < 10 && value.length > 0) {
         setErrors((prev) => ({
           ...prev,
-          phoneNumber: "Phone number must be exactly 10 digits",
+          phoneNumber: 'Phone number must be exactly 10 digits',
         }));
       } else {
-        setErrors((prev) => ({ ...prev, phoneNumber: "" })); // Clear error if valid
+        setErrors((prev) => ({ ...prev, phoneNumber: '' })); // Clear error if valid
       }
     }
 
@@ -75,30 +79,27 @@ const AddClient = () => {
       const userId = await getTableID();
       console.log('userDetail', userId);
       const userData = await getUserInfo(userId); // Fetch the user info
-      setStaffType(userData.userType)
-     // setUser(userData); // Store the user data in state
+      setStaffType(userData.userType);
+      // setUser(userData); // Store the user data in state
     } catch (err) {
       console.error('Error fetching user data:', err);
-     // Store the error in state
+      // Store the error in state
     } finally {
-     // setLoading(false); // Stop loading when operation is complete
+      // setLoading(false); // Stop loading when operation is complete
     }
   };
-
   // useEffect to call the fetch function when the component mounts
   useEffect(() => {
     fetchUserData(); // Call the async function inside useEffect
-  }, []); 
+  }, []);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
     // Fetch User ID
     const userId = await getTableID().catch((err) => {
       console.error('Error fetching User ID:', err);
       return null;
     });
     console.log('Fetched User ID:', userId);
-  
     let user = null;
     if (userId) {
       user = await getUserInfo(userId).catch((err) => {
@@ -107,7 +108,6 @@ const AddClient = () => {
       });
       console.log('User Info:', user);
     }
-  
     // Validation
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
@@ -115,7 +115,6 @@ const AddClient = () => {
       setErrors(validationErrors);
       return;
     }
-  
     // Create or Update Staff
     try {
       const staffInput = {
@@ -124,20 +123,21 @@ const AddClient = () => {
         email: formData.email,
         employeeId: formData.employeeId,
         profileStatus: id ? formData.status : 'Incomplete',
-        userId:userId,
-        DOB:"24",
-        photourl:"2e2e",
-        isBiomatritcs:"",
-        Location:"",
-        IsActive:"",
-        latitude:"",
-        longitude:"",
-        shiftIds:"",
-        staffStatus:"",
-        shiftstatus:""
-            };
+        userId: userId,
+        DOB: '24',
+        photourl: '2e2e',
+        isBiomatritcs: '',
+        Location: '',
+        IsActive: '',
+        latitude: '',
+        longitude: '',
+        shiftIds: '',
+        staffStatus: '',
+        shiftstatus: '',
+       
+      };
       //console.log('Staff Input:', staffInput);
-  
+
       let staffResponse;
       if (id) {
         staffResponse = await API.graphql({
@@ -150,7 +150,7 @@ const AddClient = () => {
           variables: { input: staffInput },
         });
       }
-  
+
       const createdItem =
         staffResponse.data.createTheStaff || staffResponse.data.updateTheStaff;
       console.log('Success:', createdItem.id);
@@ -161,7 +161,7 @@ const AddClient = () => {
       console.error('Error creating or updating employee:', error);
     }
   };
-  
+
   useEffect(() => {
     if (id) {
       const fetchStaffData = async () => {
@@ -172,13 +172,16 @@ const AddClient = () => {
             variables: { id },
           });
           const staff = staffData.data.getTheStaff;
-          const status = staff.profileStatus === 'Incomplete' ? 'Pending' : staff.profileStatus;
+          const status =
+            staff.profileStatus === 'Incomplete'
+              ? 'Pending'
+              : staff.profileStatus;
           setFormData({
             name: staff.name,
             email: staff.email,
             phoneNumber: staff.phoneNumber,
             status: status,
-            employeeId:staff.employeeId
+            employeeId: staff.employeeId,
           });
         } catch (error) {
           console.error('Error fetching staff data:', error);
@@ -260,15 +263,10 @@ const AddClient = () => {
               </h3>
             </div>
             <form onSubmit={handleSubmit} className="w-full">
-              {' '}
-              {/* Increase form width to full width */}
               <div className="w-[430px] justify-center items-center p-5">
-                {' '}
-                {/* Increase this container's width */}
-                {/* Name Field */}
-                <div className="w-full">  
+                <div className="w-full">
                   <label className="mb-2.5 mt-2 block text-black dark:text-white">
-                   Employee ID <span className="text-meta-1">*</span>
+                    Employee ID <span className="text-meta-1">*</span>
                   </label>
                   <input
                     name="employeeId" // Add this line
@@ -292,7 +290,6 @@ const AddClient = () => {
                     className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   />
                 </div>
-              
                 {/* Email Field */}
                 <div className="w-full">
                   <label className="mb-2.5  mt-2 block text-black dark:text-white">
@@ -313,19 +310,18 @@ const AddClient = () => {
                     Phone Number <span className="text-meta-1">*</span>
                   </label>
                   <input
-        name="phoneNumber"
-        value={formData.phoneNumber}
-        onChange={handleChange}
-        type="text"
-        placeholder="Enter your Phone Number"
-        className={`w-full rounded border-[1.5px] py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter ${
-          errors.phoneNumber
-            ? "border-red-500 dark:border-red-500"
-            : "border-stroke dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-        }`}
-      />
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    type="text"
+                    placeholder="Enter your Phone Number"
+                    className={`w-full rounded border-[1.5px] py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter ${
+                      errors.phoneNumber
+                        ? 'border-red-500 dark:border-red-500'
+                        : 'border-stroke dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
+                    }`}
+                  />
                 </div>
-
                 {id && (
                   <div className="w-full">
                     <label className="mb-2.5 mt-3 block text-black dark:text-white">

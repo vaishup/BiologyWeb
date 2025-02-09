@@ -9,6 +9,13 @@ import { listTheViewIDUsers } from '../graphql/queries.js';
 import { uploadData, getUrl, list, remove } from 'aws-amplify/storage';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { getTheStaff, listTheStaffs } from '../graphql/queries';
+
+import {
+  getTableID,
+  getUserInfo,
+  getCustomAttributes,
+} from '../hooks/authServices.js';
 
 const ViewID = () => {
   const client = generateClient();
@@ -201,7 +208,7 @@ const ViewID = () => {
       console.warn('No data to download.');
       return;
     }
-  
+
     // 1️⃣ **Prepare Data for Excel**
     const excelData = stafflist.map((staff) => ({
       'Employee ID': staff.employeeId,
@@ -210,47 +217,185 @@ const ViewID = () => {
         ? `https://bilogicf9acb70525e045b5bb09a6bbb423cf3c8e024-staging.s3.us-east-2.amazonaws.com/public/${staff.attachment}`
         : 'No Image',
     }));
-  
+
     // 2️⃣ **Create Workbook & Worksheet**
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet([]);
-  
+
     // 3️⃣ **Add Headers with Merged Styling Trick**
     const headerRow = [['EMPLOYEE ID', 'NAME', 'PROFILE PICTURE URL']];
     XLSX.utils.sheet_add_aoa(ws, headerRow, { origin: 0 });
-  
+
     // 4️⃣ **Insert Empty Row for Better Spacing**
     XLSX.utils.sheet_add_aoa(ws, [[]], { origin: 1 });
-  
+
     // 5️⃣ **Insert Data Starting from Row 3**
     XLSX.utils.sheet_add_json(ws, excelData, {
       skipHeader: true, // Prevent duplicate headers
       origin: 2, // Start data at row 3
     });
-  
+
     // 6️⃣ **Set Column Widths**
     ws['!cols'] = [
       { wch: 20 }, // Employee ID
       { wch: 25 }, // Name
       { wch: 60 }, // Profile Picture URL (Wider)
     ];
-  
+
     // 7️⃣ **Append Sheet & Generate File**
     XLSX.utils.book_append_sheet(wb, ws, 'Employees');
     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     const data = new Blob([excelBuffer], { type: 'application/octet-stream' });
-  
+
     saveAs(data, `Employee_IDs.xlsx`);
   };
-  
-  
+
+  const [formData, setFormData] = useState({
+    id: '',
+    name: '',
+    email: '',
+    phoneNumber: '',
+    status: '',
+    employeeId: '',
+  });
+  const handleDialogue = () => {
+    setIsShow(true);
+    setIsOpen(false);
+  };
+  const [errors, setErrors] = useState({});
+
+  const handleCancle = () => {
+    setIsOpen(false);
+    navigation('/ShiftList');
+  };
+  const validate = () => {
+    const errors = {};
+    if (!formData.email) errors.email = 'Email is required';
+    if (!formData.phoneNumber) errors.phoneNumber = 'Phone number is required';
+    return errors;
+  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Fetch User ID
+    const userId = await getTableID().catch((err) => {
+      console.error('Error fetching User ID:', err);
+      return null;
+    });
+    console.log('Fetched User ID:', userId);
+    let user = null;
+    if (userId) {
+      user = await getUserInfo(userId).catch((err) => {
+        console.error('Error fetching User Info:', err);
+        return null;
+      });
+      console.log('User Info:', user);
+    }
+    // Validation
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      console.error('Validation Errors:', validationErrors);
+      setErrors(validationErrors);
+      return;
+    }
+    // Create or Update Staff
+    try {
+      const staffInput = {
+        id: formData.id,
+        name: formData.name,
+        phoneNumber: formData.phoneNumber,
+        email: formData.email,
+        employeeId: formData.employeeId,
+        profileStatus: id ? formData.status : 'Incomplete',
+        userId: userId,
+        DOB: '24',
+        photourl: '2e2e',
+        isBiomatritcs: '',
+        Location: '',
+        IsActive: '',
+        latitude: '',
+        longitude: '',
+        shiftIds: '',
+        staffStatus: '',
+        shiftstatus: '',
+      };
+      //console.log('Staff Input:', staffInput);
+      let staffResponse;
+      staffResponse = await client.graphql({
+        query: mutation.createTheStaff,
+        variables: { input: staffInput },
+      });
+
+      const createdItem =
+        staffResponse.data.createTheStaff || staffResponse.data.updateTheStaff;
+      console.log('Success:', createdItem.id);
+
+      const updateInput = {
+        id: createdItem.id,
+        isLogin: 'true', // Store image URL in DB
+      };
+      console.log('Updating client with:', updateInput);
+      const updateResponse = await client.graphql({
+        query: mutation.updateTheViewIDUser,
+        variables: { input: updateInput },
+      });
+      setIsOpen(true);
+      navigation('/Employee');
+    } catch (error) {
+      console.error('Error creating or updating employee:', error);
+    }
+  };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    // Validate and restrict phone number
+    if (name === 'phoneNumber') {
+      // Allow only numeric input
+      if (!/^\d*$/.test(value)) {
+        setErrors((prev) => ({
+          ...prev,
+          phoneNumber: 'Phone number must contain only numbers',
+        }));
+        return; // Stop updating the state
+      }
+
+      // Restrict to 10 digits
+      if (value.length > 10) {
+        setErrors((prev) => ({
+          ...prev,
+          phoneNumber: 'Phone number must be exactly 10 digits',
+        }));
+        return; // Stop updating the state
+      } else if (value.length < 10 && value.length > 0) {
+        setErrors((prev) => ({
+          ...prev,
+          phoneNumber: 'Phone number must be exactly 10 digits',
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, phoneNumber: '' })); // Clear error if valid
+      }
+    }
+
+    // Update formData for all fields
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const OpenModal = (item) => {
+    setIsOpen(true);
+    setFormData({
+      id: item.id || '',
+      name: item.name || '',
+      email: '',
+      phoneNumber: '',
+      status: '',
+      employeeId: item.employeeId || '',
+    });
+  };
   return (
     <>
       <Modal
         open={isOpen}
-        onCancel={() => {
-          setIsOpen(false);
-        }}
+        onCancel={handleCancle}
         footer={[
           <button
             className="text-black mr-5  h-[30px] w-[60px] border border-gray-500 hover:bg-black-600 rounded-lg"
@@ -262,18 +407,50 @@ const ViewID = () => {
           <button
             className="text-white h-[30px]  w-[60px] bg-green-500 hover:bg-green-600 border-none rounded-lg"
             key="back"
-            onClick={handleDelete}
+            onClick={handleDialogue}
           >
             OK
           </button>,
-          ,
         ]}
       >
         <div className="flex flex-col items-center justify-center p-5">
-          {/* Modal Content */}
-          <p className="text-xl font-semibold text-center mb-2">
-            Are you sure you want delete this employee?
-          </p>
+          <form onSubmit={handleSubmit} className="w-full">
+            <div className="w-[430px] justify-center items-center p-5">
+              <div className="w-full">
+                <label className="mb-2.5  mt-2 block text-black dark:text-white">
+                  Email <span className="text-meta-1">*</span>
+                </label>
+                <input
+                  name="email" // Add this line
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email address"
+                  className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                />
+              </div>
+              {/* Phone Number Field */}
+              <div className="w-full">
+                <label className="mb-2.5 mt-2 block text-black dark:text-white">
+                  Phone Number <span className="text-meta-1">*</span>
+                </label>
+                <input
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  type="text"
+                  placeholder="Enter your Phone Number"
+                  className={`w-full rounded border-[1.5px] py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter ${
+                    errors.phoneNumber
+                      ? 'border-red-500 dark:border-red-500'
+                      : 'border-stroke dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
+                  }`}
+                />
+              </div>
+              {/* Submit Button */}
+              <button className="w-full mt-10 btn-grad pr-20">Submit</button>
+            </div>
+          </form>
         </div>
       </Modal>
 
@@ -325,11 +502,18 @@ const ViewID = () => {
                     </td>
 
                     <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm flex-row">
-                      <div className="flex flex-row">
-                        <button className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300">
-                          Assign Login
-                        </button>
-                      </div>
+                    <div className="flex flex-row">
+  {order.isLogin === 'false' ? (
+    <button
+      onClick={() => OpenModal(order)}
+      className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300"
+    >
+      Assign Login
+    </button>
+  ) : (
+    <span className="text-gray-500 text-sm italic">Login Assigned</span>
+  )}
+</div>
                     </td>
                   </tr>
                 ))}

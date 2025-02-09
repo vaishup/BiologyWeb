@@ -5,7 +5,6 @@ import { lazy } from 'react';
 
 const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'));
 const ShiftDetails = lazy(() => import('../pages/ShiftDetails'));
-const AddStaff = lazy(() => import('../pages/AddStaff'));
 const AddClient = lazy(() => import('../pages/AddClient'));
 const AddTask = lazy(() => import('../pages/AddTask'));
 const StaffList = lazy(() => import('../pages/StaffList'));
@@ -34,11 +33,7 @@ const coreRoutes = [
     title: 'AddTask',
     component: AddTask,
   },
-  {
-    path: '/addStaff/:id?',
-    title: 'AddStaff',
-    component: AddStaff,
-  },
+ 
   {
     path: '/staffList',
     title: 'StaffList',

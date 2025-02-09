@@ -125,4 +125,5 @@ type TheViewIDUser @model
   employeeId: String
   profileStatus: String
   attachment:String
+  isLogin:String
 }
