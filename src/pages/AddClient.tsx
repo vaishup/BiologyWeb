@@ -11,18 +11,15 @@ import { getTheStaff, listTheStaffs } from '../graphql/queries';
 import { getTableID,getUserInfo,getCustomAttributes } from '../hooks/authServices.js';
 
 const AddClient = () => {
-  const [name, setName] = useState();
   const navigation = useNavigate();
   const API = generateClient();
   const { id } = useParams(); // Get the staff ID from the URL, if it exists
-  console.log('ids', id);
   // State to manage form validation errors
   const [errors, setErrors] = useState({});
   const [ids, setId] = useState();
   // State to manage form inputs
   const [formData, setFormData] = useState({
     name: '',
-
     email: '',
     phoneNumber: '',
     status: '',
@@ -30,7 +27,6 @@ const AddClient = () => {
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     // Validate and restrict phone number
     if (name === "phoneNumber") {
       // Allow only numeric input
