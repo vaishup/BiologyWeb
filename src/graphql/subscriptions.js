@@ -385,3 +385,51 @@ export const onDeleteTheAdminStaffUser = /* GraphQL */ `
     }
   }
 `;
+export const onCreateTheViewIDUser = /* GraphQL */ `
+  subscription OnCreateTheViewIDUser(
+    $filter: ModelSubscriptionTheViewIDUserFilterInput
+  ) {
+    onCreateTheViewIDUser(filter: $filter) {
+      id
+      name
+      employeeId
+      profileStatus
+      attachment
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateTheViewIDUser = /* GraphQL */ `
+  subscription OnUpdateTheViewIDUser(
+    $filter: ModelSubscriptionTheViewIDUserFilterInput
+  ) {
+    onUpdateTheViewIDUser(filter: $filter) {
+      id
+      name
+      employeeId
+      profileStatus
+      attachment
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteTheViewIDUser = /* GraphQL */ `
+  subscription OnDeleteTheViewIDUser(
+    $filter: ModelSubscriptionTheViewIDUserFilterInput
+  ) {
+    onDeleteTheViewIDUser(filter: $filter) {
+      id
+      name
+      employeeId
+      profileStatus
+      attachment
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

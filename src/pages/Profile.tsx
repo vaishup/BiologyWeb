@@ -23,7 +23,7 @@ const Profile = () => {
     dob: '',
     employeeId: '',
   });
-  console.log('sssqa', formData.status);
+  //console.log('sssqa', formData.status);
 
   useEffect(() => {
     if (id) {
@@ -84,6 +84,7 @@ const Profile = () => {
       console.log('Error downloading from S3 ', Error);
     }
   };
+
   useEffect(() => {
     const downloadFile = async () => {
       await downloadFromS3({
@@ -99,10 +100,10 @@ const Profile = () => {
     };
     downloadFile();
   }, []);
+
   return (
     <>
-      <Breadcrumb pageName="Profile" />
-
+      <Breadcrumb pageName="User's Profile" />
       <div className="mt-4 overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex">
           <div className="p-10">

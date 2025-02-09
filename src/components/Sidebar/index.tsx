@@ -2,7 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import Logo from '../../images/logo/logo.png';
-import { Car, Package, PillIcon, BriefcaseMedicalIcon, UserRound, UsersRound, ClipboardList, SquareUser } from 'lucide-react';
+import {
+  Car,
+  Package,
+  PillIcon,
+  BriefcaseMedicalIcon,
+  UserRound,
+  UsersRound,
+  ClipboardList,
+  SquareUser,
+} from 'lucide-react';
 import { colors } from '../../styles/colors';
 
 interface SidebarProps {
@@ -151,51 +160,53 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Dashboard --> */}
 
               <SidebarLinkGroup
-  activeCondition={pathname === '/Employee' || pathname.includes('')}
->
-  {(handleClick, open) => {
-    return (
-      <React.Fragment>
-        <NavLink
-          to="/Employee"
-          className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-black dark:hover:bg-meta-4 ${
-            (pathname === '/Employee' ||
-              pathname.includes('Employee')) &&
-            'bg-[#666666] text-white dark:bg-white'
-          }`}
-          onMouseOver={(e) => {
-            e.currentTarget.style.backgroundColor = '#666666';
-            e.currentTarget.style.color = 'white';
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = 'black';
-          }}
-          onClick={() => {
-            handleClick(); // If you need to toggle the dropdown
-          }}
-        >
-          <UsersRound width={18} height={18} />
-          Employee Setup
-          <svg
-            className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
-              open && 'rotate-180'
-            }`}
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-              fill=""
-            />
-          </svg>
-        </NavLink>
-                    {/* Dropdown Menu Start */}
+                activeCondition={
+                  pathname === '/Employee' || pathname.includes('')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="/Employee"
+                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-black dark:hover:bg-meta-4 ${
+                          (pathname === '/Employee' ||
+                            pathname.includes('Employee')) &&
+                          'bg-[#666666] text-white dark:bg-white'
+                        }`}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.backgroundColor = '#666666';
+                          e.currentTarget.style.color = 'white';
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = 'black';
+                        }}
+                        onClick={() => {
+                          handleClick(); // If you need to toggle the dropdown
+                        }}
+                      >
+                        <UsersRound width={18} height={18} />
+                        Employee Setup
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                            open && 'rotate-180'
+                          }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* Dropdown Menu Start */}
                       <div
                         className={`  transform overflow-hidden ${!open && 'hidden'}`}
                       >
@@ -235,10 +246,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 width={18}
                                 height={18}
                               /> */}
-                             Add Employee
+                              Add Employee
                             </NavLink>
                           </li>
-                          </ul>
+                        </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}
                     </React.Fragment>
@@ -270,9 +281,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         }}
                       >
                         <ClipboardList width={18} height={18} />
-                        
-                      Schedule Shifts
-                       
+                        Schedule Shifts
                       </NavLink>
 
                       {/* <!-- Dropdown Menu Start --> */}
@@ -280,8 +289,104 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         className={`translate transform overflow-hidden ${
                           !open && 'hidden'
                         }`}
+                      ></div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+
+              <SidebarLinkGroup
+                activeCondition={
+                  pathname === '/ViewID' || pathname.includes('')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="/ViewID"
+                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-black dark:hover:bg-meta-4 ${
+                          (pathname === '/ViewID' ||
+                            pathname.includes('ViewID')) &&
+                          'bg-[#666666] text-white dark:bg-white'
+                        }`}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.backgroundColor = '#666666';
+                          e.currentTarget.style.color = 'white';
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = 'black';
+                        }}
+                        onClick={() => {
+                          handleClick(); // If you need to toggle the dropdown
+                        }}
                       >
-                       
+                        <UsersRound width={18} height={18} />
+                       View ID
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                            open && 'rotate-180'
+                          }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* Dropdown Menu Start */}
+                      <div
+                        className={`  transform overflow-hidden ${!open && 'hidden'}`}
+                      >
+                        <ul className="mt-2 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/MakeID"
+                              className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-black dark:hover:bg-meta-4 ${
+                                pathname === '/MakeID' &&
+                                'bg-primary text-white dark:bg-white'
+                              }`}
+                              onMouseOver={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  '#666666';
+                                e.currentTarget.style.color = 'white';
+                                const img =
+                                  e.currentTarget.querySelector('img');
+                                if (img) {
+                                  img.style.filter =
+                                    'invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%)';
+                                }
+                              }}
+                              onMouseOut={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  'transparent';
+                                e.currentTarget.style.color = 'black';
+                                const img =
+                                  e.currentTarget.querySelector('img');
+                                if (img) {
+                                  img.style.filter = 'none';
+                                }
+                              }}
+                            >
+                              {/* <img
+                                src={file}
+                                alt="Patient"
+                                width={18}
+                                height={18}
+                              /> */}
+                        Make  ID
+                            </NavLink>
+                          </li>
+                        </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}
                     </React.Fragment>
@@ -310,19 +415,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   }}
                 >
                   <SquareUser width={18} height={18} />
-                 Current Employee
+                  Current Employee
                 </NavLink>
               </li>
-              
 
               {/* <!-- Menu Item Settings --> */}
-             
+
               {/* <!-- Menu Item Settings --> */}
             </ul>
           </div>
 
           {/* <!-- Others Group --> */}
-         
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>

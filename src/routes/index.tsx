@@ -14,9 +14,8 @@ const Employee = lazy(() => import('../pages/Employee'));
 const IncidenetsList = lazy(() => import('../pages/IncidenetsList'));
 const Profile = lazy(() => import('../pages/Profile'));
 const MapScreen = lazy(() => import('../pages/MapScreen'));
-
-
-
+const ViewID = lazy(() => import('../pages/ViewID'));
+const MakeID = lazy(() => import('../pages/MakeID'));
 
 const coreRoutes = [
   {
@@ -74,7 +73,17 @@ const coreRoutes = [
     path: '/ShiftDetails/:staffIds/:id',
     title: 'ShiftDetails',
     component: ShiftDetails,
-  }
+  },
+  {
+    path: '/ViewID',
+    title: 'ViewID',
+    component: ViewID,
+  },
+  {
+    path: '/MakeID',
+    title: 'MakeID',
+    component: MakeID,
+  },
 ];
 
 const routes = [...coreRoutes];

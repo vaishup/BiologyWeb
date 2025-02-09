@@ -14,4 +14,6 @@ export { default as TheShiftsCreateForm } from "./TheShiftsCreateForm";
 export { default as TheShiftsUpdateForm } from "./TheShiftsUpdateForm";
 export { default as TheStaffCreateForm } from "./TheStaffCreateForm";
 export { default as TheStaffUpdateForm } from "./TheStaffUpdateForm";
+export { default as TheViewIDUserCreateForm } from "./TheViewIDUserCreateForm";
+export { default as TheViewIDUserUpdateForm } from "./TheViewIDUserUpdateForm";
 export { default as studioTheme } from "./studioTheme";

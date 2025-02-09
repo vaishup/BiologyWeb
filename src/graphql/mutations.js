@@ -412,3 +412,54 @@ export const deleteTheAdminStaffUser = /* GraphQL */ `
     }
   }
 `;
+export const createTheViewIDUser = /* GraphQL */ `
+  mutation CreateTheViewIDUser(
+    $input: CreateTheViewIDUserInput!
+    $condition: ModelTheViewIDUserConditionInput
+  ) {
+    createTheViewIDUser(input: $input, condition: $condition) {
+      id
+      name
+      employeeId
+      profileStatus
+      attachment
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateTheViewIDUser = /* GraphQL */ `
+  mutation UpdateTheViewIDUser(
+    $input: UpdateTheViewIDUserInput!
+    $condition: ModelTheViewIDUserConditionInput
+  ) {
+    updateTheViewIDUser(input: $input, condition: $condition) {
+      id
+      name
+      employeeId
+      profileStatus
+      attachment
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteTheViewIDUser = /* GraphQL */ `
+  mutation DeleteTheViewIDUser(
+    $input: DeleteTheViewIDUserInput!
+    $condition: ModelTheViewIDUserConditionInput
+  ) {
+    deleteTheViewIDUser(input: $input, condition: $condition) {
+      id
+      name
+      employeeId
+      profileStatus
+      attachment
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;

@@ -311,3 +311,39 @@ export const listTheAdminStaffUsers = /* GraphQL */ `
     }
   }
 `;
+export const getTheViewIDUser = /* GraphQL */ `
+  query GetTheViewIDUser($id: ID!) {
+    getTheViewIDUser(id: $id) {
+      id
+      name
+      employeeId
+      profileStatus
+      attachment
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listTheViewIDUsers = /* GraphQL */ `
+  query ListTheViewIDUsers(
+    $filter: ModelTheViewIDUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listTheViewIDUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        employeeId
+        profileStatus
+        attachment
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;

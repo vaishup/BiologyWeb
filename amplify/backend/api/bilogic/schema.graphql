@@ -115,3 +115,14 @@ type TheAdminStaffUser @model
   email: String
   userType:String
 }
+
+type TheViewIDUser @model 
+ @auth(rules: [
+  { allow: public, provider: apiKey, operations: [read, create, update] } # Allow public read access
+]){
+  id: ID!
+  name: String
+  employeeId: String
+  profileStatus: String
+  attachment:String
+}
