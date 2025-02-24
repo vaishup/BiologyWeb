@@ -204,7 +204,7 @@ export default function TheStaffCreateForm(props) {
     userId: "",
     employeeId: "",
     staffStatus: "",
-    shiftstatus: "",
+    scanNumber: "",
   };
   const [name, setName] = React.useState(initialValues.name);
   const [phoneNumber, setPhoneNumber] = React.useState(
@@ -229,9 +229,7 @@ export default function TheStaffCreateForm(props) {
   const [staffStatus, setStaffStatus] = React.useState(
     initialValues.staffStatus
   );
-  const [shiftstatus, setShiftstatus] = React.useState(
-    initialValues.shiftstatus
-  );
+  const [scanNumber, setScanNumber] = React.useState(initialValues.scanNumber);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setName(initialValues.name);
@@ -250,7 +248,7 @@ export default function TheStaffCreateForm(props) {
     setUserId(initialValues.userId);
     setEmployeeId(initialValues.employeeId);
     setStaffStatus(initialValues.staffStatus);
-    setShiftstatus(initialValues.shiftstatus);
+    setScanNumber(initialValues.scanNumber);
     setErrors({});
   };
   const [currentShiftIdsValue, setCurrentShiftIdsValue] = React.useState("");
@@ -271,7 +269,7 @@ export default function TheStaffCreateForm(props) {
     userId: [],
     employeeId: [],
     staffStatus: [],
-    shiftstatus: [],
+    scanNumber: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -314,7 +312,7 @@ export default function TheStaffCreateForm(props) {
           userId,
           employeeId,
           staffStatus,
-          shiftstatus,
+          scanNumber,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -392,7 +390,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -431,7 +429,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.phoneNumber ?? value;
@@ -470,7 +468,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.email ?? value;
@@ -509,7 +507,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.DOB ?? value;
@@ -548,7 +546,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.photourl ?? value;
@@ -587,7 +585,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.isBiomatritcs ?? value;
@@ -626,7 +624,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.profileStatus ?? value;
@@ -665,7 +663,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.Location ?? value;
@@ -704,7 +702,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.IsActive ?? value;
@@ -743,7 +741,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.latitude ?? value;
@@ -782,7 +780,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.longitude ?? value;
@@ -817,7 +815,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             values = result?.shiftIds ?? values;
@@ -881,7 +879,7 @@ export default function TheStaffCreateForm(props) {
               userId: value,
               employeeId,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.userId ?? value;
@@ -920,7 +918,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId: value,
               staffStatus,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.employeeId ?? value;
@@ -959,7 +957,7 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus: value,
-              shiftstatus,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.staffStatus ?? value;
@@ -975,10 +973,10 @@ export default function TheStaffCreateForm(props) {
         {...getOverrideProps(overrides, "staffStatus")}
       ></TextField>
       <TextField
-        label="Shiftstatus"
+        label="Scan number"
         isRequired={false}
         isReadOnly={false}
-        value={shiftstatus}
+        value={scanNumber}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
@@ -998,20 +996,20 @@ export default function TheStaffCreateForm(props) {
               userId,
               employeeId,
               staffStatus,
-              shiftstatus: value,
+              scanNumber: value,
             };
             const result = onChange(modelFields);
-            value = result?.shiftstatus ?? value;
+            value = result?.scanNumber ?? value;
           }
-          if (errors.shiftstatus?.hasError) {
-            runValidationTasks("shiftstatus", value);
+          if (errors.scanNumber?.hasError) {
+            runValidationTasks("scanNumber", value);
           }
-          setShiftstatus(value);
+          setScanNumber(value);
         }}
-        onBlur={() => runValidationTasks("shiftstatus", shiftstatus)}
-        errorMessage={errors.shiftstatus?.errorMessage}
-        hasError={errors.shiftstatus?.hasError}
-        {...getOverrideProps(overrides, "shiftstatus")}
+        onBlur={() => runValidationTasks("scanNumber", scanNumber)}
+        errorMessage={errors.scanNumber?.errorMessage}
+        hasError={errors.scanNumber?.hasError}
+        {...getOverrideProps(overrides, "scanNumber")}
       ></TextField>
       <Flex
         justifyContent="space-between"

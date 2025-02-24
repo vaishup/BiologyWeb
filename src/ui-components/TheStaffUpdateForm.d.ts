@@ -37,7 +37,7 @@ export declare type TheStaffUpdateFormInputValues = {
     userId?: string;
     employeeId?: string;
     staffStatus?: string;
-    shiftstatus?: string;
+    scanNumber?: string;
 };
 export declare type TheStaffUpdateFormValidationValues = {
     name?: ValidationFunction<string>;
@@ -55,7 +55,7 @@ export declare type TheStaffUpdateFormValidationValues = {
     userId?: ValidationFunction<string>;
     employeeId?: ValidationFunction<string>;
     staffStatus?: ValidationFunction<string>;
-    shiftstatus?: ValidationFunction<string>;
+    scanNumber?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type TheStaffUpdateFormOverridesProps = {
@@ -75,7 +75,7 @@ export declare type TheStaffUpdateFormOverridesProps = {
     userId?: PrimitiveOverrideProps<TextFieldProps>;
     employeeId?: PrimitiveOverrideProps<TextFieldProps>;
     staffStatus?: PrimitiveOverrideProps<TextFieldProps>;
-    shiftstatus?: PrimitiveOverrideProps<TextFieldProps>;
+    scanNumber?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type TheStaffUpdateFormProps = React.PropsWithChildren<{
     overrides?: TheStaffUpdateFormOverridesProps | undefined | null;

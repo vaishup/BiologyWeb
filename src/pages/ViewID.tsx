@@ -257,6 +257,7 @@ const ViewID = () => {
     phoneNumber: '',
     status: '',
     employeeId: '',
+    scanNumber: '',
   });
   const handleDialogue = () => {
     setIsShow(true);
@@ -274,6 +275,7 @@ const ViewID = () => {
     if (!formData.phoneNumber) errors.phoneNumber = 'Phone number is required';
     return errors;
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Fetch User ID
@@ -308,17 +310,17 @@ const ViewID = () => {
         profileStatus: id ? formData.status : 'Incomplete',
         userId: userId,
         DOB: '24',
-        photourl: '2e2e',
-        isBiomatritcs: '',
-        Location: '',
-        IsActive: '',
+      // photourl: '2e2e',
+        isBiomatritcs: '', // ✅ Fixed from `isBiomatritcs` to `isBiometrics`
+        Location: '', // ✅ Fixed casing (`Location` → `location`)
+        IsActive: '', // ✅ Fixed casing (`IsActive` → `isActive`)
         latitude: '',
         longitude: '',
         shiftIds: '',
-        staffStatus: '',
-        shiftstatus: '',
+       staffStatus: '',
+         scanNumber: formData.scanNumber,
       };
-      //console.log('Staff Input:', staffInput);
+
       let staffResponse;
       staffResponse = await client.graphql({
         query: mutation.createTheStaff,
@@ -341,9 +343,10 @@ const ViewID = () => {
       setIsOpen(true);
       navigation('/Employee');
     } catch (error) {
-      console.error('Error creating or updating employee:', error);
+      console.error('Error creating', error);
     }
   };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     // Validate and restrict phone number
@@ -389,6 +392,7 @@ const ViewID = () => {
       phoneNumber: '',
       status: '',
       employeeId: item.employeeId || '',
+      scanNumber: item.scanNumber || '',
     });
   };
   return (
@@ -398,18 +402,11 @@ const ViewID = () => {
         onCancel={handleCancle}
         footer={[
           <button
-            className="text-black mr-5  h-[30px] w-[60px] border border-gray-500 hover:bg-black-600 rounded-lg"
-            key="back"
+            className="text-black mr-5 h-[30px] w-[60px] border border-gray-500 hover:bg-black-600 rounded-lg"
+            key="cancel"
             onClick={() => setIsOpen(false)}
           >
             Cancel
-          </button>,
-          <button
-            className="text-white h-[30px]  w-[60px] bg-green-500 hover:bg-green-600 border-none rounded-lg"
-            key="back"
-            onClick={handleDialogue}
-          >
-            OK
           </button>,
         ]}
       >
@@ -417,11 +414,11 @@ const ViewID = () => {
           <form onSubmit={handleSubmit} className="w-full">
             <div className="w-[430px] justify-center items-center p-5">
               <div className="w-full">
-                <label className="mb-2.5  mt-2 block text-black dark:text-white">
+                <label className="mb-2.5 mt-2 block text-black dark:text-white">
                   Email <span className="text-meta-1">*</span>
                 </label>
                 <input
-                  name="email" // Add this line
+                  name="email"
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
@@ -429,7 +426,6 @@ const ViewID = () => {
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                 />
               </div>
-              {/* Phone Number Field */}
               <div className="w-full">
                 <label className="mb-2.5 mt-2 block text-black dark:text-white">
                   Phone Number <span className="text-meta-1">*</span>
@@ -447,8 +443,9 @@ const ViewID = () => {
                   }`}
                 />
               </div>
-              {/* Submit Button */}
-              <button className="w-full mt-10 btn-grad pr-20">Submit</button>
+              <button className="w-full mt-10 btn-grad pr-20" type="submit">
+                Submit
+              </button>
             </div>
           </form>
         </div>
@@ -502,18 +499,20 @@ const ViewID = () => {
                     </td>
 
                     <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm flex-row">
-                    <div className="flex flex-row">
-  {order.isLogin === 'false' ? (
-    <button
-      onClick={() => OpenModal(order)}
-      className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300"
-    >
-      Assign Login
-    </button>
-  ) : (
-    <span className="text-gray-500 text-sm italic">Login Assigned</span>
-  )}
-</div>
+                      <div className="flex flex-row">
+                        {order.isLogin === 'false' ? (
+                          <button
+                            onClick={() => OpenModal(order)}
+                            className="px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300"
+                          >
+                            Assign Login
+                          </button>
+                        ) : (
+                          <span className="text-gray-500 text-sm italic">
+                            Login Assigned
+                          </span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

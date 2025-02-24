@@ -100,7 +100,7 @@ type TheStaff
   userId: String
   employeeId: String
   staffStatus: String
-  shiftstatus: String
+  scanNumber: String
 }
 
 
@@ -126,4 +126,5 @@ type TheViewIDUser @model
   profileStatus: String
   attachment:String
   isLogin:String
+  scanNumber:String
 }

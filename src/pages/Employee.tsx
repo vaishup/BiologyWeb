@@ -289,6 +289,9 @@ const Employee = () => {
                   <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
                     Profile Status
                   </th>
+                  <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
+                  Barcode
+                  </th>
                   <th className="px-6 py-3 border-b text-white text-sm uppercase font-bold">
                     Created By (Admin/Staff)
                   </th>
@@ -342,6 +345,9 @@ const Employee = () => {
                       </div>
                     </td>
 
+                    <td className="px-6 py-4 border-b">
+                      {order.scanNumber}
+                    </td>
                     <td className="px-6 py-4 border-b">
                       {order.adminName ?? 'Admin'}
                     </td>

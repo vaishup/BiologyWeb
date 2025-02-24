@@ -33,8 +33,10 @@ const MakeID = () => {
     }
   };
   
+  const generateRandom10DigitNumber = () => {
+    return Math.floor(Math.random() * 9000000000) + 1000000000;
+  };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.employeeId || !file) {
@@ -47,6 +49,7 @@ const MakeID = () => {
         name: formData.name,
         employeeId: formData.employeeId,
         isLogin: 'false',
+        scanNumber: generateRandom10DigitNumber().toString() 
       };
       const clientResponse = await API.graphql({
         query: mutation.createTheViewIDUser,

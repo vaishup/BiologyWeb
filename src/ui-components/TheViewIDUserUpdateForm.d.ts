@@ -27,6 +27,7 @@ export declare type TheViewIDUserUpdateFormInputValues = {
     profileStatus?: string;
     attachment?: string;
     isLogin?: string;
+    scanNumber?: string;
 };
 export declare type TheViewIDUserUpdateFormValidationValues = {
     name?: ValidationFunction<string>;
@@ -34,6 +35,7 @@ export declare type TheViewIDUserUpdateFormValidationValues = {
     profileStatus?: ValidationFunction<string>;
     attachment?: ValidationFunction<string>;
     isLogin?: ValidationFunction<string>;
+    scanNumber?: ValidationFunction<string>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type TheViewIDUserUpdateFormOverridesProps = {
@@ -43,6 +45,7 @@ export declare type TheViewIDUserUpdateFormOverridesProps = {
     profileStatus?: PrimitiveOverrideProps<TextFieldProps>;
     attachment?: PrimitiveOverrideProps<TextFieldProps>;
     isLogin?: PrimitiveOverrideProps<TextFieldProps>;
+    scanNumber?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type TheViewIDUserUpdateFormProps = React.PropsWithChildren<{
     overrides?: TheViewIDUserUpdateFormOverridesProps | undefined | null;

@@ -296,7 +296,7 @@ export const createTheStaff = /* GraphQL */ `
       userId
       employeeId
       staffStatus
-      shiftstatus
+      scanNumber
       createdAt
       updatedAt
       __typename
@@ -325,7 +325,7 @@ export const updateTheStaff = /* GraphQL */ `
       userId
       employeeId
       staffStatus
-      shiftstatus
+      scanNumber
       createdAt
       updatedAt
       __typename
@@ -354,7 +354,7 @@ export const deleteTheStaff = /* GraphQL */ `
       userId
       employeeId
       staffStatus
-      shiftstatus
+      scanNumber
       createdAt
       updatedAt
       __typename
@@ -424,6 +424,7 @@ export const createTheViewIDUser = /* GraphQL */ `
       profileStatus
       attachment
       isLogin
+      scanNumber
       createdAt
       updatedAt
       __typename
@@ -442,6 +443,7 @@ export const updateTheViewIDUser = /* GraphQL */ `
       profileStatus
       attachment
       isLogin
+      scanNumber
       createdAt
       updatedAt
       __typename
@@ -460,6 +462,7 @@ export const deleteTheViewIDUser = /* GraphQL */ `
       profileStatus
       attachment
       isLogin
+      scanNumber
       createdAt
       updatedAt
       __typename

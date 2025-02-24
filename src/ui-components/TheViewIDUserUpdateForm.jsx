@@ -30,6 +30,7 @@ export default function TheViewIDUserUpdateForm(props) {
     profileStatus: "",
     attachment: "",
     isLogin: "",
+    scanNumber: "",
   };
   const [name, setName] = React.useState(initialValues.name);
   const [employeeId, setEmployeeId] = React.useState(initialValues.employeeId);
@@ -38,6 +39,7 @@ export default function TheViewIDUserUpdateForm(props) {
   );
   const [attachment, setAttachment] = React.useState(initialValues.attachment);
   const [isLogin, setIsLogin] = React.useState(initialValues.isLogin);
+  const [scanNumber, setScanNumber] = React.useState(initialValues.scanNumber);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = theViewIDUserRecord
@@ -48,6 +50,7 @@ export default function TheViewIDUserUpdateForm(props) {
     setProfileStatus(cleanValues.profileStatus);
     setAttachment(cleanValues.attachment);
     setIsLogin(cleanValues.isLogin);
+    setScanNumber(cleanValues.scanNumber);
     setErrors({});
   };
   const [theViewIDUserRecord, setTheViewIDUserRecord] = React.useState(
@@ -74,6 +77,7 @@ export default function TheViewIDUserUpdateForm(props) {
     profileStatus: [],
     attachment: [],
     isLogin: [],
+    scanNumber: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -106,6 +110,7 @@ export default function TheViewIDUserUpdateForm(props) {
           profileStatus: profileStatus ?? null,
           attachment: attachment ?? null,
           isLogin: isLogin ?? null,
+          scanNumber: scanNumber ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -171,6 +176,7 @@ export default function TheViewIDUserUpdateForm(props) {
               profileStatus,
               attachment,
               isLogin,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -199,6 +205,7 @@ export default function TheViewIDUserUpdateForm(props) {
               profileStatus,
               attachment,
               isLogin,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.employeeId ?? value;
@@ -227,6 +234,7 @@ export default function TheViewIDUserUpdateForm(props) {
               profileStatus: value,
               attachment,
               isLogin,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.profileStatus ?? value;
@@ -255,6 +263,7 @@ export default function TheViewIDUserUpdateForm(props) {
               profileStatus,
               attachment: value,
               isLogin,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.attachment ?? value;
@@ -283,6 +292,7 @@ export default function TheViewIDUserUpdateForm(props) {
               profileStatus,
               attachment,
               isLogin: value,
+              scanNumber,
             };
             const result = onChange(modelFields);
             value = result?.isLogin ?? value;
@@ -296,6 +306,35 @@ export default function TheViewIDUserUpdateForm(props) {
         errorMessage={errors.isLogin?.errorMessage}
         hasError={errors.isLogin?.hasError}
         {...getOverrideProps(overrides, "isLogin")}
+      ></TextField>
+      <TextField
+        label="Scan number"
+        isRequired={false}
+        isReadOnly={false}
+        value={scanNumber}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              name,
+              employeeId,
+              profileStatus,
+              attachment,
+              isLogin,
+              scanNumber: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.scanNumber ?? value;
+          }
+          if (errors.scanNumber?.hasError) {
+            runValidationTasks("scanNumber", value);
+          }
+          setScanNumber(value);
+        }}
+        onBlur={() => runValidationTasks("scanNumber", scanNumber)}
+        errorMessage={errors.scanNumber?.errorMessage}
+        hasError={errors.scanNumber?.hasError}
+        {...getOverrideProps(overrides, "scanNumber")}
       ></TextField>
       <Flex
         justifyContent="space-between"
