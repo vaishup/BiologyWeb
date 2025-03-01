@@ -20,6 +20,8 @@ const AddClient = () => {
   const { id } = useParams(); // Get the staff ID from the URL, if it exists
   // State to manage form validation errors
   const [errors, setErrors] = useState({});
+  console.log('id', id);
+
   const [ids, setId] = useState();
   // State to manage form inputs
   const [formData, setFormData] = useState({
@@ -77,7 +79,7 @@ const AddClient = () => {
   const fetchUserData = async () => {
     try {
       const userId = await getTableID();
-      console.log('userDetail', userId);
+      console.log('userDetail AddClient', userId);
       const userData = await getUserInfo(userId); // Fetch the user info
       setStaffType(userData.userType);
       // setUser(userData); // Store the user data in state
@@ -94,28 +96,7 @@ const AddClient = () => {
   }, []);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Fetch User ID
-    const userId = await getTableID().catch((err) => {
-      console.error('Error fetching User ID:', err);
-      return null;
-    });
-    console.log('Fetched User ID:', userId);
-    let user = null;
-    if (userId) {
-      user = await getUserInfo(userId).catch((err) => {
-        console.error('Error fetching User Info:', err);
-        return null;
-      });
-      console.log('User Info:', user);
-    }
-    // Validation
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      console.error('Validation Errors:', validationErrors);
-      setErrors(validationErrors);
-      return;
-    }
-    // Create or Update Staff
+    const userId = await getTableID();
     try {
       const staffInput = {
         name: formData.name,
@@ -127,16 +108,14 @@ const AddClient = () => {
         DOB: '24',
         photourl: '2e2e',
         isBiomatritcs: '',
-        Location: '',
-        IsActive: '',
-        latitude: '',
+        Location: '', // ✅ Keep uppercase if this is in your schema
+        IsActive: '', // ✅ Keep uppercase if this is in your schema        latitude: '',
         longitude: '',
-        shiftIds: '',
+        shiftIds: [],
         staffStatus: '',
-        shiftstatus: '',
-       
       };
-      //console.log('Staff Input:', staffInput);
+      
+      console.log('Staff Input:', staffInput);
 
       let staffResponse;
       if (id) {

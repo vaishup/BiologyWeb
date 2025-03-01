@@ -89,14 +89,17 @@ export async function getUserInfo(tableID: string) {
     `;
 
     // Execute the GraphQL query
-    const { data, } = await client.graphql({
+    const { data} = await client.graphql({
       query: userInfoQuery,
       variables: { id: tableID }, // Pass the correct tableID
     });
 
+console.log("data---123",data);
 
     // Extract the user information correctly
     const userInfo = data?.getTheAdminStaffUser;
+    console.log("userInfo--123",userInfo);
+    
     if (!userInfo) {
       console.warn("No user found with the provided tableID:", tableID);
       return null;

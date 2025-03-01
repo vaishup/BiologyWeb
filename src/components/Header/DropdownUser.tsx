@@ -46,9 +46,9 @@ const DropdownUser = () => {
   });
   const fetchBatch = async () => {
     const userId = await getTableID();
-    console.log('userDetail', userId);
+    console.log('userDetail userId', userId);
     const userData = await getUserInfo(userId); // Fetch the user info
-    console.log("userData",userData);
+    console.log("userData123  userData",userData);
     setUserType(userData.userType)
     setName(userData.name)
    // setUserType(user.usertype)
