@@ -1,4 +1,5 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Eye,
+  PencilIcon, } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { generateClient } from 'aws-amplify/api';
 import React, { useState, useEffect, useRef } from 'react';
@@ -9,7 +10,6 @@ import { listTheViewIDUsers } from '../graphql/queries.js';
 import { uploadData, getUrl, list, remove } from 'aws-amplify/storage';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { getTheStaff, listTheStaffs } from '../graphql/queries';
 
 import {
   getTableID,
@@ -267,7 +267,7 @@ const ViewID = () => {
 
   const handleCancle = () => {
     setIsOpen(false);
-    navigation('/ShiftList');
+    navigation('/ViewID');
   };
   const validate = () => {
     const errors = {};
@@ -475,10 +475,13 @@ const ViewID = () => {
                   <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
                     Name
                   </th>
-
-                  <th className="px-6 py-3 border-b text-white text-sm uppercase font-bold">
-                    Created By (Admin/Staff)
+                  <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
+                    Barcode
                   </th>
+
+                  {/* <th className="px-6 py-3 border-b text-white text-sm uppercase font-bold">
+                    Created By (Admin/Staff)
+                  </th> */}
                   <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
                     Action
                   </th>
@@ -494,12 +497,32 @@ const ViewID = () => {
                       {order.name}
                     </td>
 
-                    <td className="px-6 py-4 border-b text-center">
-                      {order.adminName ?? 'Admin'}
+                    <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm">
+                      {order.scanNumber}
                     </td>
+                    {/* <td className="px-6 py-4 border-b text-center">
+                      {order.adminName ?? 'Admin'}
+                    </td> */}
 
                     <td className="px-6 py-4 border-b border-gray-200 bg-white text-sm flex-row">
                       <div className="flex flex-row">
+                      <Eye
+                          onClick={() => {
+                            navigation(`/ViewIdDetails/${order.id}?from=View ID`);
+                          }}
+                          className="mr-5 inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
+                          color="black"
+                          size={20}
+                        />
+
+                        <PencilIcon
+                          onClick={() => {
+                            navigation(`/EditViewId/${order.id}`);
+                          }}
+                          className="mr-5 inline-block transition duration-300 ease-in-out transform hover:text-red-600 hover:scale-110"
+                          color="black"
+                          size={20}
+                        />
                         {order.isLogin === 'false' ? (
                           <button
                             onClick={() => OpenModal(order)}

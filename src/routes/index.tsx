@@ -15,6 +15,8 @@ const Profile = lazy(() => import('../pages/Profile'));
 const MapScreen = lazy(() => import('../pages/MapScreen'));
 const ViewID = lazy(() => import('../pages/ViewID'));
 const MakeID = lazy(() => import('../pages/MakeID'));
+const ViewIdDetails = lazy(() => import('../pages/ViewIdDetails'));
+const EditViewId = lazy(() => import('../pages/EditViewId'));
 
 const coreRoutes = [
   {
@@ -78,6 +80,16 @@ const coreRoutes = [
     path: '/MakeID',
     title: 'MakeID',
     component: MakeID,
+  },
+  {
+    path: '/ViewIdDetails/:id?',
+    title: 'ViewIdDetails',
+    component: ViewIdDetails,
+  },
+  {
+    path: '/EditViewId/:id?',
+    title: 'EditViewId',
+    component: EditViewId,
   },
 ];
 
