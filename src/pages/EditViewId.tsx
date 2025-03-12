@@ -151,15 +151,21 @@ const EditViewId = () => {
         setBarcodeError('Barcode must be exactly 10 digits.');
         return;
       }
-      // Check if the barcode already exists
-      const isBarcodeExists = staffList.some(
-        (staff) => staff.scanNumber === barcode,
+      const isMatch = staffList.some(
+        (staff) => staff.id === id && staff.scanNumber === barcode
       );
-
-      if (isBarcodeExists) {
-        setBarcodeError( 'Barcode already exists. Please try another.' );
-        return;
+      if(!isMatch){
+        const isBarcodeExists = staffList.some(
+          (staff) => staff.scanNumber === barcode,
+        );
+  
+        if (isBarcodeExists) {
+          setBarcodeError( 'Barcode already exists. Please try another.' );
+          return;
+        }
       }
+      // Check if the barcode already exists
+     
 
       // 1️⃣ **Create User in the Database**
       const clientInput = {
