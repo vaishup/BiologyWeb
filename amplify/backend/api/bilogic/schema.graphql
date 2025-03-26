@@ -64,12 +64,10 @@ type TheStaff
   phoneNumber: String
   email: String
   DOB: String
-  photourl: String
-    @auth(
-      rules: [
-        { allow: public, provider: apiKey, operations: [read, update, create, delete] }
-      ]
-    )
+ photourl: String
+    @auth(rules: [
+      { allow: public, provider: apiKey, operations: [read, update, create, delete] }
+    ])
   isBiomatritcs: String
   profileStatus: String
   Location: String

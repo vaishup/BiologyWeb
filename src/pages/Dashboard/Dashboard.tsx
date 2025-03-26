@@ -16,11 +16,16 @@ const ECommerce: React.FC = () => {
 
   // Fetch staff data
   const listStaff = async () => {
-    const client = generateClient();
+    const client = generateClient({
+      authMode: 'apiKey',  // Use API Key authentication
+    });
     try {
       const staffdata = await client.graphql({
         query: listTheStaffs,
         variables: {},
+        authMode: 'apiKey'  // Explicitly set authMode in request
+
+
       });
       const staffList = staffdata.data.listTheStaffs.items;
       setStaffList(staffList);
@@ -34,8 +39,9 @@ const ECommerce: React.FC = () => {
 
   // Fetch shift data
   const listShifts = async () => {
-    const client = generateClient();
-    try {
+    const client = generateClient({
+      authMode: 'apiKey',  // Use API Key authentication
+    });    try {
       const shiftData = await client.graphql({
         query: listTheShifts, // Replace with your query for shifts
         variables: {},
