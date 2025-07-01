@@ -6,7 +6,7 @@ import './css/style.css';
 import './css/satoshi.css';
 import 'flatpickr/dist/flatpickr.min.css';
 import { Amplify } from 'aws-amplify';
-import config from '../amplifyconfiguration.json';
+import config from '../src/amplifyconfiguration.json';
 
 Amplify.configure(config);
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
