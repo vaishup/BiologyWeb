@@ -19,7 +19,10 @@ const Employee = () => {
   const location = useLocation(); // Access the navigation state
   const initialFilter = location.state?.filter || 'all'; // Default to 'all' if no filter is passed
 
-  const client = generateClient();
+  const client = generateClient({
+    authMode: 'userPool', // Use Cognito User Pools authentication
+  });
+
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [show, setIsShow] = useState(false);
@@ -33,7 +36,7 @@ const Employee = () => {
       const response = await client.graphql({
         query: mutation.deleteTheStaff,
         variables: { input: { id: selectedId } },
-        apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
+        authMode: 'userPool',
       });
       console.log('Delete response:', response);
       setIsOpen(false);
@@ -54,12 +57,15 @@ const Employee = () => {
   }, []);
 
   const listStaff = async () => {
-    const client = generateClient();
+    const client = generateClient({
+      authMode: 'userPool', // Use Cognito User Pools authentication
+    });
     try {
       // Fetch staff list
       const staffdata = await client.graphql({
         query: listTheStaffs,
         variables: {},
+        authMode: 'userPool',
       });
 
       const staffList = staffdata.data.listTheStaffs.items;
@@ -293,7 +299,7 @@ const Employee = () => {
                   Barcode
                   </th>
                   <th className="px-6 py-3 border-b text-white text-sm uppercase font-bold">
-                    Created By (Admin/Staff)
+                    Created By 
                   </th>
                   <th className="px-6 py-3 border-b border-gray-200 text-white text-left text-sm uppercase font-bold">
                     Action

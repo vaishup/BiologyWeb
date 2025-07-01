@@ -8,33 +8,7 @@ import { EyeIcon } from 'lucide-react';
 import flatpickr from 'flatpickr';
 
 import { ActivityDataTable } from '../components/PatientsListTable/data-table';
-const dummyData = [
-  {
-    ID: 'Batch#ABC',
-    name: 'Lorem ipsum dolor sit amet',
-    date: '2024-05-03',
-    email: 'Urgent',
-    status: 'Pending',
-    action: '',
-  },
-  {
-    ID: 'Batch#ABC',
-    name: 'Consectetur adipiscing elit',
-    date: '2024-05-02',
-    email: 'Normal',
-    status: 'completed',
-    action: '',
-  },
-  {
-    ID: 'Batch#ABC',
-    name: 'Sed do eiusmod tempor incididunt',
-    date: '2024-05-01',
-    email: 'Normal',
-    status: 'rejected',
-    action: '',
-  },
-  // Add more dummy data as needed
-];
+
 
 const RecentMobile = (data: any) => {
   const list = data.data;

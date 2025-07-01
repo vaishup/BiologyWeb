@@ -9,7 +9,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const { id } = useParams(); // Get the staff ID from the URL, if it exists
-  const API = generateClient();
+  const client = generateClient({
+    authMode: 'userPool', // Use Cognito User Pools authentication
+  });
+  
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
 
@@ -30,7 +33,7 @@ const Profile = () => {
       const fetchStaffData = async () => {
         try {
           console.log('Fetching staff with ID:', id); // Debug log
-          const staffData = await API.graphql({
+          const staffData = await client.graphql({
             query: getTheStaff, // Replace with your actual query to get staff by ID
             variables: { id },
           });

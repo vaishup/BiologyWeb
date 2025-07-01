@@ -26,7 +26,9 @@ const ShiftDetails = () => {
   const [shiftList, setShiftList] = useState([]); // Array to store all staff details
   const [mainShift, setMainShift] = useState(null); // State to store shift data
   const [location, setLocation] = useState<string>(''); // State to hold location value
-  const API = generateClient();
+  const client = generateClient({
+    authMode: 'userPool', // Use Cognito User Pools authentication
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [amendment, setAmendment] = useState('');
@@ -41,20 +43,22 @@ const ShiftDetails = () => {
   const listShifts = async (id: any) => {
     try {
       // Fetch the MainShift data using the ID
-      const shiftData = await API.graphql({
+      const shiftData = await client.graphql({
         query: getMainShift,
         variables: { id: id },
+        authMode: 'userPool', // 
       });
       const datatMainShift = shiftData.data.getMainShift;
       setMainShift(datatMainShift);
       // Fetch the shifts data using the MainShift ID
-      const shiftData1 = await API.graphql({
+      const shiftData1 = await client.graphql({
         query: listTheShifts,
         variables: {
           filter: {
             mainShiftID: { eq: id }, // Filter shifts by mainShiftID
           },
         },
+        authMode: 'userPool', // 
       });
       const shiftList = shiftData1.data.listTheShifts.items; // Ensure it's an array
       const allShiftWithStaff = await Promise.all(
@@ -63,12 +67,15 @@ const ShiftDetails = () => {
           return { ...shift, staffDetails }; // Combine the shift data with staff details
         }),
       );
+      console.log("allShiftWithStaff",allShiftWithStaff);
+      
       setShiftList(allShiftWithStaff);
 
       try {
-        const locationData = await API.graphql({
+        const locationData = await client.graphql({
           query: getLocation,
           variables: { id: datatMainShift.locationID },
+          authMode: 'userPool', // 
         });
         setLocation(locationData.data.getLocation.name); // Set location using state
       } catch (error) {
@@ -92,9 +99,10 @@ const ShiftDetails = () => {
         idsArray.map(async (id) => {
           try {
             console.log('Fetching data for ID:', id);
-            const staffData = await API.graphql({
+            const staffData = await client.graphql({
               query: getTheStaff,
               variables: { id },
+              authMode: 'userPool', // 
             });
             const staffDetails = staffData.data.getTheStaff;
             let profilePicUrl = null;
@@ -167,10 +175,11 @@ const ShiftDetails = () => {
 
   const delet = async (selectedId) => {
     try {
-      await API.graphql({
+      await client.graphql({
         query: mutation.deleteTheShifts,
         variables: { input: { id: selectedId } },
-        apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
+       // apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
+        authMode: 'userPool', // 
       });
       // setIsOpen(false);
       listShifts(id); // Refresh the list after deletion
@@ -294,7 +303,7 @@ const ShiftDetails = () => {
     className="overflow-hidden rounded-lg border border-[#d9d9d9] bg-white mb-4"
   >
     {/* Render staff details inside shift */}
-    {shift.staffDetails.map((staff, staffIndex) => (
+    {/* {shift.staffDetails.map((staff, staffIndex) => ( */}
       <div
       key={index}
       className="overflow-hidden rounded-lg  bg-white mb-4"
@@ -303,7 +312,7 @@ const ShiftDetails = () => {
         {/* Profile Section */}
         <div className="p-5">
           <img
-            src={staff.profilePic || UserOne} // Use placeholder if fileUri is not available
+            src={shift.staffDetails[0].profilePic || UserOne} // Use placeholder if fileUri is not available
             alt="profile"
             width={130}
             style={{
@@ -314,7 +323,7 @@ const ShiftDetails = () => {
             }}
           />
           <h3 className="mb-1.5 text-2xl mt-3 font-semibold text-black">
-            {staff.name}
+            {shift.staffDetails[0].name}
           </h3>
         </div>
 
@@ -324,7 +333,8 @@ const ShiftDetails = () => {
           <div className="flex p-3">
             <h4 className="font-semibold text-black">Employee Id</h4>
             <span className="text-sm ml-4">
-              {staff.employeeId}
+              {/* {staff.employeeId} */}
+              {shift.staffDetails[0].employeeId}
             </span>
           </div>
 
@@ -332,14 +342,16 @@ const ShiftDetails = () => {
           <div className="flex p-3">
             <h4 className="font-semibold text-black">Phone Number</h4>
             <span className="text-sm ml-4">
-              {staff.phoneNumber}
+              {/* {staff.phoneNumber} */}
+              {shift.staffDetails[0].phoneNumber}
+
             </span>
           </div>
 
           {/* DOB */}
           <div className="flex p-3">
             <h4 className="font-semibold text-black">DOB</h4>
-            <span className="text-sm ml-4">{staff.DOB}</span>
+            <span className="text-sm ml-4">{shift.staffDetails[0].DOB}</span>
           </div>
 
           {/* Profile Status */}
@@ -347,17 +359,17 @@ const ShiftDetails = () => {
             <h4 className="font-semibold text-black">Profile Status</h4>
             <span
               className={`text-sm ml-4 px-2 py-1 border rounded ${
-                staff.profileStatus === 'Incomplete'
+                shift.staffDetails[0].profileStatus === 'Incomplete'
                   ? 'text-yellow-600 border-yellow-600'
-                  : staff.profileStatus === 'Pending'
+                  : shift.staffDetails[0].profileStatus === 'Pending'
                     ? 'text-orange-600 border-orange-600'
-                    : staff.profileStatus === 'Completed'
+                    : shift.staffDetails[0].profileStatus === 'Completed'
                       ? 'text-green-600 border-green-600'
                       : 'text-gray-600 border-gray-300'
               }`}
             >
-              {staff.profileStatus}
-            </span>
+              {shift.staffDetails[0].profileStatus}
+            </span> 
           </div>
         </div>
 
@@ -366,7 +378,7 @@ const ShiftDetails = () => {
           <div className="flex p-3">
             <h4 className="font-semibold text-black">Start Time</h4>
             <span className="text-sm ml-4">
-              {staff.checkInTIme || 'Not Set'}
+              {shift.checkInTIme || 'Not Set'}
             </span>
           </div>
 
@@ -374,31 +386,31 @@ const ShiftDetails = () => {
           <div className="flex p-3">
             <h4 className="font-semibold text-black">End Time</h4>
             <span className="text-sm ml-4">
-              {staff.checkOutTime || 'Not Set'}
+              {shift.checkOutTime || 'Not Set'}
             </span>
           </div>
 
           {/* Unassign */}
-          <div className="flex flex-row p-3">
+           <div className="flex flex-row p-3">
             <button
               className="text-sm ml-4 text-red-600 border border-red-600 rounded px-2 py-1"
-              onClick={() => delet(staff.id)}
+              onClick={() => delet(shift.staffDetails[0].id)}
             >
               UN-ASSIGN
             </button>
             <button
               className="text-sm ml-4 bg-gradient-to-r from-[#4fa3f7] to-[#00aaff] text-white border border-transparent rounded-lg px-1  py-1 hover:bg-gradient-to-r hover:from-[#0099cc] hover:to-[#0077b3] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-              onClick={() => handleAmedn(staff.id)}
+              onClick={() => handleAmedn(shift.staffDetails[0].id)}
             >
               Add Amendment
             </button>
-          </div>
+          </div> 
 
           {/* Amendment */}
         </div>
       </div>
     </div>
-    ))}
+    {/* ))} */}
   </div>
 ))}
 

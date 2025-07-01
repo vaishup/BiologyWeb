@@ -16,7 +16,9 @@ import {
 
 const AddClient = () => {
   const navigation = useNavigate();
-  const API = generateClient();
+  const client = generateClient({
+    authMode: 'userPool', // Use Cognito User Pools authentication
+  });
   const { id } = useParams(); // Get the staff ID from the URL, if it exists
   // State to manage form validation errors
   const [errors, setErrors] = useState({});
@@ -119,14 +121,18 @@ const AddClient = () => {
 
       let staffResponse;
       if (id) {
-        staffResponse = await API.graphql({
+        staffResponse = await client.graphql({
           query: mutation.updateTheStaff,
           variables: { input: { id, ...staffInput } },
+          authMode: 'userPool', // Use Cognito User Pools authentication
+
         });
       } else {
-        staffResponse = await API.graphql({
+        staffResponse = await client.graphql({
           query: mutation.createTheStaff,
           variables: { input: staffInput },
+          authMode: 'userPool', // Use Cognito User Pools authentication
+
         });
       }
 
@@ -146,9 +152,11 @@ const AddClient = () => {
       const fetchStaffData = async () => {
         try {
           console.log('Fetching staff with ID:', id); // Debug log
-          const staffData = await API.graphql({
+          const staffData = await client.graphql({
             query: getTheStaff, // Replace with your actual query to get staff by ID
             variables: { id },
+            authMode: 'userPool', // Use Cognito User Pools authentication
+
           });
           const staff = staffData.data.getTheStaff;
           const status =

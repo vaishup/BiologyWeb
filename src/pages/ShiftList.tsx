@@ -27,8 +27,10 @@ const ShiftList = () => {
   const startIdx = (currentPage - 1) * itemsPerPage;
   const paginatedData = filteredShifts.slice(startIdx, startIdx + itemsPerPage);
 
-  const client = generateClient();
-  const navigation = useNavigate();
+  const client = generateClient({
+    authMode: 'userPool', // Use Cognito User Pools authentication
+  }); 
+   const navigation = useNavigate();
 
   useEffect(() => {
     listShifts();
@@ -39,6 +41,8 @@ const ShiftList = () => {
       const staffData = await client.graphql({
         query: listTheStaffs, // Replace with your batch query
         variables: { ids: staffIds },
+        authMode: 'userPool', // Use Cognito User Pools authentication
+
       });
 
       const staffList = staffData.data.listTheStaffs.items;
@@ -66,6 +70,8 @@ const ShiftList = () => {
       const shiftData = await client.graphql({
         query: listMainShifts,
         variables: {},
+        authMode: 'userPool', // Use Cognito User Pools authentication
+
       });
       const shiftsList = shiftData.data.listMainShifts.items || [];
 
@@ -192,7 +198,9 @@ const ShiftList = () => {
       await client.graphql({
         query: mutation.deleteMainShift,
         variables: { input: { id: selectedId } },
-        apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
+       // apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
+       authMode: 'userPool', // Use Cognito User Pools authentication
+
       });
       setIsOpen(false);
       listShifts(); // Refresh the list after deletion

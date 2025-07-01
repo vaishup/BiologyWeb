@@ -6,8 +6,9 @@ import * as mutation from '../graphql/mutations.js';
 import { listTheViewIDUsers } from '../graphql/queries.js';
 import { Text } from '@aws-amplify/ui-react';
 const MakeID = () => {
-  const API = generateClient();
-
+  const client = generateClient({
+    authMode: 'userPool', // Use Cognito User Pools authentication
+  });
   const navigation = useNavigate();
   const { id } = useParams(); // Get the staff ID from the URL
   const [errors, setErrors] = useState({});
@@ -42,12 +43,16 @@ const MakeID = () => {
     return Math.floor(Math.random() * 9000000000) + 1000000000;
   };
   const listStaff = async () => {
-    const client = generateClient();
+    const client = generateClient({
+      authMode: 'userPool', // Use Cognito User Pools authentication
+    });
     try {
       // Fetch staff list
       const staffdata = await client.graphql({
         query: listTheViewIDUsers,
         variables: {},
+        authMode: 'userPool', // Use Cognito User Pools authentication
+
       });
 
       const staffList = staffdata.data.listTheViewIDUsers.items;
@@ -91,6 +96,8 @@ const MakeID = () => {
       const clientResponse = await API.graphql({
         query: mutation.createTheViewIDUser,
         variables: { input: clientInput },
+        authMode: 'userPool', // Use Cognito User Pools authentication
+
       });
       console.log('Client created:', clientResponse);
       const createdItem = clientResponse.data.createTheViewIDUser;
@@ -114,9 +121,11 @@ const MakeID = () => {
             attachment: uploadedFilePath, // Store image URL in DB
           };
           console.log('Updating client with:', updateInput);
-          const updateResponse = await API.graphql({
+          const updateResponse = await client.graphql({
             query: mutation.updateTheViewIDUser,
             variables: { input: updateInput },
+            authMode: 'userPool', // Use Cognito User Pools authentication
+
           });
           console.log('Client updated successfully:', updateResponse);
         } catch (error) {

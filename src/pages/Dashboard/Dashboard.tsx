@@ -5,7 +5,6 @@ import { Hotel, SquareUserRound } from 'lucide-react';
 import { listTheShifts, listTheStaffs } from '../../graphql/queries';
 import { generateClient } from 'aws-amplify/api';
 import { useNavigate } from 'react-router-dom';
-
 const ECommerce: React.FC = () => {
   const [staffList, setStaffList] = useState([]);
   const [shiftList, setShiftList] = useState([]);
@@ -17,13 +16,13 @@ const ECommerce: React.FC = () => {
   // Fetch staff data
   const listStaff = async () => {
     const client = generateClient({
-      authMode: 'apiKey',  // Use API Key authentication
+      authMode: 'userPool', // Use Cognito User Pools authentication
     });
     try {
       const staffdata = await client.graphql({
         query: listTheStaffs,
         variables: {},
-        authMode: 'apiKey'  // Explicitly set authMode in request
+        authMode: 'userPool', // Ex // Explicitly set authMode in request
 
 
       });

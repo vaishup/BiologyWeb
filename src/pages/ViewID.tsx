@@ -18,7 +18,9 @@ import {
 } from '../hooks/authServices.js';
 
 const ViewID = () => {
-  const client = generateClient();
+  const client = generateClient({
+    authMode: 'userPool', // Use Cognito User Pools authentication
+  });  
   const [searchQuery, setSearchQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [show, setIsShow] = useState(false);
@@ -35,7 +37,9 @@ const ViewID = () => {
       const response = await client.graphql({
         query: mutation.deleteTheStaff,
         variables: { input: { id: selectedId } },
-        apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
+       // apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
+       authMode: 'userPool', // Use Cognito User Pools authentication
+
       });
       console.log('Delete response:', response);
       setIsOpen(false);
@@ -53,12 +57,16 @@ const ViewID = () => {
     listStaff();
   }, []);
   const listStaff = async () => {
-    const client = generateClient();
-    try {
+    const client = generateClient({
+      authMode: 'userPool', // Use Cognito User Pools authentication
+    });
+         try {
       // Fetch staff list
       const staffdata = await client.graphql({
         query: listTheViewIDUsers,
         variables: {},
+        authMode: 'userPool', // Use Cognito User Pools authentication
+
       });
 
       const staffList = staffdata.data.listTheViewIDUsers.items;
@@ -79,6 +87,7 @@ const ViewID = () => {
               const adminData = await client.graphql({
                 query: getTheAdminStaffUser,
                 variables: { id: staff.userId },
+                authMode: 'userPool', 
               });
               adminName = adminData.data.getTheAdminStaffUser?.name || 'Admin';
             } catch (error) {
@@ -325,6 +334,7 @@ const ViewID = () => {
       staffResponse = await client.graphql({
         query: mutation.createTheStaff,
         variables: { input: staffInput },
+        authMode: 'userPool', 
       });
 
       const createdItem =
@@ -339,6 +349,7 @@ const ViewID = () => {
       const updateResponse = await client.graphql({
         query: mutation.updateTheViewIDUser,
         variables: { input: updateInput },
+        authMode: 'userPool',
       });
       setIsOpen(true);
       navigation('/Employee');

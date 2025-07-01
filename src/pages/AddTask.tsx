@@ -34,7 +34,9 @@ const AddTask = () => {
   });
 
   const { RangePicker } = TimePicker; // Use TimePicker.RangePicker for time range
-  const API = generateClient();
+  const client = generateClient({
+    authMode: 'userPool', // Use Cognito User Pools authentication
+  });
   const { id, tag } = useParams();
   const [date, setDate] = useState(''); // State to store the selected date
   const [startTime, setStartTime] = useState(''); // State to store the selected date
@@ -75,20 +77,24 @@ const AddTask = () => {
     if (id) {
       const fetchStaffData = async () => {
         try {
-          const staffData = await API.graphql({
+          const staffData = await client.graphql({
+            authMode: 'userPool', // Use Cognito User Pools authentication
+
             query: getMainShift, // Replace with your actual query to get staff by ID
             variables: { id },
           });
           const staff = staffData.data.getMainShift;
           console.log('staff.dateTime', staff.time);
           setStatus(staff.shiftstatus);
-          const shiftData1 = await API.graphql({
+          const shiftData1 = await client.graphql({
             query: listTheShifts,
             variables: {
               filter: {
                 mainShiftID: { eq: id }, // Filter shifts by mainShiftID
               },
             },
+            authMode: 'userPool', // Use Cognito User Pools authentication
+
           });
           const shiftList = shiftData1.data.listTheShifts.items; // Ensure it's an array
           console.log('shiftList---', shiftList); // Verify the structure
@@ -222,10 +228,12 @@ console.log("tag",tag);
       if (tag == 'edit') {
         console.log('staffInput...', staffInput);
         // Update existing staff member
-        staffResponse = await API.graphql({
+        staffResponse = await client.graphql({
           query: mutation.updateMainShift,
           variables: { input: { id, ...staffInput } },
-          apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
+          //apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
+          authMode: 'userPool', // Use Cognito User Pools authentication
+
         });
 console.log("staffResponse",staffResponse);
 console.log("staffInput",staffInput);
@@ -258,9 +266,11 @@ console.log("staffInput",staffInput);
         console.log('staffInput', staffInput);
 
         // Create a new staff member
-        staffResponse = await API.graphql({
+        staffResponse = await client.graphql({
           query: mutation.createMainShift,
           variables: { input: staffInput },
+          authMode: 'userPool', // Use Cognito User Pools authentication
+
           apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji',
         });
         setIsShow(true);
@@ -324,6 +334,8 @@ console.log("staffInput",staffInput);
       const staffdata = await client.graphql({
         query: listTheStaffs,
         variables: {},
+        authMode: 'userPool', // Use Cognito User Pools authentication
+
         //authMode: 'AMAZON_COGNITO_USER_POOLS', // Use Cognito User Pools authentication
       });
       const staffList = staffdata.data.listTheStaffs.items;
@@ -349,10 +361,12 @@ console.log("staffInput",staffInput);
     try {
       // Save the new location
       const locationInput = { name: newLocation, status: 'Active' };
-      const response = await API.graphql({
+      const response = await client.graphql({
         query: mutation.createLocation, // Replace with your actual GraphQL mutation
         variables: { input: locationInput },
-        apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji', // Replace with your actual API key
+        authMode: 'userPool', // Use Cognito User Pools authentication
+
+        // apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji', // Replace with your actual API key
       });
       const newLoc = response.data.createLocation;
       setLocations([...locations, newLoc.name]); // Add the new location to the dropdown
@@ -367,9 +381,11 @@ console.log("staffInput",staffInput);
   const getLocation = async () => {
     try {
       // Fetch the list of locations from GraphQL
-      const response = await API.graphql({
+      const response = await client.graphql({
         query: listLocations, // Your GraphQL query
-        apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji', // Your API key
+        authMode: 'userPool', // Use Cognito User Pools authentication
+
+        //apiKey: 'da2-mttg3c4kpjgi3jgfvaelnjquji', // Your API key
       });
       // Check the structure of the response to ensure you're accessing the correct part
       const newLocations = response.data.listLocations.items || []; // Make sure we access 'items' array
@@ -538,6 +554,12 @@ console.log("staffInput",staffInput);
             <div className="w-full flex justify-between space-x-4">
               {/* Start Date and Time Picker */}
               <DateTimePicker
+                closeOnSelect={false} // <- this prevents closing when changing time
+                slotProps={{
+                  actionBar: {
+                    actions: ['clear', 'accept'], // shows the OK button
+                  },
+                }}
                 value={selectedDates}
                 label="Start Date and Time"
                 onChange={handleDateChanges} // Event handler for date change
@@ -546,6 +568,12 @@ console.log("staffInput",staffInput);
 
               {/* End Time Picker */}
               <Time
+              closeOnSelect={false} // <- this prevents closing when changing time
+              slotProps={{
+                actionBar: {
+                  actions: ['clear', 'accept'], // shows the OK button
+                },
+              }}
                 value={endTimes}
                 label="End Time"
                 onChange={handleEndTimeChange} // Event handler for time change

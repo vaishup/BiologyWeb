@@ -9,8 +9,9 @@ import UserOne from '../images/user.png';
 import { PencilIcon } from 'lucide-react';
 
 const EditViewId = () => {
-  const API = generateClient();
-
+  const client = generateClient({
+    authMode: 'userPool', // Use Cognito User Pools authentication
+  });
   const navigation = useNavigate();
   const { id } = useParams(); // Get the staff ID from the URL
   const [errors, setErrors] = useState({});
@@ -74,9 +75,11 @@ const EditViewId = () => {
       const fetchStaffData = async () => {
         try {
           console.log('Fetching staff with ID:', id); // Debug log
-          const staffData = await API.graphql({
+          const staffData = await client.graphql({
             query: getTheViewIDUser, // Replace with your actual query to get staff by ID
             variables: { id },
+            authMode: 'userPool', // Use Cognito User Pools authentication
+
           });
 
           const staff = staffData.data.getTheViewIDUser;
@@ -175,9 +178,10 @@ const EditViewId = () => {
         scanNumber:
           formData.barcode || generateRandom10DigitNumber().toString(),
       };
-      const clientResponse = await API.graphql({
+      const clientResponse = await client.graphql({
         query: mutation.updateTheViewIDUser,
         variables: { input: { id, ...clientInput } },
+        authMode: 'userPool', // Use Cognito User Pools authentication
 
       });
       console.log('Client created:', clientResponse);
@@ -202,9 +206,11 @@ const EditViewId = () => {
             attachment: uploadedFilePath, // Store image URL in DB
           };
           console.log('Updating client with:', updateInput);
-          const updateResponse = await API.graphql({
+          const updateResponse = await client.graphql({
             query: mutation.updateTheViewIDUser,
             variables: { input: updateInput },
+            authMode: 'userPool', // Use Cognito User Pools authentication
+
           });
 
           if (file) {
@@ -224,9 +230,11 @@ const EditViewId = () => {
                 attachment: uploadedFilePath, // Store image URL in DB
               };
               console.log('Updating client with:', updateInput);
-              const updateResponse = await API.graphql({
+              const updateResponse = await client.graphql({
                 query: mutation.updateTheViewIDUser,
                 variables: { input: updateInput },
+                authMode: 'userPool', // Use Cognito User Pools authentication
+
               });
               console.log('Client updated successfully:', updateResponse);
             } catch (error) {

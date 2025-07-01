@@ -20,8 +20,9 @@ const StaffList = () => {
     listStaff();
   }, []);
   const listStaff = async () => {
-    const client = generateClient();
-    try {
+    const client = generateClient({
+      authMode: 'userPool', // Use Cognito User Pools authentication
+    });     try {
       const staffdata = await client.graphql({
         query: listTheStaffs,
         variables: {
@@ -31,6 +32,7 @@ const StaffList = () => {
             },
           },
         },
+        authMode: 'userPool', // Use Cognito User Pools authentication
 
       });
 

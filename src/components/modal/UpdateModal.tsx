@@ -16,7 +16,9 @@ const UpdateModal = ({ id, setIsShow,onClose }) => {
   const [isModalShow, setIsModalShow] = useState(false); // State to track if the dialog is open
   const [selectedDClients, setSelectedClients] = useState([]);
   const [searchValue, setSearchValue] = useState('');
-  const client = generateClient();
+  const client = generateClient({
+    authMode: 'userPool', // Use Cognito User Pools authentication
+  });
   const [loading, setLoading] = useState(true); // Add loading state
   const [errorMessage, setErrorMessage] = useState('');
   const [clientList, setClientList] = useState([]);
@@ -47,6 +49,8 @@ const UpdateModal = ({ id, setIsShow,onClose }) => {
       const response = await client.graphql({
         query: listTheStaffs,
         variables: {},
+        authMode: 'userPool', // Use Cognito User Pools authentication
+
       });
 
       // Access the correct property from the response
